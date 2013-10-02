@@ -5,7 +5,6 @@ public class AlarmSet {
 
 	public Alarm localAlarm;
 	public Alarm remoteAlarm;
-
 	
 	public AlarmSet(int hourPicked, int minutePicked, String cityPicked, String timeZonePicked) {
 		
@@ -20,6 +19,22 @@ public class AlarmSet {
 		} else {
 			
 			localAlarm = new Alarm(hourPicked, minutePicked);
+		}
+	}
+	
+	public AlarmSet(long timeInMillis, String cityPicked, String timeZonePicked) {
+		
+		if(cityPicked != null && cityPicked.length() > 0 && timeZonePicked != null && timeZonePicked.length() > 0) {
+			
+			remoteAlarm = new Alarm(timeInMillis, cityPicked, timeZonePicked);
+			
+			localAlarm = new Alarm();
+			
+			localAlarm.setTimeInMillis(remoteAlarm.getTimeInMillis());
+			
+		} else {
+			
+			localAlarm = new Alarm(timeInMillis);
 		}
 	}
 	
@@ -47,5 +62,16 @@ public class AlarmSet {
     	}
     	
     	return text;
+	}
+	
+	public String[] getDatabaseParams() {
+				
+		if(remoteAlarm != null) {
+			String[] params = {String.valueOf(localAlarm.getTimeInMillis()), localAlarm.getTimeZone(), remoteAlarm.getCity(), remoteAlarm.getTimeZone()};
+			return params;
+		} else {
+			String[] params = {String.valueOf(localAlarm.getTimeInMillis()), localAlarm.getTimeZone(), "", ""};
+			return params;
+		}
 	}
 }

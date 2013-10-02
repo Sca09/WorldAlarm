@@ -1,66 +1,107 @@
 package com.worldalarm.db;
 
+import android.annotation.SuppressLint;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 public class Alarm {
 
-	private Calendar calendar;
+	private long id;
 	
-	private boolean isLocalTime;
-		
+	private Calendar calendar;
 	private String city;
 	private String timeZone;
 
 	public Alarm() {
-		createLocalAlarm(true);
-	}
-	
-	public Alarm(int hourPicked, int minutePicked) {
-		createLocalAlarm(true);
-		calendar.set(Calendar.HOUR_OF_DAY, hourPicked);
-		calendar.set(Calendar.MINUTE, minutePicked);
-		
-		if(this.calendar.before(Calendar.getInstance())) {
-			calendar.add(Calendar.DAY_OF_MONTH, 1);
-		}
-	}
-	
-	public Alarm(int hourPicked, int minutePicked, String cityPicked, String timeZonePicked) {
-		
-		this.isLocalTime = false;
-		
-		if(cityPicked != null && cityPicked.length() > 0 && timeZonePicked != null && timeZonePicked.length() > 0) {
-		
-			calendar = new GregorianCalendar(TimeZone.getTimeZone(timeZonePicked));
-			calendar.set(Calendar.HOUR_OF_DAY, hourPicked);
-			calendar.set(Calendar.MINUTE, minutePicked);
-			
-			this.setCity(cityPicked);
-			this.setTimeZone(timeZonePicked);
-			
-			if(this.calendar.before(new GregorianCalendar(TimeZone.getTimeZone(timeZonePicked)))) {
-				calendar.add(Calendar.DAY_OF_MONTH, 1);
-			}
-		} else {
-			createLocalAlarm(false);
-			calendar.set(Calendar.HOUR_OF_DAY, hourPicked);
-			calendar.set(Calendar.MINUTE, minutePicked);
-			
-			if(this.calendar.before(Calendar.getInstance())) {
-				calendar.add(Calendar.DAY_OF_MONTH, 1);
-			}
-		}
-	}
-	
-	private void createLocalAlarm(boolean isLocalTime) {
-		
-		this.isLocalTime = isLocalTime;
 		this.calendar = Calendar.getInstance();
 		this.timeZone = TimeZone.getDefault().getID();
 	}
 	
+	public Alarm(int hourPicked, int minutePicked) {
+		this.calendar = Calendar.getInstance();
+		this.calendar.set(Calendar.HOUR_OF_DAY, hourPicked);
+		this.calendar.set(Calendar.MINUTE, minutePicked);
+		
+		if(this.calendar.before(Calendar.getInstance())) {
+			this.calendar.add(Calendar.DAY_OF_MONTH, 1);
+		}
+		
+		this.timeZone = TimeZone.getDefault().getID();
+	}
+	
+	public Alarm(long timeInMillis) {
+		this.calendar = Calendar.getInstance();
+		this.calendar.setTimeInMillis(timeInMillis);
+		
+		if(this.calendar.before(Calendar.getInstance())) {
+			this.calendar.add(Calendar.DAY_OF_MONTH, 1);
+		}
+		
+		this.timeZone = TimeZone.getDefault().getID();
+	}
+	
+	public Alarm(int hourPicked, int minutePicked, String cityPicked, String timeZonePicked) {
+		
+		if(cityPicked != null && cityPicked.length() > 0 && timeZonePicked != null && timeZonePicked.length() > 0) {
+		
+			this.calendar = new GregorianCalendar(TimeZone.getTimeZone(timeZonePicked));
+			this.calendar.set(Calendar.HOUR_OF_DAY, hourPicked);
+			this.calendar.set(Calendar.MINUTE, minutePicked);
+			
+			if(this.calendar.before(new GregorianCalendar(TimeZone.getTimeZone(timeZonePicked)))) {
+				calendar.add(Calendar.DAY_OF_MONTH, 1);
+			}
+			
+			this.setCity(cityPicked);
+			this.setTimeZone(timeZonePicked);
+			
+		} else {
+			this.calendar = Calendar.getInstance();
+			this.calendar.set(Calendar.HOUR_OF_DAY, hourPicked);
+			this.calendar.set(Calendar.MINUTE, minutePicked);
+			
+			if(this.calendar.before(Calendar.getInstance())) {
+				calendar.add(Calendar.DAY_OF_MONTH, 1);
+			}
+			
+			this.timeZone = TimeZone.getDefault().getID();
+		}
+	}
+	
+	public Alarm(long timeInMillis, String cityPicked, String timeZonePicked) {
+		if(cityPicked != null && cityPicked.length() > 0 && timeZonePicked != null && timeZonePicked.length() > 0) {
+			this.calendar = new GregorianCalendar(TimeZone.getTimeZone(timeZonePicked));
+			this.calendar.setTimeInMillis(timeInMillis);
+		
+			if(this.calendar.before(Calendar.getInstance())) {
+				this.calendar.add(Calendar.DAY_OF_MONTH, 1);
+			}
+		
+			this.setCity(cityPicked);
+			this.setTimeZone(timeZonePicked);
+			
+		} else {
+			this.calendar = Calendar.getInstance();
+			this.calendar.setTimeInMillis(timeInMillis);
+			
+			if(this.calendar.before(Calendar.getInstance())) {
+				this.calendar.add(Calendar.DAY_OF_MONTH, 1);
+			}
+			
+			this.timeZone = TimeZone.getDefault().getID();
+		}
+	}
+	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+	  
 	public long getTimeInMillis() {
 		return calendar.getTimeInMillis();
 	}
@@ -77,14 +118,6 @@ public class Alarm {
 		this.calendar = calendar;
 	}
 	
-	public boolean isLocalTime() {
-		return isLocalTime;
-	}
-
-	public void setLocalTime(boolean isLocalTime) {
-		this.isLocalTime = isLocalTime;
-	}
-
 	public String getCity() {
 		return city;
 	}
@@ -102,41 +135,19 @@ public class Alarm {
 		this.timeZone = calendar.getTimeZone().getID();
 	}
 	
+	@SuppressLint("SimpleDateFormat")
 	@Override
 	public String toString() {
 		
-		String result = String.valueOf(calendar.get(Calendar.YEAR));
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
+		sdf.setTimeZone(TimeZone.getTimeZone(timeZone));
 		
-		if((calendar.get(Calendar.MONTH) + 1) < 10) {
-			result += "-0"+ (calendar.get(Calendar.MONTH) + 1);
-		} else {
-			result += "-"+ (calendar.get(Calendar.MONTH) + 1);
-		}
+		return sdf.format(calendar.getTime());
+	}
+	
+	public String[] getDatabaseParams() {
+		String[] params = {String.valueOf(calendar.getTimeInMillis()), city, timeZone}; 
 		
-		if(calendar.get(Calendar.DAY_OF_MONTH) < 10) {
-			result += "-0"+ calendar.get(Calendar.DAY_OF_MONTH);
-		} else {
-			result += "-"+ calendar.get(Calendar.DAY_OF_MONTH);
-		}
-				
-		if(calendar.get(Calendar.HOUR) < 10) {
-			result += " 0"+ calendar.get(Calendar.HOUR);
-		} else {
-			result += " "+ calendar.get(Calendar.HOUR);
-		}
-		
-		if(calendar.get(Calendar.MINUTE) < 10) {
-			result += ":0"+ calendar.get(Calendar.MINUTE);
-		} else {
-			result += ":"+ calendar.get(Calendar.MINUTE);
-		}
-		
-		if(calendar.get(Calendar.AM_PM) == Calendar.AM) {
-			result += " AM";
-		} else {
-			result += " PM";
-		}
-		
-		return result;
+		return params;
 	}
 }

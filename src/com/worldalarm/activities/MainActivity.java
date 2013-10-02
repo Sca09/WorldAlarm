@@ -1,6 +1,7 @@
 package com.worldalarm.activities;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.TimeZone;
 
 import android.app.Activity;
@@ -16,8 +17,9 @@ import android.widget.Toast;
 
 import com.worldalarm.R;
 import com.worldalarm.db.AlarmSet;
+import com.worldalarm.db.AlarmSetDatabaseHelper;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends Activity implements View.OnClickListener, AlarmSetDatabaseHelper.ArrayAlarmSetListener {
 
 	HashMap<String, String> timeZonesNames = new HashMap<String, String>();
 	TimePicker timePicker;
@@ -32,6 +34,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
 		this.fillCityPickerAutoComplete();
 		
 		findViewById(R.id.setAlarmButton).setOnClickListener(this);
+		
+		
+		AlarmSetDatabaseHelper.getInstance(this).GetAllAlarmsSetAsync(this);
 	}
 
 	private void initTimePicker() {
@@ -81,6 +86,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 		
 		AlarmSet alarmSet = new AlarmSet(hourPicked, minutePicked, cityPicked, timeZonePicked);
 		
+		AlarmSetDatabaseHelper.getInstance(this).saveAlarmSetAsync(alarmSet);
+		
     	Log.d("MainActivity", alarmSet.toString());
 		
     	Toast toastAlert = Toast.makeText(this, alarmSet.toString(), Toast.LENGTH_LONG);
@@ -106,5 +113,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
 		AlarmSet alarmSet = new AlarmSet(hourPicked, minutePicked, cityPicked, timeZonePicked);
 		
 		return alarmSet;
+	}
+
+	@Override
+	public void setArrayAlarmSet(List<AlarmSet> listAlarmSet) {
+		Log.d("MainActivity", "alarmSets recovered["+ listAlarmSet.size() +"]");
 	}
 }
