@@ -1,14 +1,16 @@
 package com.worldalarm.db;
 
 import android.annotation.SuppressLint;
+
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-public class Alarm {
+public class Alarm implements Serializable {
 
-	private long id;
+	private static final long serialVersionUID = 1L; 
 	
 	private Calendar calendar;
 	private String city;
@@ -92,14 +94,6 @@ public class Alarm {
 			
 			this.timeZone = TimeZone.getDefault().getID();
 		}
-	}
-	
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
 	}
 	  
 	public long getTimeInMillis() {

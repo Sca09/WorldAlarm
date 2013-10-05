@@ -1,8 +1,11 @@
 package com.worldalarm.db;
 
+import java.io.Serializable;
 
-public class AlarmSet {
+public class AlarmSet implements Serializable {
 
+	private static final long serialVersionUID = 1L; 
+	
 	public Alarm localAlarm;
 	public Alarm remoteAlarm;
 	

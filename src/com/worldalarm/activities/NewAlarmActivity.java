@@ -1,10 +1,11 @@
 package com.worldalarm.activities;
 
+import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.TimeZone;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,7 +20,7 @@ import com.worldalarm.R;
 import com.worldalarm.db.AlarmSet;
 import com.worldalarm.db.AlarmSetDatabaseHelper;
 
-public class MainActivity extends Activity implements View.OnClickListener, AlarmSetDatabaseHelper.ArrayAlarmSetListener {
+public class NewAlarmActivity extends Activity implements View.OnClickListener, AlarmSetDatabaseHelper.SaveAlarmListener {
 
 	HashMap<String, String> timeZonesNames = new HashMap<String, String>();
 	TimePicker timePicker;
@@ -28,15 +29,12 @@ public class MainActivity extends Activity implements View.OnClickListener, Alar
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		setContentView(R.layout.new_alarm);
 		
 		this.initTimePicker();
 		this.fillCityPickerAutoComplete();
 		
 		findViewById(R.id.setAlarmButton).setOnClickListener(this);
-		
-		
-		AlarmSetDatabaseHelper.getInstance(this).GetAllAlarmsSetAsync(this);
 	}
 
 	private void initTimePicker() {
@@ -86,7 +84,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Alar
 		
 		AlarmSet alarmSet = new AlarmSet(hourPicked, minutePicked, cityPicked, timeZonePicked);
 		
-		AlarmSetDatabaseHelper.getInstance(this).saveAlarmSetAsync(alarmSet);
+		AlarmSetDatabaseHelper.getInstance(this).saveAlarmSetAsync(alarmSet, this);
 		
     	Log.d("MainActivity", alarmSet.toString());
 		
@@ -95,28 +93,12 @@ public class MainActivity extends Activity implements View.OnClickListener, Alar
 		toastAlert.show();
 	}
 
-	public AlarmSet getAlarmSet() {
-		
-		int hourPicked = -1;
-		int minutePicked = -1;
-		String cityPicked = "";
-		String timeZonePicked = "";
-		
-		hourPicked = timePicker.getCurrentHour();
-		minutePicked = timePicker.getCurrentMinute();
-		
-		cityPicked = cityPickerAutoComplete.getText().toString();
-		if(cityPicked != null && cityPicked.length() > 0) {
-			timeZonePicked = timeZonesNames.get(timeZonePicked);
-		}
-		
-		AlarmSet alarmSet = new AlarmSet(hourPicked, minutePicked, cityPicked, timeZonePicked);
-		
-		return alarmSet;
-	}
-
 	@Override
-	public void setArrayAlarmSet(List<AlarmSet> listAlarmSet) {
-		Log.d("MainActivity", "alarmSets recovered["+ listAlarmSet.size() +"]");
+	public void saveAlarmListener(AlarmSet alarmSet) {
+		Intent returnIntent = new Intent();
+		returnIntent.putExtra("newAlarm", alarmSet);
+		
+		setResult(RESULT_OK, returnIntent);     
+		finish();
 	}
 }

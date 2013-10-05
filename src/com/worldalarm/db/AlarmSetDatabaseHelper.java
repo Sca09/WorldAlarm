@@ -3,6 +3,7 @@ package com.worldalarm.db;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -69,13 +70,19 @@ public class AlarmSetDatabaseHelper extends SQLiteOpenHelper {
 		Log.w(AlarmSetDatabaseHelper.class.getName(), "Upgrading database from version " + oldVersion + " to "+ newVersion);
 	}
 
-	public void saveAlarmSetAsync(AlarmSet alarmSet) {
-		SaveAlarmSetTask task = new SaveAlarmSetTask();
+	public void saveAlarmSetAsync(AlarmSet alarmSet, SaveAlarmListener saveAlarmListener) {
+		SaveAlarmSetTask task = new SaveAlarmSetTask(saveAlarmListener);
 		
 		task.execute(alarmSet);
 	}
 	
 	private class SaveAlarmSetTask extends AsyncTask<AlarmSet, Void, AlarmSet> {
+		
+		private SaveAlarmListener saveAlarmListener = null;
+		
+		public SaveAlarmSetTask(SaveAlarmListener saveAlarmListener) {
+			this.saveAlarmListener = saveAlarmListener;
+		}
 		
 		@Override
 		protected AlarmSet doInBackground(AlarmSet... params) {
@@ -84,7 +91,12 @@ public class AlarmSetDatabaseHelper extends SQLiteOpenHelper {
 			
 			getWritableDatabase().execSQL(DATABASE_INSERT, paramsAlarmSet);
 			
-			return null;
+			return params[0];
+		}
+		
+		@Override
+		protected void onPostExecute(AlarmSet alarmSet) {
+			this.saveAlarmListener.saveAlarmListener(alarmSet);
 		}
 	}
 	
@@ -108,10 +120,9 @@ public class AlarmSetDatabaseHelper extends SQLiteOpenHelper {
 			 List<AlarmSet> listAlarmSet = new ArrayList<AlarmSet>();
 			
 			Cursor cursor = getReadableDatabase().rawQuery(DATABASE_SELECT_ALL, null);
-			
-//			int count = cursor.getCount();
-			
+						
 			cursor.moveToFirst();
+			
 			while (!cursor.isAfterLast()) {
 				
 				AlarmSet alarmSet = cursorToAlarmSet(cursor);
@@ -127,7 +138,6 @@ public class AlarmSetDatabaseHelper extends SQLiteOpenHelper {
 
 		private AlarmSet cursorToAlarmSet(Cursor cursor) {
 			long timeInMillis = cursor.getLong(1);
-			String localTZ = cursor.getString(2);
 			String remoteCity = cursor.getString(3);
 			String remoteTZ = cursor.getString(4);
 			
@@ -144,6 +154,10 @@ public class AlarmSetDatabaseHelper extends SQLiteOpenHelper {
 	
 	public interface ArrayAlarmSetListener {
 		void setArrayAlarmSet(List<AlarmSet> listAlarmSet);
+	}
+	
+	public interface SaveAlarmListener {
+		void saveAlarmListener(AlarmSet alarmSet);
 	}
 	
 }
