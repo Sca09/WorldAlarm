@@ -1,5 +1,6 @@
 package com.worldalarm.activities;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.TimeZone;
 
@@ -16,16 +17,21 @@ import com.worldalarm.R;
 import com.worldalarm.db.Alarm;
 import com.worldalarm.db.AlarmDatabaseHelper;
 
-public class NewAlarmActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.SaveAlarmListener {
+public class UpdateAlarmActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.UpdateAlarmListener {
 
 	HashMap<String, String> timeZonesNames = new HashMap<String, String>();
 	TimePicker timePicker;
 	AutoCompleteTextView cityPickerAutoComplete;
 	
+	Alarm alarm;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.new_alarm);
+		setContentView(R.layout.update_alarm);
+		
+		Intent intent = this.getIntent();
+		alarm = (Alarm) intent.getSerializableExtra("alamToUpdate");
 		
 		this.initTimePicker();
 		this.fillCityPickerAutoComplete();
@@ -33,11 +39,29 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		findViewById(R.id.setAlarmButton).setOnClickListener(this);
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.update_alarm, menu);
+		return true;
+	}
+
+	@Override
+	public void onClick(View view) {
+		switch(view.getId()) {
+		case R.id.setAlarmButton:			
+			this.updateAlarm(view);
+			break;
+		}
+	}
+	
 	private void initTimePicker() {
 		timePicker = (TimePicker) findViewById(R.id.alarmPicker);
 //		timePicker.setIs24HourView(DateFormat.is24HourFormat(this));
 		
-
+		timePicker.setCurrentHour(alarm.getCalendar().get(Calendar.HOUR_OF_DAY));
+		timePicker.setCurrentMinute(alarm.getCalendar().get(Calendar.MINUTE));
+		
 	}
 
 	private void fillCityPickerAutoComplete() {
@@ -53,39 +77,29 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, cities);
         cityPickerAutoComplete = (AutoCompleteTextView) findViewById(R.id.cityPickerAutoComplete);
         cityPickerAutoComplete.setAdapter(adapter);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	@Override
-	public void onClick(View view) {
-		switch(view.getId()) {
-		case R.id.setAlarmButton:			
-			this.setAlarm(view);
-			break;
-		}
+        
+        cityPickerAutoComplete.setText(alarm.getCity());
+        cityPickerAutoComplete.clearFocus();
 	}
 	
-	public void setAlarm(View view) {
-	
+	public void updateAlarm(View view) {
+		
 		int hourPicked 			= timePicker.getCurrentHour();
 		int minutePicked 		= timePicker.getCurrentMinute();	
 		String cityPicked 		= cityPickerAutoComplete.getText().toString();
 		String timeZonePicked 	= timeZonesNames.get(cityPicked);
 		    	
-    	Alarm newAlarm = new Alarm(hourPicked, minutePicked, cityPicked, timeZonePicked);
-    	AlarmDatabaseHelper.getInstance(this).saveAlarmAsync(newAlarm, this);
+    	Alarm alarm = new Alarm(hourPicked, minutePicked, cityPicked, timeZonePicked);
+    	this.alarm.setCalendar(alarm.getCalendar());
+    	this.alarm.setCity(alarm.getCity());
+    	this.alarm.setTimeZone(alarm.getTimeZone());
+    	AlarmDatabaseHelper.getInstance(this).updateAlarmAsync(this.alarm, this);
 	}
 
 	@Override
-	public void saveAlarm(Alarm alarm) {
+	public void updateAlarm(Alarm alarm) {
 		Intent returnIntent = new Intent();
-		returnIntent.putExtra("newAlarm", alarm);
+		returnIntent.putExtra("alamUpdated", alarm);
 		
 		setResult(RESULT_OK, returnIntent);     
 		finish();

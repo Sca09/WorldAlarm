@@ -1,6 +1,7 @@
 package com.worldalarm.db;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -12,10 +13,11 @@ public class Alarm implements Serializable {
 
 	private static final long serialVersionUID = 1L; 
 	
+	private long id;
 	private Calendar calendar;
 	private String city;
 	private String timeZone;
-
+	
 	public Alarm() {
 		this.calendar = Calendar.getInstance();
 		this.timeZone = TimeZone.getDefault().getID();
@@ -96,6 +98,66 @@ public class Alarm implements Serializable {
 		}
 	}
 	  
+	public void setTimeZone(String timeZone) {
+		calendar.setTimeZone(TimeZone.getTimeZone(timeZone));
+		this.timeZone = calendar.getTimeZone().getID();
+	}
+	
+	@SuppressLint("SimpleDateFormat")
+	@Override
+	public String toString() {	
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
+		sdf.setTimeZone(TimeZone.getTimeZone(timeZone));
+		
+		return sdf.format(calendar.getTime());
+	}
+	
+	@SuppressLint("SimpleDateFormat")
+	public String getLocalDate() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(this.calendar.getTimeInMillis());
+		
+		if(calendar.before(Calendar.getInstance())) {
+			calendar.add(Calendar.DAY_OF_MONTH, 1);
+		}
+
+		return sdf.format(calendar.getTime());
+	}
+	
+//	public String[] getDatabaseParams() {
+//		String[] params = {String.valueOf(calendar.getTimeInMillis()), city, timeZone}; 
+//		
+//		return params;
+//	}
+	
+	public ContentValues getUpdateContentValues() {
+		ContentValues updateValues = new ContentValues();
+		updateValues.put(AlarmDatabaseHelper.COLUMN_NAME_TIME_IN_MILLIS, getTimeInMillis());
+		updateValues.put(AlarmDatabaseHelper.COLUMN_NAME_CITY, city);
+		updateValues.put(AlarmDatabaseHelper.COLUMN_NAME_TIME_ZONE, timeZone);
+
+		return updateValues;
+	}
+	
+	public ContentValues getInsertContentValues() {
+		ContentValues insertValues = new ContentValues();
+		insertValues.put(AlarmDatabaseHelper.COLUMN_NAME_TIME_IN_MILLIS, getTimeInMillis());
+		insertValues.put(AlarmDatabaseHelper.COLUMN_NAME_CITY, city);
+		insertValues.put(AlarmDatabaseHelper.COLUMN_NAME_TIME_ZONE, timeZone);
+		
+		return insertValues;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+	
 	public long getTimeInMillis() {
 		return calendar.getTimeInMillis();
 	}
@@ -122,26 +184,5 @@ public class Alarm implements Serializable {
 
 	public String getTimeZone() {
 		return timeZone;
-	}
-
-	public void setTimeZone(String timeZone) {
-		calendar.setTimeZone(TimeZone.getTimeZone(timeZone));
-		this.timeZone = calendar.getTimeZone().getID();
-	}
-	
-	@SuppressLint("SimpleDateFormat")
-	@Override
-	public String toString() {
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
-		sdf.setTimeZone(TimeZone.getTimeZone(timeZone));
-		
-		return sdf.format(calendar.getTime());
-	}
-	
-	public String[] getDatabaseParams() {
-		String[] params = {String.valueOf(calendar.getTimeInMillis()), city, timeZone}; 
-		
-		return params;
 	}
 }

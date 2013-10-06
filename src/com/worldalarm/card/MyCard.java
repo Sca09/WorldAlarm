@@ -7,36 +7,31 @@ import android.widget.TextView;
 
 import com.fima.cardsui.objects.Card;
 import com.worldalarm.R;
+import com.worldalarm.db.Alarm;
 
 public class MyCard extends Card {
-
-	private String alarmInfo;
-	private String alarmInfoLocal;
 	
-//	public MyCard(String title, String desc){
-//		super(title, desc, -1);
-//	}
+	private Alarm alarm;
 	
-	public MyCard(String alarmInfo, String alarmInfoLocal){
-		super(alarmInfo, alarmInfoLocal, -1);
-		this.alarmInfo = alarmInfo;
-		this.alarmInfoLocal = alarmInfoLocal;
+	public MyCard(Alarm alarm){
+		this.alarm = alarm;
 	}
-
+	
 	@Override
 	public View getCardContent(Context context) {
 		View view = LayoutInflater.from(context).inflate(R.layout.card_ex, null);
 
-//		((TextView) view.findViewById(R.id.title)).setText(title);
-//		((TextView) view.findViewById(R.id.description)).setText(desc);
-		
-		((TextView) view.findViewById(R.id.alarmInfo)).setText(alarmInfo);
-		((TextView) view.findViewById(R.id.alarmInfoLocal)).setText(alarmInfoLocal);
+		((TextView) view.findViewById(R.id.alarmInfo)).setText(alarm.getCity() +" - "+ alarm.toString());
+		((TextView) view.findViewById(R.id.alarmInfoLocal)).setText("Local date - "+ alarm.getLocalDate());
 		
 		return view;
 	}
 
-	
-	
-	
+	public Alarm getAlarm() {
+		return alarm;
+	}
+
+	public void setAlarm(Alarm alarm) {
+		this.alarm = alarm;
+	}
 }

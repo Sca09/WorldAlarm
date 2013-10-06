@@ -5,32 +5,37 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Toast;
 
+import com.fima.cardsui.objects.Card;
+import com.fima.cardsui.objects.Card.OnCardSwiped;
 import com.fima.cardsui.views.CardUI;
 import com.worldalarm.R;
 import com.worldalarm.card.MyCard;
-import com.worldalarm.db.AlarmSet;
-import com.worldalarm.db.AlarmSetDatabaseHelper;
+import com.worldalarm.db.Alarm;
+import com.worldalarm.db.AlarmDatabaseHelper;
 
-public class ListAlarmsActivity extends Activity implements View.OnClickListener, AlarmSetDatabaseHelper.ArrayAlarmSetListener {
+public class ListAlarmsActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.ArrayAlarmListener {
 
 	private CardUI mCardView;
 	private static final int REQUEST_CODE_RESOLVE_ERR_NEW_ALARM = 5000;
+	private static final int REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM = 6000;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.alarms_list);
+		setContentView(R.layout.list_alarms);
 		
 		findViewById(R.id.addAlarmButton).setOnClickListener(this);
 		
 		mCardView = (CardUI) findViewById(R.id.cardsview);
 		mCardView.setSwipeable(true);
 		
-		AlarmSetDatabaseHelper.getInstance(this).GetAllAlarmsSetAsync(this);
+		AlarmDatabaseHelper.getInstance(this).getAllAlarmsAsync(this);
 	}
 
 	@Override
@@ -52,37 +57,89 @@ public class ListAlarmsActivity extends Activity implements View.OnClickListener
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
 
-		if (requestCode == REQUEST_CODE_RESOLVE_ERR_NEW_ALARM) {
-            if (resultCode == RESULT_OK) {
+		switch (requestCode) {
+		case REQUEST_CODE_RESOLVE_ERR_NEW_ALARM:
+			if (resultCode == RESULT_OK) {
+            	Alarm alarm = (Alarm) data.getSerializableExtra("newAlarm");
             	
-            	AlarmSet alarmSet = (AlarmSet) data.getSerializableExtra("newAlarm");
-            	
-            	if(alarmSet != null && alarmSet.getRemoteAlarm() != null) {
-    				mCardView.addCard(new MyCard(alarmSet.getRemoteAlarm().getCity(), alarmSet.toString()));
-    			} else if(alarmSet != null) {
-    				mCardView.addCard(new MyCard(alarmSet.toString(), ""));
+            	if(alarm != null) {
+            		final MyCard newCard = new MyCard(alarm);
+            		newCard.setOnClickListener(new OnClickListener() {
+						
+						public void onClick(View v) {
+							Intent intent = new Intent(v.getContext(), UpdateAlarmActivity.class);
+							intent.putExtra("alamToUpdate", newCard.getAlarm());
+							
+							startActivityForResult(intent, REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM);
+						}
+					});
+            		
+            		newCard.setOnCardSwipedListener(new OnCardSwiped() {
+						
+						@Override
+						public void onCardSwiped(Card card, View layout) {
+							AlarmDatabaseHelper.getInstance(layout.getContext()).removeAlarmAsync(newCard.getAlarm());	
+							
+							Toast toastAlert = Toast.makeText(layout.getContext(), "Removed alarm at "+ newCard.getAlarm() +" in "+ newCard.getAlarm().getCity(), Toast.LENGTH_LONG);
+							toastAlert.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 180);
+							toastAlert.show();
+						}
+					});
+            		
+            		mCardView.addCard(newCard);
     			}
             	
             	mCardView.refresh();
-            	
-            	Log.d("ListAlarmsActivity", alarmSet.toString());
+            	mCardView.scrollToCard(mCardView.getLastCardStackPosition());
             }
-        }
+			
+			break;
+			
+		case REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM:
+			if (resultCode == RESULT_OK) {
+				AlarmDatabaseHelper.getInstance(this).getAllAlarmsAsync(this);
+			}
+			
+			break;
+
+		default:
+			break;
+		}
 	}
 	
 	@Override
-	public void setArrayAlarmSet(List<AlarmSet> listAlarmSet) {
+	public void setArrayAlarm(List<Alarm> listAlarm) {
 		mCardView.clearCards();
 		
-		for(AlarmSet alarmSet : listAlarmSet) {
-			
-			if(alarmSet.getRemoteAlarm() != null) {
-				mCardView.addCard(new MyCard(alarmSet.getRemoteAlarm().getCity(), alarmSet.toString()));
-			} else {
-				mCardView.addCard(new MyCard("Local alarm", alarmSet.toString()));
-			}
+		for(Alarm alarm : listAlarm) {
+			if(alarm != null) {
+				final MyCard newCard = new MyCard(alarm);
+				newCard.setOnClickListener(new OnClickListener() {
+					
+					public void onClick(View v) {
+						Intent intent = new Intent(v.getContext(), UpdateAlarmActivity.class);
+						intent.putExtra("alamToUpdate", newCard.getAlarm());
+						
+						startActivityForResult(intent, REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM);
+					}
+				});
+				
+				newCard.setOnCardSwipedListener(new OnCardSwiped() {
+					
+					@Override
+					public void onCardSwiped(Card card, View layout) {
+						AlarmDatabaseHelper.getInstance(layout.getContext()).removeAlarmAsync(newCard.getAlarm());
+						
+				    	Toast toastAlert = Toast.makeText(layout.getContext(), "Removed alarm at "+ newCard.getAlarm() +" in "+ newCard.getAlarm().getCity(), Toast.LENGTH_LONG);
+						toastAlert.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 180);
+						toastAlert.show();
+					}
+				});
+				
+				mCardView.addCard(newCard);
+			} 
 		}
 		
 		mCardView.refresh();	
