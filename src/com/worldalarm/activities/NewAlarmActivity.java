@@ -88,9 +88,9 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		
     	Log.d("MainActivity", alarmSet.toString());
 		
-    	Toast toastAlert = Toast.makeText(this, alarmSet.toString(), Toast.LENGTH_LONG);
-		toastAlert.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 180);
-		toastAlert.show();
+//    	Toast toastAlert = Toast.makeText(this, alarmSet.toString(), Toast.LENGTH_LONG);
+//		toastAlert.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 180);
+//		toastAlert.show();
 	}
 
 	@Override

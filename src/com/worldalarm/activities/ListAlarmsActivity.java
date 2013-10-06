@@ -1,6 +1,5 @@
 package com.worldalarm.activities;
 
-import java.util.Calendar;
 import java.util.List;
 
 import android.app.Activity;
@@ -13,7 +12,6 @@ import android.view.View;
 import com.fima.cardsui.views.CardUI;
 import com.worldalarm.R;
 import com.worldalarm.card.MyCard;
-import com.worldalarm.db.Alarm;
 import com.worldalarm.db.AlarmSet;
 import com.worldalarm.db.AlarmSetDatabaseHelper;
 
@@ -64,7 +62,7 @@ public class ListAlarmsActivity extends Activity implements View.OnClickListener
             	if(alarmSet != null && alarmSet.getRemoteAlarm() != null) {
     				mCardView.addCard(new MyCard(alarmSet.getRemoteAlarm().getCity(), alarmSet.toString()));
     			} else if(alarmSet != null) {
-    				mCardView.addCard(new MyCard("Local alarm", alarmSet.toString()));
+    				mCardView.addCard(new MyCard(alarmSet.toString(), ""));
     			}
             	
             	mCardView.refresh();

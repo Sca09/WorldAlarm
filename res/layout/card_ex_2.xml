@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="16dp" 
-    android:background="@drawable/selectable_background_cardbank" >
+    android:paddingBottom="16dp" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,13 +13,12 @@
         android:paddingRight="8dp" >
 
         <TextView
-            android:id="@+id/alarmInfo"
-            style="@style/CardText"
+            android:id="@+id/title"
+            style="@style/CardTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:maxLines="1"
-            android:text="alarmInfo" />
+            android:text="title" />
 
     </LinearLayout>
 
@@ -33,18 +31,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/selectable_background_cardbank"
         android:gravity="center_vertical"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp" >
+        android:padding="4dp" >
 
         <TextView
-            android:id="@+id/alarmInfoLocal"
+            android:id="@+id/description"
             style="@style/CardText"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:maxLines="1"
-            android:text="alarmInfoLocal" />
+            android:layout_marginLeft="8dp"
+            android:ellipsize="end"
+            android:maxLines="4"
+            android:text="Description" />
     </LinearLayout>
 
 </LinearLayout>
