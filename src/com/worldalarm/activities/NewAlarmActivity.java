@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -77,7 +76,6 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		String cityPicked 		= cityPickerAutoComplete.getText().toString();
 		String timeZonePicked 	= "";
 		if(cityPicked.equals("")) { //User didn't pick a city > Using the current one
-//			cityPicked = this.getCurrentCity();
 			cityPicked = currentCity;
 			
 			timeZonePicked 	= timeZonesNames.get(cityPicked);
@@ -122,53 +120,31 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
         cityPickerAutoComplete.setAdapter(adapter);
         cityPickerAutoComplete.setHint(R.string.choose_city);
 	}
-	
-	private String getCurrentCity() {
-		
-		String currentCity = "";
-		
-		try {
-			LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-			Criteria criteria = new Criteria();
-			String provider = locationManager.getBestProvider(criteria, false);
-			Location location = locationManager.getLastKnownLocation(provider);
-
-			if(location != null) {
-				double latitude = location.getLatitude();
-				double longitude = location.getLongitude();
-        
-				Geocoder gcd = new Geocoder(this, Locale.getDefault());
-        
-				List<Address> addresses = gcd.getFromLocation(latitude, longitude, 1);
-				if (addresses.size() > 0) { 
-					currentCity = addresses.get(0).getLocality();
-				}
-			} else {
-				String TZId = TimeZone.getDefault().getID();
-				currentCity = TZId.substring(TZId.lastIndexOf("/") + 1);
-			}
-        	
-        } catch (Exception e) {
-        	
-        	Log.d("NewAlarmActivity", "No location obtained from device");
-        }	
-        
-        return currentCity;
-	}
-	
 	private void getCurrentCityLocation() {		
 		try {
 			currentTimeZone = TimeZone.getDefault().getID();
 			String cityName = currentTimeZone.substring(currentTimeZone.lastIndexOf("/") + 1);
 			currentCity = cityName.replaceAll("_", " ");
 			
-			final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-			
-			Criteria criteria = new Criteria();
-			String provider = locationManager.getBestProvider(criteria, false);
-			Location location = locationManager.getLastKnownLocation(provider);
-			
+			LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+						
+			boolean gpsEnabled = false;
+		    boolean networkEnabled = false;
+			try {
+				gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+	        } catch (Exception ex) {}
+	        try {
+	        	networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+	        } catch (Exception ex) {}
+						
+			Location location = null;
+	        if (gpsEnabled)
+	        	location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+	        if (networkEnabled)
+	        	location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+
 			Geocoder gcd = new Geocoder(this, Locale.getDefault());
 			
 			if(location != null) {
@@ -180,7 +156,10 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 					currentCity = addresses.get(0).getLocality();
 				}
 			} else {
-				locationManager.requestLocationUpdates(provider, 0, 0, locationListener);
+				if (gpsEnabled)
+					locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+		        if (networkEnabled)
+		        	locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 			}
 			
 

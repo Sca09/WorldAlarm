@@ -3,8 +3,6 @@ package com.worldalarm.db;
 import java.util.HashMap;
 import java.util.TimeZone;
 
-import com.worldalarm.db.AlarmDatabaseHelper.SaveAlarmListener;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
