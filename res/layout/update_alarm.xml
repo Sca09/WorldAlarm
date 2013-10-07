@@ -15,7 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:ems="10"
-        android:hint="Choose City" >
+        android:hint="@string/choose_city" >
     
         <requestFocus />
 	</AutoCompleteTextView>
@@ -33,6 +33,6 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/alarmPicker"
         android:layout_below="@+id/alarmPicker"
-        android:text="Set" />
+        android:text="@string/set_alarm_text" />
 
 </RelativeLayout>

@@ -12,7 +12,7 @@
         android:id="@+id/addAlarmButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Alarm" />
+        android:text="@string/new_alarm_text" />
 
     <com.fima.cardsui.views.CardUI
         android:id="@+id/cardsview"

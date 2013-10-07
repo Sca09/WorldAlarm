@@ -28,7 +28,7 @@ public class Alarm implements Serializable {
 		this.calendar.set(Calendar.HOUR_OF_DAY, hourPicked);
 		this.calendar.set(Calendar.MINUTE, minutePicked);
 		
-		if(this.calendar.before(Calendar.getInstance())) {
+		if(this.calendar.equals(Calendar.getInstance()) || this.calendar.before(Calendar.getInstance())) {
 			this.calendar.add(Calendar.DAY_OF_MONTH, 1);
 		}
 		
@@ -39,7 +39,7 @@ public class Alarm implements Serializable {
 		this.calendar = Calendar.getInstance();
 		this.calendar.setTimeInMillis(timeInMillis);
 		
-		if(this.calendar.before(Calendar.getInstance())) {
+		if(this.calendar.equals(Calendar.getInstance()) || this.calendar.before(Calendar.getInstance())) {
 			this.calendar.add(Calendar.DAY_OF_MONTH, 1);
 		}
 		
@@ -54,7 +54,7 @@ public class Alarm implements Serializable {
 			this.calendar.set(Calendar.HOUR_OF_DAY, hourPicked);
 			this.calendar.set(Calendar.MINUTE, minutePicked);
 			
-			if(this.calendar.before(new GregorianCalendar(TimeZone.getTimeZone(timeZonePicked)))) {
+			if(this.calendar.equals(new GregorianCalendar(TimeZone.getTimeZone(timeZonePicked))) || this.calendar.before(new GregorianCalendar(TimeZone.getTimeZone(timeZonePicked)))) {
 				calendar.add(Calendar.DAY_OF_MONTH, 1);
 			}
 			
@@ -66,7 +66,7 @@ public class Alarm implements Serializable {
 			this.calendar.set(Calendar.HOUR_OF_DAY, hourPicked);
 			this.calendar.set(Calendar.MINUTE, minutePicked);
 			
-			if(this.calendar.before(Calendar.getInstance())) {
+			if(this.calendar.equals(Calendar.getInstance()) || this.calendar.before(Calendar.getInstance())) {
 				calendar.add(Calendar.DAY_OF_MONTH, 1);
 			}
 			
@@ -79,7 +79,7 @@ public class Alarm implements Serializable {
 			this.calendar = new GregorianCalendar(TimeZone.getTimeZone(timeZonePicked));
 			this.calendar.setTimeInMillis(timeInMillis);
 		
-			if(this.calendar.before(Calendar.getInstance())) {
+			if(this.calendar.equals(Calendar.getInstance()) || this.calendar.before(Calendar.getInstance(TimeZone.getTimeZone(timeZonePicked)))) {
 				this.calendar.add(Calendar.DAY_OF_MONTH, 1);
 			}
 		
@@ -90,7 +90,7 @@ public class Alarm implements Serializable {
 			this.calendar = Calendar.getInstance();
 			this.calendar.setTimeInMillis(timeInMillis);
 			
-			if(this.calendar.before(Calendar.getInstance())) {
+			if(this.calendar.equals(Calendar.getInstance()) || this.calendar.before(Calendar.getInstance())) {
 				this.calendar.add(Calendar.DAY_OF_MONTH, 1);
 			}
 			
@@ -106,7 +106,8 @@ public class Alarm implements Serializable {
 	@SuppressLint("SimpleDateFormat")
 	@Override
 	public String toString() {	
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
+//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a, MMM d");
 		sdf.setTimeZone(TimeZone.getTimeZone(timeZone));
 		
 		return sdf.format(calendar.getTime());
@@ -114,7 +115,8 @@ public class Alarm implements Serializable {
 	
 	@SuppressLint("SimpleDateFormat")
 	public String getLocalDate() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
+//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a, MMM d");
 		
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(this.calendar.getTimeInMillis());
@@ -125,12 +127,6 @@ public class Alarm implements Serializable {
 
 		return sdf.format(calendar.getTime());
 	}
-	
-//	public String[] getDatabaseParams() {
-//		String[] params = {String.valueOf(calendar.getTimeInMillis()), city, timeZone}; 
-//		
-//		return params;
-//	}
 	
 	public ContentValues getUpdateContentValues() {
 		ContentValues updateValues = new ContentValues();

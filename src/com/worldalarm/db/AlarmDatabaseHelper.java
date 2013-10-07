@@ -167,7 +167,7 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
 		
 		@Override
 		protected Alarm doInBackground(Alarm... params) {			
-			ContentValues updateValues = params[0].getInsertContentValues();
+			ContentValues updateValues = params[0].getUpdateContentValues();
 			getWritableDatabase().update(TABLE_NAME, updateValues, COLUMN_ID +"="+ params[0].getId(), null);
 			
 			return params[0];

@@ -2,7 +2,6 @@ package com.worldalarm.activities;
 
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.TimeZone;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,8 +15,9 @@ import android.widget.TimePicker;
 import com.worldalarm.R;
 import com.worldalarm.db.Alarm;
 import com.worldalarm.db.AlarmDatabaseHelper;
+import com.worldalarm.db.CityDatabaseHelper;
 
-public class UpdateAlarmActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.UpdateAlarmListener {
+public class UpdateAlarmActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.UpdateAlarmListener, CityDatabaseHelper.AllCitiesListener {
 
 	HashMap<String, String> timeZonesNames = new HashMap<String, String>();
 	TimePicker timePicker;
@@ -34,7 +34,7 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 		alarm = (Alarm) intent.getSerializableExtra("alamToUpdate");
 		
 		this.initTimePicker();
-		this.fillCityPickerAutoComplete();
+		CityDatabaseHelper.getInstance(this).getAllCitiesAsync(this);
 		
 		findViewById(R.id.setAlarmButton).setOnClickListener(this);
 	}
@@ -64,24 +64,6 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 		
 	}
 
-	private void fillCityPickerAutoComplete() {
-		String[] availableIDs = TimeZone.getAvailableIDs();
-		
-		for(String ID : availableIDs) {
-			String cityName = ID.substring(ID.indexOf("/") + 1);
-			timeZonesNames.put(cityName.replaceAll("_", " "), ID);
-		}
-		
-		String[] cities = timeZonesNames.keySet().toArray(new String[timeZonesNames.size()]);
-		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, cities);
-        cityPickerAutoComplete = (AutoCompleteTextView) findViewById(R.id.cityPickerAutoComplete);
-        cityPickerAutoComplete.setAdapter(adapter);
-        
-        cityPickerAutoComplete.setText(alarm.getCity());
-        cityPickerAutoComplete.clearFocus();
-	}
-	
 	public void updateAlarm(View view) {
 		
 		int hourPicked 			= timePicker.getCurrentHour();
@@ -103,5 +85,21 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 		
 		setResult(RESULT_OK, returnIntent);     
 		finish();
+	}
+
+	@Override
+	public void getCities(HashMap<String, String> cities) {
+		
+		timeZonesNames = cities;
+		
+		String[] citiesArray = timeZonesNames.keySet().toArray(new String[timeZonesNames.size()]);
+		
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, citiesArray);
+        cityPickerAutoComplete = (AutoCompleteTextView) findViewById(R.id.cityPickerAutoComplete);
+        cityPickerAutoComplete.setAdapter(adapter);
+        cityPickerAutoComplete.setHint(R.string.choose_city);
+        
+        cityPickerAutoComplete.setText(alarm.getCity());
+        cityPickerAutoComplete.clearFocus();
 	}
 }
