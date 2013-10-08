@@ -138,7 +138,11 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, citiesArray);
         cityPickerAutoComplete = (AutoCompleteTextView) findViewById(R.id.cityPickerAutoComplete);
         cityPickerAutoComplete.setAdapter(adapter);
-        cityPickerAutoComplete.setHint(R.string.choose_city);
+        if(currentCity != null && currentCity.length() > 0) {
+        	cityPickerAutoComplete.setHint(currentCity +" "+ getString(R.string.by_default));
+        } else {
+        	cityPickerAutoComplete.setHint(R.string.choose_city);
+        }
         
         cityPickerAutoComplete.setText(alarm.getCity());
         cityPickerAutoComplete.clearFocus();
