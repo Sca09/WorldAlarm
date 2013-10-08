@@ -15,18 +15,20 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.worldalarm.R;
 import com.worldalarm.db.Alarm;
 import com.worldalarm.db.AlarmDatabaseHelper;
 import com.worldalarm.db.CityDatabaseHelper;
 
-public class NewAlarmActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.SaveAlarmListener, CityDatabaseHelper.AllCitiesListener, CityDatabaseHelper.AddCityListener {
+public class NewAlarmActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.SaveAlarmListener, CityDatabaseHelper.AllCitiesListener, CityDatabaseHelper.AddCityListener, CityDatabaseHelper.FoundCityByNameListener {
 
 	HashMap<String, String> timeZonesNames = new HashMap<String, String>();
 	TimePicker timePicker;
@@ -40,10 +42,10 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.new_alarm);
 		
+		this.getCurrentCityLocation();
+		
 		this.initTimePicker();
 		CityDatabaseHelper.getInstance(this).getAllCitiesAsync(this);
-		
-		this.getCurrentCityLocation();
 		
 		findViewById(R.id.setAlarmButton).setOnClickListener(this);
 	}
@@ -84,19 +86,21 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 				
 				CityDatabaseHelper.getInstance(this).addCityAsync(cityPicked, timeZonePicked, this);
 			}
+			
+			Alarm newAlarm = new Alarm(hourPicked, minutePicked, cityPicked, timeZonePicked);
+	    	AlarmDatabaseHelper.getInstance(this).saveAlarmAsync(newAlarm, this);
+	    	
 		} else {
 			timeZonePicked 	= timeZonesNames.get(cityPicked);
 			
-			if(timeZonePicked == "") { //City chosen is not in TZ database
-				//TODO: get the TZ from the City Name
-				timeZonePicked = TimeZone.getDefault().toString();
+			if(timeZonePicked == null || timeZonePicked == "") { //City chosen is not in TZ database
+				CityDatabaseHelper.getInstance(this).searchCityByNameAsync(cityPicked, this);
 				
-				CityDatabaseHelper.getInstance(this).addCityAsync(cityPicked, timeZonePicked, this);
+			} else {
+				Alarm newAlarm = new Alarm(hourPicked, minutePicked, cityPicked, timeZonePicked);
+		    	AlarmDatabaseHelper.getInstance(this).saveAlarmAsync(newAlarm, this);
 			}
 		}
-		    	
-    	Alarm newAlarm = new Alarm(hourPicked, minutePicked, cityPicked, timeZonePicked);
-    	AlarmDatabaseHelper.getInstance(this).saveAlarmAsync(newAlarm, this);
 	}
 
 	@Override
@@ -118,7 +122,11 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, citiesArray);
         cityPickerAutoComplete = (AutoCompleteTextView) findViewById(R.id.cityPickerAutoComplete);
         cityPickerAutoComplete.setAdapter(adapter);
-        cityPickerAutoComplete.setHint(R.string.choose_city);
+        if(currentCity != null && currentCity.length() > 0) {
+        	cityPickerAutoComplete.setHint(currentCity +" "+ getString(R.string.by_default));
+        } else {
+        	cityPickerAutoComplete.setHint(R.string.choose_city);
+        }
 	}
 
 	private void getCurrentCityLocation() {		
@@ -205,4 +213,19 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		@Override
 		public void onProviderDisabled(String provider) {}
 	};
+
+	@Override
+	public void addCityByName(String[] data) {
+		if(data != null) {
+			Alarm newAlarm = new Alarm(timePicker.getCurrentHour(), timePicker.getCurrentMinute(), data[0], data[1]);
+			AlarmDatabaseHelper.getInstance(getApplicationContext()).saveAlarmAsync(newAlarm, this);
+		} else {
+			Toast toastAlert = Toast.makeText(this, "City not found, please try again", Toast.LENGTH_LONG);
+			toastAlert.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 180);
+			toastAlert.show();
+		}
+		
+	}
+	
+	
 }

@@ -16,18 +16,20 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.worldalarm.R;
 import com.worldalarm.db.Alarm;
 import com.worldalarm.db.AlarmDatabaseHelper;
 import com.worldalarm.db.CityDatabaseHelper;
 
-public class UpdateAlarmActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.UpdateAlarmListener, CityDatabaseHelper.AllCitiesListener, CityDatabaseHelper.AddCityListener {
+public class UpdateAlarmActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.UpdateAlarmListener, CityDatabaseHelper.AllCitiesListener, CityDatabaseHelper.AddCityListener, CityDatabaseHelper.FoundCityByNameListener {
 
 	HashMap<String, String> timeZonesNames = new HashMap<String, String>();
 	TimePicker timePicker;
@@ -94,22 +96,27 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 				
 				CityDatabaseHelper.getInstance(this).addCityAsync(cityPicked, timeZonePicked, this);
 			}
+			
+			Alarm alarm = new Alarm(hourPicked, minutePicked, cityPicked, timeZonePicked);
+	    	this.alarm.setCalendar(alarm.getCalendar());
+	    	this.alarm.setCity(alarm.getCity());
+	    	this.alarm.setTimeZone(alarm.getTimeZone());
+	    	AlarmDatabaseHelper.getInstance(this).updateAlarmAsync(this.alarm, this);
+			
 		} else {
 			timeZonePicked 	= timeZonesNames.get(cityPicked);
 			
-			if(timeZonePicked == "") { //City chosen is not in TZ database
-				//TODO: get the TZ from the City Name
-				timeZonePicked = TimeZone.getDefault().toString();
-				
-				CityDatabaseHelper.getInstance(this).addCityAsync(cityPicked, timeZonePicked, this);
+			if(timeZonePicked == null || timeZonePicked == "") { //City chosen is not in TZ database
+				CityDatabaseHelper.getInstance(this).searchCityByNameAsync(cityPicked, this);
+					
+			} else {
+				Alarm alarm = new Alarm(hourPicked, minutePicked, cityPicked, timeZonePicked);
+				this.alarm.setCalendar(alarm.getCalendar());
+				this.alarm.setCity(alarm.getCity());
+				this.alarm.setTimeZone(alarm.getTimeZone());
+				AlarmDatabaseHelper.getInstance(this).updateAlarmAsync(this.alarm, this);
 			}
 		}
-		    	
-    	Alarm alarm = new Alarm(hourPicked, minutePicked, cityPicked, timeZonePicked);
-    	this.alarm.setCalendar(alarm.getCalendar());
-    	this.alarm.setCity(alarm.getCity());
-    	this.alarm.setTimeZone(alarm.getTimeZone());
-    	AlarmDatabaseHelper.getInstance(this).updateAlarmAsync(this.alarm, this);
 	}
 
 	@Override
@@ -219,5 +226,20 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 	@Override
 	public void addCity(String[] data) {
 		// Nothing to do here
+	}
+
+	@Override
+	public void addCityByName(String[] data) {
+		if(data != null) {
+			Alarm alarm = new Alarm(timePicker.getCurrentHour(), timePicker.getCurrentMinute(), data[0], data[1]);
+			this.alarm.setCalendar(alarm.getCalendar());
+			this.alarm.setCity(alarm.getCity());
+			this.alarm.setTimeZone(alarm.getTimeZone());
+			AlarmDatabaseHelper.getInstance(this).updateAlarmAsync(this.alarm, this);
+		} else {
+			Toast toastAlert = Toast.makeText(this, "City not found, please try again", Toast.LENGTH_LONG);
+			toastAlert.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 180);
+			toastAlert.show();
+		}
 	}
 }

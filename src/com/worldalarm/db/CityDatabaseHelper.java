@@ -1,7 +1,14 @@
 package com.worldalarm.db;
 
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.TimeZone;
+
+import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -47,7 +54,6 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 		try {
 			db.beginTransaction();
 			db.execSQL(DATABASE_CREATE);
-			db.setTransactionSuccessful();
 			
 			String[] availableIDs = TimeZone.getAvailableIDs();
 			
@@ -58,6 +64,8 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 				insertValues.put(COLUMN_NAME_TIME_ZONE, ID);
 				db.insert(TABLE_NAME, null, insertValues);
 			}
+			
+			db.setTransactionSuccessful();
 		} finally {
 			db.endTransaction();
 		}
@@ -79,6 +87,12 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 		
 		String[] data = {city, timeZone};
 		task.execute(data);
+	}
+	
+	public void searchCityByNameAsync(String cityName, FoundCityByNameListener foundCityByNameListener) {
+		SearchCityByNameTask task = new SearchCityByNameTask(foundCityByNameListener);
+		
+		task.execute(cityName);
 	}
 	
 	private class GetAllCitiesTask extends AsyncTask<Void, Void, HashMap<String, String>> {
@@ -139,11 +153,83 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 		}
 	}
 	
+	private class SearchCityByNameTask extends AsyncTask<String, Void, String[]> {
+
+		private FoundCityByNameListener foundCityByNameListener = null;
+		
+		public SearchCityByNameTask(FoundCityByNameListener foundCityByNameListener) {
+			this.foundCityByNameListener = foundCityByNameListener;
+		}
+		
+		@Override
+		protected String[] doInBackground(String... params) {
+			
+			try {
+				URL url = new URL("http://maps.googleapis.com/maps/api/geocode/json?address="+ URLEncoder.encode(params[0], "UTF-8") +"&sensor=false");
+				String res = IOUtils.toString(url);
+				
+				if(res != null && res.length() > 0) {
+					
+					JSONObject jObject = new JSONObject(res);
+					JSONArray jArray = jObject.getJSONArray("results");
+					if(jArray.length() > 0){
+						if(jArray.length() == 1) {
+							JSONObject jObjectGeo = jArray.getJSONObject(0);
+							JSONArray jArrayAddress = jObjectGeo.getJSONArray("address_components");
+							JSONObject jObjectCity = jArrayAddress.getJSONObject(0);
+							String cityLongName = jObjectCity.getString("long_name");
+							
+							JSONObject jObjectGeometry = jObjectGeo.getJSONObject("geometry");
+							JSONObject jObjectLocation = jObjectGeometry.getJSONObject("location");
+							double lat = jObjectLocation.getDouble("lat");
+							double lng = jObjectLocation.getDouble("lng");
+							
+							url = new URL("https://maps.googleapis.com/maps/api/timezone/json?location="+ lat +","+ lng +"&timestamp="+ (Calendar.getInstance().getTimeInMillis() / 1000) +"&sensor=false");
+							res = IOUtils.toString(url);
+							JSONObject jObjectTZ = new JSONObject(res);
+							String timeZoneId = jObjectTZ.getString("timeZoneId");
+							
+							if(cityLongName != null && cityLongName.length() > 0 && timeZoneId != null && timeZoneId.length() > 0) {
+								ContentValues insertValues = new ContentValues();
+								insertValues.put(COLUMN_NAME_CITY, cityLongName);
+								insertValues.put(COLUMN_NAME_TIME_ZONE, timeZoneId);
+								getWritableDatabase().insert(TABLE_NAME, null, insertValues);
+								
+								String[] result = {cityLongName, timeZoneId}; 
+								
+								return result;
+							}
+						} else {
+							//TODO: implement case for more than one city found
+						}
+					}
+				}
+				
+				Log.d("CityDatabaseHelper", "res["+ res +"]");
+				
+			} catch (Exception e) {
+				Log.e("CityDatabaseHelper", e.getMessage());
+				
+			}
+
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String[] result) {
+			this.foundCityByNameListener.addCityByName(result);
+		}
+	}
+	
 	public interface AllCitiesListener {
 		void getCities(HashMap<String, String> cities);
 	}
 	
 	public interface AddCityListener {
 		void addCity(String[] data);
+	}
+	
+	public interface FoundCityByNameListener {
+		void addCityByName(String[] data);
 	}
 }
