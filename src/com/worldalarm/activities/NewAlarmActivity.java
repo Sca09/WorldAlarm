@@ -28,9 +28,9 @@ import com.worldalarm.db.Alarm;
 import com.worldalarm.db.AlarmDatabaseHelper;
 import com.worldalarm.db.CityDatabaseHelper;
 
-public class NewAlarmActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.SaveAlarmListener, CityDatabaseHelper.AllCitiesListener, CityDatabaseHelper.AddCityListener, CityDatabaseHelper.FoundCityByNameListener {
+public class NewAlarmActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.SaveAlarmListener, CityDatabaseHelper.OnRetrievedAllCitiesListener, CityDatabaseHelper.OnAddedCityListener, CityDatabaseHelper.OnFoundCityByNameListener {
 
-	HashMap<String, String> timeZonesNames = new HashMap<String, String>();
+	HashMap<String, String> cityTimeZonesNames = new HashMap<String, String>();
 	TimePicker timePicker;
 	AutoCompleteTextView cityPickerAutoComplete;
 	
@@ -45,7 +45,8 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		this.getCurrentCityLocation();
 		
 		this.initTimePicker();
-		CityDatabaseHelper.getInstance(this).getAllCitiesAsync(this);
+//		CityDatabaseHelper.getInstance(this).getAllCitiesAsync(this);
+		CityDatabaseHelper.getAllCities(this, this);
 		
 		findViewById(R.id.setAlarmButton).setOnClickListener(this);
 	}
@@ -80,7 +81,7 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		if(cityPicked.equals("")) { //User didn't pick a city > Using the current one
 			cityPicked = currentCity;
 			
-			timeZonePicked 	= timeZonesNames.get(cityPicked);
+			timeZonePicked 	= cityTimeZonesNames.get(cityPicked);
 			if(timeZonePicked == null || timeZonePicked.equals("")) { //Current city is not in TZ database > using default TZ and saving new pair city-TZ
 				timeZonePicked = currentTimeZone;
 				
@@ -91,7 +92,7 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 	    	AlarmDatabaseHelper.getInstance(this).saveAlarmAsync(newAlarm, this);
 	    	
 		} else {
-			timeZonePicked 	= timeZonesNames.get(cityPicked);
+			timeZonePicked 	= cityTimeZonesNames.get(cityPicked);
 			
 			if(timeZonePicked == null || timeZonePicked == "") { //City chosen is not in TZ database
 				CityDatabaseHelper.getInstance(this).searchCityByNameAsync(cityPicked, this);
@@ -110,23 +111,6 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		
 		setResult(RESULT_OK, returnIntent);     
 		finish();
-	}
-
-	@Override
-	public void getCities(HashMap<String, String> cities) {
-		
-		timeZonesNames = cities;
-		
-		String[] citiesArray = timeZonesNames.keySet().toArray(new String[timeZonesNames.size()]);
-		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, citiesArray);
-        cityPickerAutoComplete = (AutoCompleteTextView) findViewById(R.id.cityPickerAutoComplete);
-        cityPickerAutoComplete.setAdapter(adapter);
-        if(currentCity != null && currentCity.length() > 0) {
-        	cityPickerAutoComplete.setHint(currentCity +" "+ getString(R.string.by_default));
-        } else {
-        	cityPickerAutoComplete.setHint(R.string.choose_city);
-        }
 	}
 
 	private void getCurrentCityLocation() {		
@@ -177,12 +161,6 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
         }
 	}
 
-	@Override
-	public void addCity(String[] data) {
-		// Nothing to do here
-	}
-	
-	
 	LocationListener locationListener = new LocationListener() {
 
 		@Override
@@ -215,7 +193,28 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 	};
 
 	@Override
-	public void addCityByName(String[] data) {
+	public void onRetrievedAllCities(HashMap<String, String> cities) {	
+		cityTimeZonesNames = cities;
+		
+		String[] citiesArray = cityTimeZonesNames.keySet().toArray(new String[cityTimeZonesNames.size()]);
+		
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, citiesArray);
+        cityPickerAutoComplete = (AutoCompleteTextView) findViewById(R.id.cityPickerAutoComplete);
+        cityPickerAutoComplete.setAdapter(adapter);
+        if(currentCity != null && currentCity.length() > 0) {
+        	cityPickerAutoComplete.setHint(currentCity +" "+ getString(R.string.by_default));
+        } else {
+        	cityPickerAutoComplete.setHint(R.string.choose_city);
+        }
+	}
+
+	@Override
+	public void onAddedCity(String[] data) {
+		// Nothing to do here
+	}
+
+	@Override
+	public void onFoundCityByName(String[] data) {
 		if(data != null) {
 			Alarm newAlarm = new Alarm(timePicker.getCurrentHour(), timePicker.getCurrentMinute(), data[0], data[1]);
 			AlarmDatabaseHelper.getInstance(getApplicationContext()).saveAlarmAsync(newAlarm, this);
@@ -223,9 +222,6 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 			Toast toastAlert = Toast.makeText(this, "City not found, please try again", Toast.LENGTH_LONG);
 			toastAlert.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 180);
 			toastAlert.show();
-		}
-		
-	}
-	
-	
+		}	
+	}	
 }

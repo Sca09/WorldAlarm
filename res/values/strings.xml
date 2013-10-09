@@ -10,5 +10,6 @@
     <string name="set_alarm_text">Set</string>
     <string name="choose_city">Choose City</string>
     <string name="by_default">by default</string>
+    <string name="settings_menu_text">Settings</string>
 
 </resources>

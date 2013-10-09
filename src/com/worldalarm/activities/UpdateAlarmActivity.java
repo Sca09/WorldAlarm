@@ -29,9 +29,9 @@ import com.worldalarm.db.Alarm;
 import com.worldalarm.db.AlarmDatabaseHelper;
 import com.worldalarm.db.CityDatabaseHelper;
 
-public class UpdateAlarmActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.UpdateAlarmListener, CityDatabaseHelper.AllCitiesListener, CityDatabaseHelper.AddCityListener, CityDatabaseHelper.FoundCityByNameListener {
+public class UpdateAlarmActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.UpdateAlarmListener, CityDatabaseHelper.OnRetrievedAllCitiesListener, CityDatabaseHelper.OnAddedCityListener, CityDatabaseHelper.OnFoundCityByNameListener {
 
-	HashMap<String, String> timeZonesNames = new HashMap<String, String>();
+	HashMap<String, String> cityTimeZonesNames = new HashMap<String, String>();
 	TimePicker timePicker;
 	AutoCompleteTextView cityPickerAutoComplete;
 	
@@ -49,7 +49,8 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 		alarm = (Alarm) intent.getSerializableExtra("alamToUpdate");
 		
 		this.initTimePicker();
-		CityDatabaseHelper.getInstance(this).getAllCitiesAsync(this);
+//		CityDatabaseHelper.getInstance(this).getAllCitiesAsync(this);
+		CityDatabaseHelper.getAllCities(this, this);
 		
 		this.getCurrentCityLocation();
 		
@@ -59,7 +60,7 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.update_alarm, menu);
+		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
@@ -90,7 +91,7 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 		if(cityPicked.equals("")) { //User didn't pick a city > Using the current one
 			cityPicked = currentCity;
 			
-			timeZonePicked 	= timeZonesNames.get(cityPicked);
+			timeZonePicked 	= cityTimeZonesNames.get(cityPicked);
 			if(timeZonePicked == null || timeZonePicked.equals("")) { //Current city is not in TZ database > using default TZ and saving new pair city-TZ
 				timeZonePicked = currentTimeZone;
 				
@@ -104,7 +105,7 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 	    	AlarmDatabaseHelper.getInstance(this).updateAlarmAsync(this.alarm, this);
 			
 		} else {
-			timeZonePicked 	= timeZonesNames.get(cityPicked);
+			timeZonePicked 	= cityTimeZonesNames.get(cityPicked);
 			
 			if(timeZonePicked == null || timeZonePicked == "") { //City chosen is not in TZ database
 				CityDatabaseHelper.getInstance(this).searchCityByNameAsync(cityPicked, this);
@@ -128,26 +129,6 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 		finish();
 	}
 
-	@Override
-	public void getCities(HashMap<String, String> cities) {
-		
-		timeZonesNames = cities;
-		
-		String[] citiesArray = timeZonesNames.keySet().toArray(new String[timeZonesNames.size()]);
-		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, citiesArray);
-        cityPickerAutoComplete = (AutoCompleteTextView) findViewById(R.id.cityPickerAutoComplete);
-        cityPickerAutoComplete.setAdapter(adapter);
-        if(currentCity != null && currentCity.length() > 0) {
-        	cityPickerAutoComplete.setHint(currentCity +" "+ getString(R.string.by_default));
-        } else {
-        	cityPickerAutoComplete.setHint(R.string.choose_city);
-        }
-        
-        cityPickerAutoComplete.setText(alarm.getCity());
-        cityPickerAutoComplete.clearFocus();
-	}
-	
 	private void getCurrentCityLocation() {		
 		try {
 			currentTimeZone = TimeZone.getDefault().getID();
@@ -226,14 +207,33 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 		@Override
 		public void onProviderDisabled(String provider) {}
 	};
+	
+	@Override
+	public void onRetrievedAllCities(HashMap<String, String> cities) {
+		cityTimeZonesNames = cities;
+		
+		String[] citiesArray = cityTimeZonesNames.keySet().toArray(new String[cityTimeZonesNames.size()]);
+		
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, citiesArray);
+        cityPickerAutoComplete = (AutoCompleteTextView) findViewById(R.id.cityPickerAutoComplete);
+        cityPickerAutoComplete.setAdapter(adapter);
+        if(currentCity != null && currentCity.length() > 0) {
+        	cityPickerAutoComplete.setHint(currentCity +" "+ getString(R.string.by_default));
+        } else {
+        	cityPickerAutoComplete.setHint(R.string.choose_city);
+        }
+        
+        cityPickerAutoComplete.setText(alarm.getCity());
+        cityPickerAutoComplete.clearFocus();
+	}
 
 	@Override
-	public void addCity(String[] data) {
+	public void onAddedCity(String[] data) {
 		// Nothing to do here
 	}
 
 	@Override
-	public void addCityByName(String[] data) {
+	public void onFoundCityByName(String[] data) {
 		if(data != null) {
 			Alarm alarm = new Alarm(timePicker.getCurrentHour(), timePicker.getCurrentMinute(), data[0], data[1]);
 			this.alarm.setCalendar(alarm.getCalendar());

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
@@ -29,9 +30,7 @@ public class ListAlarmsActivity extends Activity implements View.OnClickListener
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.list_alarms);
-		
-		findViewById(R.id.addAlarmButton).setOnClickListener(this);
-		
+				
 		mCardView = (CardUI) findViewById(R.id.cardsview);
 		mCardView.setSwipeable(true);
 		
@@ -41,19 +40,28 @@ public class ListAlarmsActivity extends Activity implements View.OnClickListener
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.alarms_list, menu);
+		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 	
 	@Override
 	public void onClick(View view) {
 		switch(view.getId()) {
-		case R.id.addAlarmButton:			
+		
+		}		
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_add:			
 			Intent newAlarmIntent = new Intent(this, NewAlarmActivity.class);
 			this.startActivityForResult(newAlarmIntent, REQUEST_CODE_RESOLVE_ERR_NEW_ALARM);
 			
 			break;
-		}		
+		}
+		
+		return true;
 	}
 
 	@Override

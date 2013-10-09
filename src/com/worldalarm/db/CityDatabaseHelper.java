@@ -44,6 +44,16 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
     	
     	return singleton;
     }
+
+    private static HashMap<String, String> citiesSingleton	= null;
+    
+    public synchronized static void getAllCities(Context context, OnRetrievedAllCitiesListener onRetrievedAllCitiesListener) {
+    	if(citiesSingleton == null) {
+    		getInstance(context).getAllCitiesAsync(onRetrievedAllCitiesListener);
+    	} else {
+    		onRetrievedAllCitiesListener.onRetrievedAllCities(citiesSingleton);
+    	}
+    }
     
     private CityDatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -76,31 +86,31 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 		Log.w(CityDatabaseHelper.class.getName(), "Upgrading database from version " + oldVersion + " to "+ newVersion);
 	}
 	
-	public void getAllCitiesAsync(AllCitiesListener allCitiesListener) {
-		GetAllCitiesTask task = new GetAllCitiesTask(allCitiesListener);
+	public void getAllCitiesAsync(OnRetrievedAllCitiesListener onRetrievedAllCitiesListener) {
+		GetAllCitiesTask task = new GetAllCitiesTask(onRetrievedAllCitiesListener);
 		
 		task.execute();
 	}
 	
-	public void addCityAsync(String city, String timeZone, AddCityListener addCityListener) {
-		AddCityTask task = new AddCityTask(addCityListener);
+	public void addCityAsync(String city, String timeZone, OnAddedCityListener onAddedCityListener) {
+		AddCityTask task = new AddCityTask(onAddedCityListener);
 		
 		String[] data = {city, timeZone};
 		task.execute(data);
 	}
 	
-	public void searchCityByNameAsync(String cityName, FoundCityByNameListener foundCityByNameListener) {
-		SearchCityByNameTask task = new SearchCityByNameTask(foundCityByNameListener);
+	public void searchCityByNameAsync(String cityName, OnFoundCityByNameListener onFoundCityByNameListener) {
+		SearchCityByNameTask task = new SearchCityByNameTask(onFoundCityByNameListener);
 		
 		task.execute(cityName);
 	}
 	
 	private class GetAllCitiesTask extends AsyncTask<Void, Void, HashMap<String, String>> {
 
-		private AllCitiesListener allCitiesListener = null;
+		private OnRetrievedAllCitiesListener onRetrievedAllCitiesListener = null;
 		
-		public GetAllCitiesTask(AllCitiesListener allCitiesListener) {
-			this.allCitiesListener = allCitiesListener;
+		public GetAllCitiesTask(OnRetrievedAllCitiesListener onRetrievedAllCitiesListener) {
+			this.onRetrievedAllCitiesListener = onRetrievedAllCitiesListener;
 		}
 		
 		@Override
@@ -120,21 +130,23 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 			}
 			cursor.close();
 			
+			citiesSingleton = cities;
+			
 			return cities;
 		}
 
 		@Override
 		protected void onPostExecute(HashMap<String, String> cities) {
-			this.allCitiesListener.getCities(cities);
+			this.onRetrievedAllCitiesListener.onRetrievedAllCities(cities);
 		}
 	}
 	
 	private class AddCityTask extends AsyncTask<String[], Void, String[]> {
 		
-		private AddCityListener addCityListener = null;
+		private OnAddedCityListener onAddedCityListener = null;
 		
-		public AddCityTask(AddCityListener addCityListener) {
-			this.addCityListener = addCityListener;
+		public AddCityTask(OnAddedCityListener onAddedCityListener) {
+			this.onAddedCityListener = onAddedCityListener;
 		}
 		
 		@Override
@@ -149,16 +161,16 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 		
 		@Override
 		protected void onPostExecute(String[] data) {
-			this.addCityListener.addCity(data);
+			this.onAddedCityListener.onAddedCity(data);
 		}
 	}
 	
 	private class SearchCityByNameTask extends AsyncTask<String, Void, String[]> {
 
-		private FoundCityByNameListener foundCityByNameListener = null;
+		private OnFoundCityByNameListener onFoundCityByNameListener = null;
 		
-		public SearchCityByNameTask(FoundCityByNameListener foundCityByNameListener) {
-			this.foundCityByNameListener = foundCityByNameListener;
+		public SearchCityByNameTask(OnFoundCityByNameListener onFoundCityByNameListener) {
+			this.onFoundCityByNameListener = onFoundCityByNameListener;
 		}
 		
 		@Override
@@ -195,6 +207,8 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 								insertValues.put(COLUMN_NAME_TIME_ZONE, timeZoneId);
 								getWritableDatabase().insert(TABLE_NAME, null, insertValues);
 								
+								citiesSingleton.put(cityLongName, timeZoneId);
+								
 								String[] result = {cityLongName, timeZoneId}; 
 								
 								return result;
@@ -216,20 +230,20 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 		}
 
 		@Override
-		protected void onPostExecute(String[] result) {
-			this.foundCityByNameListener.addCityByName(result);
+		protected void onPostExecute(String[] data) {
+			this.onFoundCityByNameListener.onFoundCityByName(data);
 		}
 	}
 	
-	public interface AllCitiesListener {
-		void getCities(HashMap<String, String> cities);
+	public interface OnRetrievedAllCitiesListener {
+		void onRetrievedAllCities(HashMap<String, String> cities);
 	}
 	
-	public interface AddCityListener {
-		void addCity(String[] data);
+	public interface OnAddedCityListener {
+		void onAddedCity(String[] data);
 	}
 	
-	public interface FoundCityByNameListener {
-		void addCityByName(String[] data);
+	public interface OnFoundCityByNameListener {
+		void onFoundCityByName(String[] data);
 	}
 }
