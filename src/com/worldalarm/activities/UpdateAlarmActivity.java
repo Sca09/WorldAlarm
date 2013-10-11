@@ -30,7 +30,7 @@ import com.worldalarm.db.AlarmDatabaseHelper;
 import com.worldalarm.db.City;
 import com.worldalarm.db.CityDatabaseHelper;
 
-public class UpdateAlarmActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.UpdateAlarmListener, CityDatabaseHelper.OnRetrievedAllCitiesListener, CityDatabaseHelper.OnAddedCityListener, CityDatabaseHelper.OnFoundCityByNameListener {
+public class UpdateAlarmActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.OnUpdatedAlarmListener, CityDatabaseHelper.OnRetrievedAllCitiesListener, CityDatabaseHelper.OnAddedCityListener, CityDatabaseHelper.OnFoundCityByNameListener {
 
 	HashMap<String, City> cityTimeZonesNames = new HashMap<String, City>();
 	TimePicker timePicker;
@@ -114,16 +114,7 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 			}
 		}
 	}
-
-	@Override
-	public void updateAlarm(Alarm alarm) {
-		Intent returnIntent = new Intent();
-		returnIntent.putExtra("alamUpdated", alarm);
-		
-		setResult(RESULT_OK, returnIntent);     
-		finish();
-	}
-
+	
 	private void getCurrentCityLocation() {		
 		try {
 			String currentTimeZoneID = TimeZone.getDefault().getID();
@@ -252,5 +243,14 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 			toastAlert.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 180);
 			toastAlert.show();
 		}
+	}
+
+	@Override
+	public void onUpdatedAlarm(Alarm alarm) {
+		Intent returnIntent = new Intent();
+		returnIntent.putExtra("alamUpdated", alarm);
+		
+		setResult(RESULT_OK, returnIntent);     
+		finish();
 	}
 }

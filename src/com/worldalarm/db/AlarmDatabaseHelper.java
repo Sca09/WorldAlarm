@@ -63,20 +63,20 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
 		Log.w(AlarmDatabaseHelper.class.getName(), "Upgrading database from version " + oldVersion + " to "+ newVersion);
 	}
 
-	public void saveAlarmAsync(Alarm alarm, SaveAlarmListener saveAlarmListener) {
-		SaveAlarmTask task = new SaveAlarmTask(saveAlarmListener);
+	public void saveAlarmAsync(Alarm alarm, OnSavedAlarmListener onSavedAlarmListener) {
+		SaveAlarmTask task = new SaveAlarmTask(onSavedAlarmListener);
 		
 		task.execute(alarm);
 	}
 	
-	public void getAllAlarmsAsync(ArrayAlarmListener arrayAlarmListener) {
-		GetAllAlarmsTask task = new GetAllAlarmsTask(arrayAlarmListener);
+	public void getAllAlarmsAsync(OnRetrievedAllAlarmsListener onRetrievedAllAlarmsListener) {
+		GetAllAlarmsTask task = new GetAllAlarmsTask(onRetrievedAllAlarmsListener);
 		
 		task.execute();
 	}
 	
-	public void updateAlarmAsync(Alarm alarm, UpdateAlarmListener updateAlarmListener) {
-		UpdateAlarmTask task = new UpdateAlarmTask(updateAlarmListener);
+	public void updateAlarmAsync(Alarm alarm, OnUpdatedAlarmListener onUpdatedAlarmListener) {
+		UpdateAlarmTask task = new UpdateAlarmTask(onUpdatedAlarmListener);
 		
 		task.execute(alarm);
 	}
@@ -89,10 +89,10 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
 	
 	private class SaveAlarmTask extends AsyncTask<Alarm, Void, Alarm> {
 		
-		private SaveAlarmListener saveAlarmListener = null;
+		private OnSavedAlarmListener onSavedAlarmListener = null;
 		
-		public SaveAlarmTask(SaveAlarmListener saveAlarmListener) {
-			this.saveAlarmListener = saveAlarmListener;
+		public SaveAlarmTask(OnSavedAlarmListener onSavedAlarmListener) {
+			this.onSavedAlarmListener = onSavedAlarmListener;
 		}
 		
 		@Override
@@ -107,16 +107,16 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
 		
 		@Override
 		protected void onPostExecute(Alarm alarm) {
-			this.saveAlarmListener.saveAlarm(alarm);
+			this.onSavedAlarmListener.onSavedAlarm(alarm);
 		}
 	}
 	
 	private class GetAllAlarmsTask extends AsyncTask<Void, Void, List<Alarm>> {
 
-		private ArrayAlarmListener arrayAlarmListener = null;
+		private OnRetrievedAllAlarmsListener onRetrievedAllAlarmsListener = null;
 		
-		public GetAllAlarmsTask(ArrayAlarmListener arrayAlarmListener) {
-			this.arrayAlarmListener = arrayAlarmListener;
+		public GetAllAlarmsTask(OnRetrievedAllAlarmsListener onRetrievedAllAlarmsListener) {
+			this.onRetrievedAllAlarmsListener = onRetrievedAllAlarmsListener;
 		}
 		
 		@Override
@@ -158,16 +158,16 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
 		
 		@Override
 		protected void onPostExecute(List<Alarm> listAlarm) {
-			this.arrayAlarmListener.setArrayAlarm(listAlarm);
+			this.onRetrievedAllAlarmsListener.onRetrievedAllAlarms(listAlarm);
 		}
 	}
 	
 	private class UpdateAlarmTask extends AsyncTask<Alarm, Void, Alarm> {
 		
-		private UpdateAlarmListener updateAlarmListener = null;
+		private OnUpdatedAlarmListener onUpdatedAlarmListener = null;
 		
-		public UpdateAlarmTask(UpdateAlarmListener updateAlarmListener) {
-			this.updateAlarmListener = updateAlarmListener;
+		public UpdateAlarmTask(OnUpdatedAlarmListener onUpdatedAlarmListener) {
+			this.onUpdatedAlarmListener = onUpdatedAlarmListener;
 		}
 		
 		@Override
@@ -180,7 +180,7 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
 		
 		@Override
 		protected void onPostExecute(Alarm alarm) {
-			this.updateAlarmListener.updateAlarm(alarm);
+			this.onUpdatedAlarmListener.onUpdatedAlarm(alarm);
 		}
 	}
 	
@@ -194,15 +194,15 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
 		}
 	}
 	
-	public interface ArrayAlarmListener {
-		void setArrayAlarm(List<Alarm> listAlarm);
+	public interface OnRetrievedAllAlarmsListener {
+		void onRetrievedAllAlarms(List<Alarm> listAlarm);
 	}
 	
-	public interface SaveAlarmListener {
-		void saveAlarm(Alarm alarm);
+	public interface OnSavedAlarmListener {
+		void onSavedAlarm(Alarm alarm);
 	}
 	
-	public interface UpdateAlarmListener {
-		void updateAlarm(Alarm alarm);
+	public interface OnUpdatedAlarmListener {
+		void onUpdatedAlarm(Alarm alarm);
 	}
 }

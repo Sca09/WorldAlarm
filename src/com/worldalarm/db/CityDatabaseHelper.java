@@ -163,13 +163,15 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 		
 		@Override
 		protected City doInBackground(City... params) {
+			City newCity = params[0];
+			
 			ContentValues insertValues = new ContentValues();
-			insertValues.put(COLUMN_NAME_CITY, params[0].getCityName());
-			insertValues.put(COLUMN_NAME_TIME_ZONE_ID, params[0].getTimeZoneID());
-			insertValues.put(COLUMN_NAME_TIME_ZONE_NAME, params[0].getTimeZoneName());
+			insertValues.put(COLUMN_NAME_CITY, newCity.getCityName());
+			insertValues.put(COLUMN_NAME_TIME_ZONE_ID, newCity.getTimeZoneID());
+			insertValues.put(COLUMN_NAME_TIME_ZONE_NAME, newCity.getTimeZoneName());
 			getWritableDatabase().insert(TABLE_NAME, null, insertValues);
 			
-			return params[0];
+			return newCity;
 		}
 		
 		@Override

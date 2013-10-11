@@ -20,7 +20,7 @@ import com.worldalarm.card.MyCard;
 import com.worldalarm.db.Alarm;
 import com.worldalarm.db.AlarmDatabaseHelper;
 
-public class ListAlarmsActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.ArrayAlarmListener {
+public class ListAlarmsActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.OnRetrievedAllAlarmsListener {
 
 	private CardUI mCardView;
 	private static final int REQUEST_CODE_RESOLVE_ERR_NEW_ALARM = 5000;
@@ -116,9 +116,9 @@ public class ListAlarmsActivity extends Activity implements View.OnClickListener
 			break;
 		}
 	}
-	
+
 	@Override
-	public void setArrayAlarm(List<Alarm> listAlarm) {
+	public void onRetrievedAllAlarms(List<Alarm> listAlarm) {
 		mCardView.clearCards();
 		
 		for(Alarm alarm : listAlarm) {
