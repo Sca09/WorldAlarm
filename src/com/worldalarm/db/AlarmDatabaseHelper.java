@@ -16,8 +16,9 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
 	public static final String TABLE_NAME 					= "alarm";
 	public static final String COLUMN_ID 					= "_id";
 	public static final String COLUMN_NAME_TIME_IN_MILLIS 	= "timeInMillis";
-	public static final String COLUMN_NAME_CITY 			= "city";
-	public static final String COLUMN_NAME_TIME_ZONE 		= "timeZone";
+	public static final String COLUMN_NAME_CITY				= CityDatabaseHelper.COLUMN_NAME_CITY;
+	public static final String COLUMN_NAME_TIME_ZONE_ID		= CityDatabaseHelper.COLUMN_NAME_TIME_ZONE_ID;
+	public static final String COLUMN_NAME_TIME_ZONE_NAME	= CityDatabaseHelper.COLUMN_NAME_TIME_ZONE_NAME;
 	
 	private static final String DATABASE_NAME 		= "alarmset.db";
     private static final int DATABASE_VERSION 		= 1;
@@ -26,7 +27,8 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
     												+ COLUMN_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, "
     												+ COLUMN_NAME_TIME_IN_MILLIS +" INTEGER, "
     												+ COLUMN_NAME_CITY +" TEXT, "
-    												+ COLUMN_NAME_TIME_ZONE +" TEXT);";
+    												+ CityDatabaseHelper.COLUMN_NAME_TIME_ZONE_ID +" TEXT, "
+    												+ CityDatabaseHelper.COLUMN_NAME_TIME_ZONE_NAME +" TEXT);";
 	
     public static final String DATABASE_SELECT_ALL	= "SELECT * FROM "+ TABLE_NAME +";";
     
@@ -142,10 +144,13 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
 		private Alarm cursorToAlarm(Cursor cursor) {
 			long id = cursor.getLong(0);
 			long timeInMillis = cursor.getLong(1);
-			String city = cursor.getString(2);
-			String timeZone = cursor.getString(3);
+			String cityName = cursor.getString(2);
+			String timeZoneID = cursor.getString(3);
+			String timeZoneName = cursor.getString(4);
 			
-			Alarm alarm = new Alarm(timeInMillis, city, timeZone);
+			City city = new City(cityName, timeZoneID, timeZoneName);
+			
+			Alarm alarm = new Alarm(timeInMillis, city);
 			alarm.setId(id);
 			
 			return alarm;

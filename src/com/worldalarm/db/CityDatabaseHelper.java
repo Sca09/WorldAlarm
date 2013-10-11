@@ -23,7 +23,8 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 	public static final String TABLE_NAME 					= "city";
 	public static final String COLUMN_ID 					= "_id";
 	public static final String COLUMN_NAME_CITY 			= "city";
-	public static final String COLUMN_NAME_TIME_ZONE 		= "timeZone";
+	public static final String COLUMN_NAME_TIME_ZONE_ID		= "timeZoneID";
+	public static final String COLUMN_NAME_TIME_ZONE_NAME	= "timeZoneName";
 	
 	private static final String DATABASE_NAME 		= "city.db";
     private static final int DATABASE_VERSION 		= 1;
@@ -31,7 +32,8 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_CREATE		= "CREATE TABLE "+ TABLE_NAME +" (" 
     												+ COLUMN_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, "
     												+ COLUMN_NAME_CITY +" TEXT, "
-    												+ COLUMN_NAME_TIME_ZONE +" TEXT);";
+    												+ COLUMN_NAME_TIME_ZONE_ID +" TEXT, "
+    												+ COLUMN_NAME_TIME_ZONE_NAME +" TEXT);";
 	
     public static final String DATABASE_SELECT_ALL	= "SELECT * FROM "+ TABLE_NAME +";";
     
@@ -45,7 +47,7 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
     	return singleton;
     }
 
-    private static HashMap<String, String> citiesSingleton	= null;
+    private static HashMap<String, City> citiesSingleton	= null;
     
     public synchronized static void getAllCities(Context context, OnRetrievedAllCitiesListener onRetrievedAllCitiesListener) {
     	if(citiesSingleton == null) {
@@ -67,11 +69,18 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 			
 			String[] availableIDs = TimeZone.getAvailableIDs();
 			
+			TimeZone timeZone = null;
+			
+			City city = null;
+			
 			for(String ID : availableIDs) {
 				String cityName = ID.substring(ID.lastIndexOf("/") + 1);
-				ContentValues insertValues = new ContentValues();
-				insertValues.put(COLUMN_NAME_CITY, cityName.replaceAll("_", " "));
-				insertValues.put(COLUMN_NAME_TIME_ZONE, ID);
+				
+				timeZone = TimeZone.getTimeZone(ID);
+				
+				city = new City(cityName.replaceAll("_", " "), ID, timeZone.getDisplayName());
+				
+				ContentValues insertValues = city.getInsertContentValues();
 				db.insert(TABLE_NAME, null, insertValues);
 			}
 			
@@ -92,11 +101,10 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 		task.execute();
 	}
 	
-	public void addCityAsync(String city, String timeZone, OnAddedCityListener onAddedCityListener) {
+	public void addCityAsync(City city, OnAddedCityListener onAddedCityListener) {
 		AddCityTask task = new AddCityTask(onAddedCityListener);
 		
-		String[] data = {city, timeZone};
-		task.execute(data);
+		task.execute(city);
 	}
 	
 	public void searchCityByNameAsync(String cityName, OnFoundCityByNameListener onFoundCityByNameListener) {
@@ -105,7 +113,7 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 		task.execute(cityName);
 	}
 	
-	private class GetAllCitiesTask extends AsyncTask<Void, Void, HashMap<String, String>> {
+	private class GetAllCitiesTask extends AsyncTask<Void, Void, HashMap<String, City>> {
 
 		private OnRetrievedAllCitiesListener onRetrievedAllCitiesListener = null;
 		
@@ -114,17 +122,21 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 		}
 		
 		@Override
-		protected HashMap<String, String> doInBackground(Void... params) {
+		protected HashMap<String, City> doInBackground(Void... params) {
 			
-			HashMap<String, String> cities = new HashMap<String, String>();
+			HashMap<String, City> cities = new HashMap<String, City>();
 			
 			Cursor cursor = getReadableDatabase().rawQuery(DATABASE_SELECT_ALL, null);
 						
 			cursor.moveToFirst();
 			
+			City city = null;
+			
 			while (!cursor.isAfterLast()) {
 				
-				cities.put(cursor.getString(1), cursor.getString(2));
+				city = new City(cursor.getString(1), cursor.getString(2), cursor.getString(3));
+				
+				cities.put(cursor.getString(1), city);
 				
 				cursor.moveToNext();
 			}
@@ -136,12 +148,12 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 		}
 
 		@Override
-		protected void onPostExecute(HashMap<String, String> cities) {
+		protected void onPostExecute(HashMap<String, City> cities) {
 			this.onRetrievedAllCitiesListener.onRetrievedAllCities(cities);
 		}
 	}
 	
-	private class AddCityTask extends AsyncTask<String[], Void, String[]> {
+	private class AddCityTask extends AsyncTask<City, Void, City> {
 		
 		private OnAddedCityListener onAddedCityListener = null;
 		
@@ -150,22 +162,23 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 		}
 		
 		@Override
-		protected String[] doInBackground(String[]... params) {
+		protected City doInBackground(City... params) {
 			ContentValues insertValues = new ContentValues();
-			insertValues.put(COLUMN_NAME_CITY, params[0][0]);
-			insertValues.put(COLUMN_NAME_TIME_ZONE, params[0][1]);
+			insertValues.put(COLUMN_NAME_CITY, params[0].getCityName());
+			insertValues.put(COLUMN_NAME_TIME_ZONE_ID, params[0].getTimeZoneID());
+			insertValues.put(COLUMN_NAME_TIME_ZONE_NAME, params[0].getTimeZoneName());
 			getWritableDatabase().insert(TABLE_NAME, null, insertValues);
 			
 			return params[0];
 		}
 		
 		@Override
-		protected void onPostExecute(String[] data) {
-			this.onAddedCityListener.onAddedCity(data);
+		protected void onPostExecute(City city) {
+			this.onAddedCityListener.onAddedCity(city);
 		}
 	}
 	
-	private class SearchCityByNameTask extends AsyncTask<String, Void, String[]> {
+	private class SearchCityByNameTask extends AsyncTask<String, Void, City> {
 
 		private OnFoundCityByNameListener onFoundCityByNameListener = null;
 		
@@ -174,7 +187,7 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 		}
 		
 		@Override
-		protected String[] doInBackground(String... params) {
+		protected City doInBackground(String... params) {
 			
 			try {
 				URL url = new URL("http://maps.googleapis.com/maps/api/geocode/json?address="+ URLEncoder.encode(params[0], "UTF-8") +"&sensor=false");
@@ -202,16 +215,20 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 							String timeZoneId = jObjectTZ.getString("timeZoneId");
 							
 							if(cityLongName != null && cityLongName.length() > 0 && timeZoneId != null && timeZoneId.length() > 0) {
+								TimeZone timeZone = TimeZone.getTimeZone(timeZoneId);
+								String timeZoneName = timeZone.getDisplayName();
+								
 								ContentValues insertValues = new ContentValues();
 								insertValues.put(COLUMN_NAME_CITY, cityLongName);
-								insertValues.put(COLUMN_NAME_TIME_ZONE, timeZoneId);
+								insertValues.put(COLUMN_NAME_TIME_ZONE_ID, timeZoneId);
+								insertValues.put(COLUMN_NAME_TIME_ZONE_NAME, timeZoneName);
 								getWritableDatabase().insert(TABLE_NAME, null, insertValues);
 								
-								citiesSingleton.put(cityLongName, timeZoneId);
+								City city = new City(cityLongName, timeZoneId, timeZoneName);
 								
-								String[] result = {cityLongName, timeZoneId}; 
+								citiesSingleton.put(cityLongName, city);
 								
-								return result;
+								return city;
 							}
 						} else {
 							//TODO: implement case for more than one city found
@@ -230,20 +247,20 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 		}
 
 		@Override
-		protected void onPostExecute(String[] data) {
-			this.onFoundCityByNameListener.onFoundCityByName(data);
+		protected void onPostExecute(City city) {
+			this.onFoundCityByNameListener.onFoundCityByName(city);
 		}
 	}
 	
 	public interface OnRetrievedAllCitiesListener {
-		void onRetrievedAllCities(HashMap<String, String> cities);
+		void onRetrievedAllCities(HashMap<String, City> cities);
 	}
 	
 	public interface OnAddedCityListener {
-		void onAddedCity(String[] data);
+		void onAddedCity(City city);
 	}
 	
 	public interface OnFoundCityByNameListener {
-		void onFoundCityByName(String[] data);
+		void onFoundCityByName(City city);
 	}
 }

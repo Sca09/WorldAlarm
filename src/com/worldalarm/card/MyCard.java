@@ -21,7 +21,7 @@ public class MyCard extends Card {
 	public View getCardContent(Context context) {
 		View view = LayoutInflater.from(context).inflate(R.layout.card_ex, null);
 
-		((TextView) view.findViewById(R.id.alarmInfo)).setText(alarm.getCity() +" - "+ alarm.toString());
+		((TextView) view.findViewById(R.id.alarmInfo)).setText(alarm.getCity().getCityName() +" - "+ alarm.toString());
 		((TextView) view.findViewById(R.id.alarmInfoLocal)).setText("Local date - "+ alarm.getLocalDate());
 		
 		return view;
