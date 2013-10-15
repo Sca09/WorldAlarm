@@ -37,6 +37,8 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 	
     public static final String DATABASE_SELECT_ALL	= "SELECT * FROM "+ TABLE_NAME +";";
     
+//    public static final String DATABASE_SELECT_TIME_ZONES	= "SELECT DISTINCT("+ COLUMN_NAME_TIME_ZONE_NAME +") FROM "+ TABLE_NAME +";";
+    
     private static CityDatabaseHelper singleton 	= null;
     
     public synchronized static CityDatabaseHelper getInstance(Context context) {
@@ -111,6 +113,12 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 		SearchCityByNameTask task = new SearchCityByNameTask(onFoundCityByNameListener);
 		
 		task.execute(cityName);
+	}
+	
+	public void getTimeZoneNamesAsync(OnRetrievedTimeZoneNamesListener onRetrievedTimeZoneNamesListener) {
+		GetTimeZoneNamesTask task = new GetTimeZoneNamesTask(onRetrievedTimeZoneNamesListener);
+		
+		task.execute();
 	}
 	
 	private class GetAllCitiesTask extends AsyncTask<Void, Void, HashMap<String, City>> {
@@ -254,6 +262,42 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 		}
 	}
 	
+	private class GetTimeZoneNamesTask extends AsyncTask<Void, Void, String[]> {
+
+		OnRetrievedTimeZoneNamesListener onRetrievedTimeZoneNamesListener = null;
+		
+		public GetTimeZoneNamesTask(OnRetrievedTimeZoneNamesListener onRetrievedTimeZoneNamesListener) {
+			this.onRetrievedTimeZoneNamesListener = onRetrievedTimeZoneNamesListener;
+		}
+		
+		@Override
+		protected String[] doInBackground(Void... params) {
+			
+			String[] timeZoneNames;
+			
+			Cursor cursor = getReadableDatabase().query(true, TABLE_NAME, new String[] {COLUMN_NAME_TIME_ZONE_NAME}, null, null, COLUMN_NAME_TIME_ZONE_NAME, null, null, null);
+			
+			timeZoneNames = new String[cursor.getCount()];
+			
+			cursor.moveToFirst();
+			
+			while (!cursor.isAfterLast()) {
+				
+				timeZoneNames[cursor.getPosition()] = cursor.getString(0);
+				
+				cursor.moveToNext();
+			}
+			cursor.close();
+			
+			return timeZoneNames;
+		}
+
+		@Override
+		protected void onPostExecute(String[] timeZoneNames) {
+			this.onRetrievedTimeZoneNamesListener.onRetrievedTimeZoneNames(timeZoneNames);
+		}
+	}
+	
 	public interface OnRetrievedAllCitiesListener {
 		void onRetrievedAllCities(HashMap<String, City> cities);
 	}
@@ -264,5 +308,9 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 	
 	public interface OnFoundCityByNameListener {
 		void onFoundCityByName(City city);
+	}
+	
+	public interface OnRetrievedTimeZoneNamesListener {
+		void onRetrievedTimeZoneNames(String[] timeZoneNames);
 	}
 }

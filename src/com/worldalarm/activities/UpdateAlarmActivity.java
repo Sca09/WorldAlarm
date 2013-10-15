@@ -29,6 +29,8 @@ import com.worldalarm.db.Alarm;
 import com.worldalarm.db.AlarmDatabaseHelper;
 import com.worldalarm.db.City;
 import com.worldalarm.db.CityDatabaseHelper;
+import com.worldalarm.db.TimeZoneDatabaseHelper;
+import com.worldalarm.db.TimeZoneDatabaseHelper.OnAddedTimeZoneListener;
 
 public class UpdateAlarmActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.OnUpdatedAlarmListener, CityDatabaseHelper.OnRetrievedAllCitiesListener, CityDatabaseHelper.OnAddedCityListener, CityDatabaseHelper.OnFoundCityByNameListener {
 
@@ -247,6 +249,15 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 
 	@Override
 	public void onUpdatedAlarm(Alarm alarm) {
+		TimeZoneDatabaseHelper.getInstance(this).addTimeZoneAsync(alarm.getCity().getTimeZoneName(), new OnAddedTimeZoneListener() {
+			
+			@Override
+			public void OnAddedTimeZone(List<String> listTimeZones) {
+				// nothing to do here
+				
+			}
+		});
+		
 		Intent returnIntent = new Intent();
 		returnIntent.putExtra("alamUpdated", alarm);
 		

@@ -31,7 +31,7 @@ public class TimeZoneDatabaseHelper extends SQLiteOpenHelper {
     
     public synchronized static TimeZoneDatabaseHelper getInstance(Context context) {
     	if(singleton == null) {
-    		singleton = new TimeZoneDatabaseHelper(context.getApplicationContext());
+    		singleton = new TimeZoneDatabaseHelper(context);
     	}
     	
     	return singleton;
@@ -111,6 +111,8 @@ public class TimeZoneDatabaseHelper extends SQLiteOpenHelper {
 			
 			while (!cursor.isAfterLast()) {
 				listTimeZones.add(cursor.getString(1));
+				
+				cursor.moveToNext();
 			}
 			cursor.close();
 			

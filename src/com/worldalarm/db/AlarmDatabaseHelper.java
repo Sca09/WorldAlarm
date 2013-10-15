@@ -75,6 +75,12 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
 		task.execute();
 	}
 	
+	public void getAllAlarmsByTZName(String timeZoneName, OnRetrievedAllAlarmsByTZNameListener onRetrievedAllAlarmsByTZNameListener) {
+		GetAllAlarmsByTZNameTask task = new GetAllAlarmsByTZNameTask(onRetrievedAllAlarmsByTZNameListener);
+		
+		task.execute(timeZoneName);
+	}
+	
 	public void updateAlarmAsync(Alarm alarm, OnUpdatedAlarmListener onUpdatedAlarmListener) {
 		UpdateAlarmTask task = new UpdateAlarmTask(onUpdatedAlarmListener);
 		
@@ -162,6 +168,60 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
 		}
 	}
 	
+	private class GetAllAlarmsByTZNameTask extends AsyncTask<String, Void, List<Alarm>> {
+
+		private OnRetrievedAllAlarmsByTZNameListener onRetrievedAllAlarmsByTZNameListener = null;
+		
+		public GetAllAlarmsByTZNameTask(OnRetrievedAllAlarmsByTZNameListener onRetrievedAllAlarmsByTZNameListener) {
+			this.onRetrievedAllAlarmsByTZNameListener = onRetrievedAllAlarmsByTZNameListener;
+		}
+		
+		@Override
+		protected List<Alarm> doInBackground(String... params) {
+			
+			List<Alarm> listAlarm = new ArrayList<Alarm>();
+			
+			String selection = COLUMN_NAME_TIME_ZONE_NAME +"= ?";
+			String[] selectionArgs = {params[0]};
+			
+			Cursor cursor = getReadableDatabase().query(false, TABLE_NAME, null, selection, selectionArgs, null, null, null, null);
+						
+			cursor.moveToFirst();
+			
+			while (!cursor.isAfterLast()) {
+				
+				Alarm alarm = cursorToAlarm(cursor);
+				
+				listAlarm.add(alarm);
+				
+				cursor.moveToNext();
+			}
+			cursor.close();
+			
+			return listAlarm;
+		}
+
+		private Alarm cursorToAlarm(Cursor cursor) {
+			long id = cursor.getLong(0);
+			long timeInMillis = cursor.getLong(1);
+			String cityName = cursor.getString(2);
+			String timeZoneID = cursor.getString(3);
+			String timeZoneName = cursor.getString(4);
+			
+			City city = new City(cityName, timeZoneID, timeZoneName);
+			
+			Alarm alarm = new Alarm(timeInMillis, city);
+			alarm.setId(id);
+			
+			return alarm;
+		}
+		
+		@Override
+		protected void onPostExecute(List<Alarm> listAlarm) {
+			this.onRetrievedAllAlarmsByTZNameListener.onRetrievedAllAlarmsByTZName(listAlarm);
+		}
+	}
+	
 	private class UpdateAlarmTask extends AsyncTask<Alarm, Void, Alarm> {
 		
 		private OnUpdatedAlarmListener onUpdatedAlarmListener = null;
@@ -196,6 +256,10 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
 	
 	public interface OnRetrievedAllAlarmsListener {
 		void onRetrievedAllAlarms(List<Alarm> listAlarm);
+	}
+	
+	public interface OnRetrievedAllAlarmsByTZNameListener {
+		void onRetrievedAllAlarmsByTZName(List<Alarm> listAlarm);
 	}
 	
 	public interface OnSavedAlarmListener {
