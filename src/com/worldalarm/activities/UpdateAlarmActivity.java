@@ -56,6 +56,7 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 		CityDatabaseHelper.getAllCities(this, this);
 		
 		findViewById(R.id.setAlarmButton).setOnClickListener(this);
+		findViewById(R.id.cancelButton).setOnClickListener(this);
 	}
 
 	@Override
@@ -70,6 +71,10 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 		switch(view.getId()) {
 		case R.id.setAlarmButton:			
 			this.updateAlarm(view);
+			break;
+		
+		case R.id.cancelButton:
+			finish();
 			break;
 		}
 	}

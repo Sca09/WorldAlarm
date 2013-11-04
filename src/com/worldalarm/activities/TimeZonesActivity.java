@@ -17,11 +17,7 @@ import android.widget.SimpleAdapter;
 
 import com.worldalarm.R;
 import com.worldalarm.db.Alarm;
-import com.worldalarm.db.CityDatabaseHelper;
-import com.worldalarm.db.CityDatabaseHelper.OnRetrievedTimeZoneNamesListener;
 import com.worldalarm.db.TimeZoneDatabaseHelper;
-import com.worldalarm.fragments.TimeZonesDialogFragment;
-import com.worldalarm.fragments.TimeZonesDialogFragment.OnAddTimeZoneListener;
 
 public class TimeZonesActivity extends FragmentActivity implements View.OnClickListener, TimeZoneDatabaseHelper.OnRetrievedAllTimeZonesListener, TimeZoneDatabaseHelper.OnAddedTimeZoneListener {
 
@@ -36,8 +32,8 @@ public class TimeZonesActivity extends FragmentActivity implements View.OnClickL
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.time_zones);
 		
-		findViewById(R.id.NewAlarmButton).setOnClickListener(this);
-		findViewById(R.id.NewTimeZoneButton).setOnClickListener(this);
+//		findViewById(R.id.NewAlarmButton).setOnClickListener(this);
+//		findViewById(R.id.NewTimeZoneButton).setOnClickListener(this);
 		
 		TimeZoneDatabaseHelper.getAllTimeZones(getApplicationContext(), this);
 	}
@@ -58,36 +54,36 @@ public class TimeZonesActivity extends FragmentActivity implements View.OnClickL
 	@Override
 	public void onClick(View view) {
 		switch(view.getId()) {
-		case R.id.NewAlarmButton:
-			Intent newAlarmIntent = new Intent(this, NewAlarmActivity.class);
-			this.startActivityForResult(newAlarmIntent, REQUEST_CODE_RESOLVE_ERR_NEW_ALARM);
-			break;
-			
-		case R.id.NewTimeZoneButton:
-			
-			CityDatabaseHelper.getInstance(this).getTimeZoneNamesAsync(new OnRetrievedTimeZoneNamesListener() {
-				
-				@Override
-				public void onRetrievedTimeZoneNames(final String[] timeZoneNames) {
-					
-					TimeZonesDialogFragment fragment = new TimeZonesDialogFragment();
-					
-					fragment.setOnAddTimeZoneListener(new OnAddTimeZoneListener() {
-						
-						@Override
-						public Bundle getBundle() {
-							Bundle bundle = new Bundle();
-							bundle.putStringArray("timeZones", timeZoneNames);
-							
-							return bundle;
-						}
-					});
-					
-					fragment.show(getSupportFragmentManager(), "timeZones");
-				}
-			});
-			
-			break;
+//		case R.id.NewAlarmButton:
+//			Intent newAlarmIntent = new Intent(this, NewAlarmActivity.class);
+//			this.startActivityForResult(newAlarmIntent, REQUEST_CODE_RESOLVE_ERR_NEW_ALARM);
+//			break;
+//			
+//		case R.id.NewTimeZoneButton:
+//			
+//			CityDatabaseHelper.getInstance(this).getTimeZoneNamesAsync(new OnRetrievedTimeZoneNamesListener() {
+//				
+//				@Override
+//				public void onRetrievedTimeZoneNames(final String[] timeZoneNames) {
+//					
+//					TimeZonesDialogFragment fragment = new TimeZonesDialogFragment();
+//					
+//					fragment.setOnAddTimeZoneListener(new OnAddTimeZoneListener() {
+//						
+//						@Override
+//						public Bundle getBundle() {
+//							Bundle bundle = new Bundle();
+//							bundle.putStringArray("timeZones", timeZoneNames);
+//							
+//							return bundle;
+//						}
+//					});
+//					
+//					fragment.show(getSupportFragmentManager(), "timeZones");
+//				}
+//			});
+//			
+//			break;
 		}
 	}
 

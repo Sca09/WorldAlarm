@@ -26,12 +26,51 @@
         android:layout_below="@+id/cityPickerAutoComplete"
         android:layout_centerHorizontal="true" />
 
-    <Button
-        android:id="@+id/setAlarmButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/alarmPicker"
+    <RelativeLayout
+        android:id="@+id/buttonsPanel"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
         android:layout_below="@+id/alarmPicker"
-        android:text="@string/set_alarm_text" />
+        android:layout_centerHorizontal="true" >
+
+        <View
+            android:id="@+id/ViewColorPickerHelper"
+            android:layout_width="1dip"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:background="?android:attr/dividerVertical" />
+
+        <Button
+            android:id="@+id/setAlarmButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@id/ViewColorPickerHelper"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="@string/set_alarm_text" />
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/ViewColorPickerHelper"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="@string/cancel_text" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/ViewColorPickerHelper"
+            android:background="?android:attr/dividerVertical" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -1,8 +1,9 @@
 package com.worldalarm.activities;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,20 +12,21 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 
-import com.fima.cardsui.views.CardUI;
 import com.worldalarm.R;
-import com.worldalarm.card.MyCard;
 import com.worldalarm.db.Alarm;
-import com.worldalarm.db.AlarmDatabaseHelper;
+import com.worldalarm.db.CityDatabaseHelper;
+import com.worldalarm.db.CityDatabaseHelper.OnRetrievedTimeZoneNamesListener;
 import com.worldalarm.db.TimeZoneDatabaseHelper;
+import com.worldalarm.db.TimeZoneDatabaseHelper.OnAddedTimeZoneListener;
+import com.worldalarm.fragments.AllAlarmsFragment;
+import com.worldalarm.fragments.TZAlarmsFragment;
+import com.worldalarm.fragments.TimeZonesDialogFragment;
+import com.worldalarm.fragments.TimeZonesDialogFragment.OnAddTimeZoneListener;
 
-public class ListAlarmsSwipeViewActivity extends FragmentActivity {
+public class ListAlarmsSwipeViewActivity extends FragmentActivity implements View.OnClickListener, TimeZonesDialogFragment.NewTimeZoneListener {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -44,6 +46,9 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 	private static final int REQUEST_CODE_RESOLVE_ERR_NEW_ALARM = 5000;
 	private static final int REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM = 6000;
 	
+	public static final String ARG_SECTION_NAME = "section_name";
+	public static final String ARG_LIST_ALARMS = "list_alarms";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -57,13 +62,8 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		
-		Intent intent = getIntent();
-		
-		String timeZoneSelected = intent.getStringExtra("timeZoneSelected");
-		
-		int tzSelectedPosition = mSectionsPagerAdapter.getListTimeZones().lastIndexOf(timeZoneSelected);
-
-		mViewPager.setCurrentItem(tzSelectedPosition);
+		findViewById(R.id.NewAlarmButton).setOnClickListener(this);
+		findViewById(R.id.NewTimeZoneButton).setOnClickListener(this);
 	}
 
 	@Override
@@ -73,6 +73,85 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 		return true;
 	}
 	
+	@Override
+	public void onClick(View view) {
+		switch(view.getId()) {
+		case R.id.NewAlarmButton:
+			Intent newAlarmIntent = new Intent(this, NewAlarmActivity.class);
+			this.startActivityForResult(newAlarmIntent, REQUEST_CODE_RESOLVE_ERR_NEW_ALARM);
+			break;
+			
+		case R.id.NewTimeZoneButton:
+			
+			CityDatabaseHelper.getInstance(this).getTimeZoneNamesAsync(new OnRetrievedTimeZoneNamesListener() {
+				
+				@Override
+				public void onRetrievedTimeZoneNames(final String[] timeZoneNames) {
+					
+					TimeZonesDialogFragment fragment = new TimeZonesDialogFragment();
+					
+					fragment.setOnAddTimeZoneListener(new OnAddTimeZoneListener() {
+						
+						@Override
+						public Bundle getBundle() {
+							Bundle bundle = new Bundle();
+							bundle.putStringArray("timeZones", timeZoneNames);
+							
+							return bundle;
+						}
+					});
+					
+					fragment.show(getSupportFragmentManager().beginTransaction(), "timeZones");
+				}
+			});
+			
+			break;
+		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case REQUEST_CODE_RESOLVE_ERR_NEW_ALARM:
+			if (resultCode == RESULT_OK) {
+				mViewPager.getAdapter().notifyDataSetChanged();
+				
+				Alarm newAlarm = (Alarm) data.getSerializableExtra("newAlarm");
+				
+				String timeZoneSelected = newAlarm.getCity().getTimeZoneName();
+				openTab(timeZoneSelected);
+			}
+			break;
+			
+		case REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM:
+			if (resultCode == Activity.RESULT_OK) {
+				mViewPager.getAdapter().notifyDataSetChanged();
+				
+				Alarm alamUpdated = (Alarm) data.getSerializableExtra("alamUpdated");
+				
+				String timeZoneSelected = alamUpdated.getCity().getTimeZoneName();
+				openTab(timeZoneSelected);
+			}
+			break;
+		}
+	}
+
+	@Override
+	public void addTimeZone(final String timeZone) {
+		TimeZoneDatabaseHelper.getInstance(this).addTimeZoneAsync(timeZone, new OnAddedTimeZoneListener() {
+			
+			@Override
+			public void OnAddedTimeZone(List<String> listTimeZones) {
+				mViewPager.getAdapter().notifyDataSetChanged();
+				openTab(timeZone);
+			}
+		});
+	}
+	
+	private void openTab(String timeZoneSelected) {
+		int tzSelectedPosition = mSectionsPagerAdapter.getListTimeZones().lastIndexOf(timeZoneSelected);
+		mViewPager.setCurrentItem(tzSelectedPosition + 1);
+	}
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -80,8 +159,8 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 	 */
 	public class SectionsPagerAdapter extends FragmentStatePagerAdapter implements TimeZoneDatabaseHelper.OnRetrievedAllTimeZonesListener {
 
-		List<String> listTimeZones;
-
+		List<String> listTimeZones = new ArrayList<String>();
+		
 		public SectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
 			
@@ -90,17 +169,23 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 
 		@Override
 		public Fragment getItem(int position) {
-			Fragment fragment = new SectionFragment();
-			Bundle args = new Bundle();
-			args.putString(SectionFragment.ARG_SECTION_NAME, listTimeZones.get(position));
-			fragment.setArguments(args);
-			return fragment;
+			
+			if(position == 0) {
+				Fragment fragment = new AllAlarmsFragment();
+				return fragment;
+			} else {
+				Fragment fragment = new TZAlarmsFragment();
+				Bundle args = new Bundle();
+				args.putString(TZAlarmsFragment.ARG_SECTION_NAME, listTimeZones.get(position - 1));
+				fragment.setArguments(args);
+				return fragment;
+			}
 		}
 		
 		@Override
 		public int getItemPosition(Object object) {
 			
-			SectionFragment fragment = (SectionFragment) object;
+			Fragment fragment = (Fragment) object;
 			
 			fragment.getActivity();
 			
@@ -109,17 +194,22 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 
 		@Override
 		public int getCount() {
-			return listTimeZones.size();
+			return listTimeZones.size() + 1;
 		}
 
 		@Override
 		public CharSequence getPageTitle(int position) {
-			return listTimeZones.get(position);
+			if(position == 0) {
+				return "All Alarms";
+			} else {
+				return listTimeZones.get(position - 1);
+			}
 		}
 
 		@Override
 		public void OnRetrievedAllTimeZones(List<String> listTimeZones) {
 			this.listTimeZones = listTimeZones;
+			notifyDataSetChanged();
 		}
 		
 		public List<String> getListTimeZones() {
@@ -128,89 +218,7 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 
 		public void setListTimeZones(List<String> listTimeZones) {
 			this.listTimeZones = listTimeZones;
+			notifyDataSetChanged();
 		}
-	}
-
-	public static class SectionFragment extends Fragment implements AlarmDatabaseHelper.OnRetrievedAllAlarmsByTZNameListener {
-		/**
-		 * The fragment argument representing the section number for this
-		 * fragment.
-		 */
-		public static final String ARG_SECTION_NAME = "section_name";
-		public static final String ARG_LIST_ALARMS = "list_alarms";
-		
-		private CardUI mCardView;
-		private ViewPager mViewPager;
-		private SectionsPagerAdapter mAdapter;
-		
-		public SectionFragment() {
-		}
-		
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-			View rootView = inflater.inflate(
-					R.layout.fragment_list_alarms_swipe_view, container,
-					false);
-			
-			mViewPager = (ViewPager) container;
-			mAdapter = (SectionsPagerAdapter) mViewPager.getAdapter();
-			
-			mCardView = (CardUI) rootView.findViewById(R.id.cardsview);
-			mCardView.setSwipeable(false);
-			mCardView.clearCards();
-			
-			String tzSelected = getArguments().getString(ARG_SECTION_NAME);
-			
-			AlarmDatabaseHelper.getInstance(getActivity()).getAllAlarmsByTZName(tzSelected, this);
-				
-			return rootView;
-		}
-
-		@Override
-		public void onActivityResult(int requestCode, int resultCode, final Intent data) {
-			switch (requestCode) {
-			case REQUEST_CODE_RESOLVE_ERR_NEW_ALARM:				
-				break;
-				
-			case REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM:
-				if (resultCode == RESULT_OK) {
-					mAdapter.notifyDataSetChanged();
-					
-					Alarm alamUpdated = (Alarm) data.getSerializableExtra("alamUpdated");
-					int openTab = mAdapter.getListTimeZones().lastIndexOf(alamUpdated.getCity().getTimeZoneName());
-					mViewPager.setCurrentItem(openTab);
-					
-					String tzSelected = getArguments().getString(ARG_SECTION_NAME);
-					
-					AlarmDatabaseHelper.getInstance(getActivity()).getAllAlarmsByTZName(tzSelected, this);
-				}
-				break;	
-			}
-		}
-
-		@Override
-		public void onRetrievedAllAlarmsByTZName(List<Alarm> listAlarm) {
-			mCardView.clearCards();
-			
-			for(Alarm alarm : listAlarm) {
-				String tzSelected = getArguments().getString(ARG_SECTION_NAME);
-				
-				if(alarm != null && alarm.getCity().getTimeZoneName().equalsIgnoreCase(tzSelected)) {
-					final MyCard newCard = new MyCard(alarm);
-					newCard.setOnClickListener(new OnClickListener() {
-						
-						public void onClick(View v) {
-							Intent intent = new Intent(v.getContext(), UpdateAlarmActivity.class);
-							intent.putExtra("alamToUpdate", newCard.getAlarm());					
-							startActivityForResult(intent, REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM);
-						}
-					});
-					
-					mCardView.addCard(newCard);
-				} 
-			}
-			
-			mCardView.refresh();
-		}
-	}
+	}	
 }

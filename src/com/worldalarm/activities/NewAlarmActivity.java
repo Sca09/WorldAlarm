@@ -50,6 +50,7 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		CityDatabaseHelper.getAllCities(this, this);
 		
 		findViewById(R.id.setAlarmButton).setOnClickListener(this);
+		findViewById(R.id.cancelButton).setOnClickListener(this);
 	}
 
 	private void initTimePicker() {
@@ -69,6 +70,10 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		switch(view.getId()) {
 		case R.id.setAlarmButton:			
 			this.setAlarm(view);
+			break;
+			
+		case R.id.cancelButton:
+			finish();
 			break;
 		}
 	}
