@@ -13,18 +13,16 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.worldalarm.R;
 import com.worldalarm.db.Alarm;
-import com.worldalarm.db.CityDatabaseHelper;
-import com.worldalarm.db.CityDatabaseHelper.OnRetrievedTimeZoneNamesListener;
 import com.worldalarm.db.TimeZoneDatabaseHelper;
 import com.worldalarm.db.TimeZoneDatabaseHelper.OnAddedTimeZoneListener;
 import com.worldalarm.fragments.AllAlarmsFragment;
 import com.worldalarm.fragments.TZAlarmsFragment;
 import com.worldalarm.fragments.TimeZonesDialogFragment;
-import com.worldalarm.fragments.TimeZonesDialogFragment.OnAddTimeZoneListener;
 
 public class ListAlarmsSwipeViewActivity extends FragmentActivity implements View.OnClickListener, TimeZonesDialogFragment.NewTimeZoneListener {
 
@@ -62,8 +60,8 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity implements Vie
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		
-		findViewById(R.id.NewAlarmButton).setOnClickListener(this);
-		findViewById(R.id.NewTimeZoneButton).setOnClickListener(this);
+//		findViewById(R.id.NewAlarmButton).setOnClickListener(this);
+//		findViewById(R.id.NewTimeZoneButton).setOnClickListener(this);
 	}
 
 	@Override
@@ -75,38 +73,51 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity implements Vie
 	
 	@Override
 	public void onClick(View view) {
-		switch(view.getId()) {
-		case R.id.NewAlarmButton:
+//		switch(view.getId()) {
+//		case R.id.NewAlarmButton:
+//			Intent newAlarmIntent = new Intent(this, NewAlarmActivity.class);
+//			this.startActivityForResult(newAlarmIntent, REQUEST_CODE_RESOLVE_ERR_NEW_ALARM);
+//			break;
+//			
+//		case R.id.NewTimeZoneButton:
+//			
+//			CityDatabaseHelper.getInstance(this).getTimeZoneNamesAsync(new OnRetrievedTimeZoneNamesListener() {
+//				
+//				@Override
+//				public void onRetrievedTimeZoneNames(final String[] timeZoneNames) {
+//					
+//					TimeZonesDialogFragment fragment = new TimeZonesDialogFragment();
+//					
+//					fragment.setOnAddTimeZoneListener(new OnAddTimeZoneListener() {
+//						
+//						@Override
+//						public Bundle getBundle() {
+//							Bundle bundle = new Bundle();
+//							bundle.putStringArray("timeZones", timeZoneNames);
+//							
+//							return bundle;
+//						}
+//					});
+//					
+//					fragment.show(getSupportFragmentManager().beginTransaction(), "timeZones");
+//				}
+//			});
+//			
+//			break;
+//		}
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_add:			
 			Intent newAlarmIntent = new Intent(this, NewAlarmActivity.class);
 			this.startActivityForResult(newAlarmIntent, REQUEST_CODE_RESOLVE_ERR_NEW_ALARM);
-			break;
-			
-		case R.id.NewTimeZoneButton:
-			
-			CityDatabaseHelper.getInstance(this).getTimeZoneNamesAsync(new OnRetrievedTimeZoneNamesListener() {
-				
-				@Override
-				public void onRetrievedTimeZoneNames(final String[] timeZoneNames) {
-					
-					TimeZonesDialogFragment fragment = new TimeZonesDialogFragment();
-					
-					fragment.setOnAddTimeZoneListener(new OnAddTimeZoneListener() {
-						
-						@Override
-						public Bundle getBundle() {
-							Bundle bundle = new Bundle();
-							bundle.putStringArray("timeZones", timeZoneNames);
-							
-							return bundle;
-						}
-					});
-					
-					fragment.show(getSupportFragmentManager().beginTransaction(), "timeZones");
-				}
-			});
 			
 			break;
 		}
+		
+		return true;
 	}
 	
 	@Override

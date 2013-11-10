@@ -118,6 +118,22 @@ public class Alarm implements Serializable {
 	}
 	
 	@SuppressLint("SimpleDateFormat")
+	public String getHour() {
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+		sdf.setTimeZone(TimeZone.getTimeZone(city.getTimeZoneID()));
+		
+		return sdf.format(calendar.getTime());
+	}
+	
+	@SuppressLint("SimpleDateFormat")
+	public String getDate() {
+		SimpleDateFormat sdf = new SimpleDateFormat("MMM d");
+		sdf.setTimeZone(TimeZone.getTimeZone(city.getTimeZoneID()));
+		
+		return sdf.format(calendar.getTime());
+	}
+	
+	@SuppressLint("SimpleDateFormat")
 	public String getLocalDate() {
 //		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
 		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a, MMM d");
@@ -129,6 +145,34 @@ public class Alarm implements Serializable {
 			calendar.add(Calendar.DAY_OF_MONTH, 1);
 		}
 
+		return sdf.format(calendar.getTime());
+	}
+	
+	@SuppressLint("SimpleDateFormat")
+	public String getHourLocal() {
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(this.calendar.getTimeInMillis());
+		
+		if(calendar.before(Calendar.getInstance())) {
+			calendar.add(Calendar.DAY_OF_MONTH, 1);
+		}
+		
+		return sdf.format(calendar.getTime());
+	}
+	
+	@SuppressLint("SimpleDateFormat")
+	public String getDateLocal() {
+		SimpleDateFormat sdf = new SimpleDateFormat("MMM d");
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(this.calendar.getTimeInMillis());
+		
+		if(calendar.before(Calendar.getInstance())) {
+			calendar.add(Calendar.DAY_OF_MONTH, 1);
+		}
+		
 		return sdf.format(calendar.getTime());
 	}
 	

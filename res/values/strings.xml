@@ -4,6 +4,7 @@
     <string name="app_name">WorldAlarm</string>
     <string name="new_alarm_text">New Alarm</string>
     <string name="new_time_zone_text">New Time Zone</string>
+    <string name="go_home">To Home</string>
     <string name="set_alarm_text">Set</string>
     <string name="cancel_text">Cancel</string>
     <string name="choose_city">Choose City</string>

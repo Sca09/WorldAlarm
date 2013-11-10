@@ -2,18 +2,17 @@ package com.worldalarm.fragments;
 
 import java.util.List;
 
-import android.content.Intent;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 
-import com.fima.cardsui.views.CardUI;
 import com.worldalarm.R;
-import com.worldalarm.activities.UpdateAlarmActivity;
-import com.worldalarm.card.MyCard;
+import com.worldalarm.adapters.AlarmAdapter;
 import com.worldalarm.db.Alarm;
 import com.worldalarm.db.AlarmDatabaseHelper;
 import com.worldalarm.db.AlarmDatabaseHelper.OnRetrievedAllAlarmsByTZNameListener;
@@ -25,18 +24,15 @@ public class TZAlarmsFragment extends Fragment implements OnRetrievedAllAlarmsBy
 	public static final String ARG_SECTION_NAME = "section_name";
 	public static final String ARG_LIST_ALARMS = "list_alarms";
 
-	private CardUI mCardView;
-	
-	private static final int REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM = 6000;
+	RelativeLayout rootView;
+	private ListView listAlarms;
+	private Activity activity;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_list_alarms_swipe_view, container, false);
-
-		mCardView = (CardUI) rootView.findViewById(R.id.cardsview);
-		mCardView.setSwipeable(false);
-		mCardView.clearCards();
-
+		
+		rootView = (RelativeLayout)inflater.inflate(R.layout.list_alarms, container, false);
+		
 		String tzSelected = getArguments().getString(ARG_SECTION_NAME);
 
 		AlarmDatabaseHelper.getInstance(getActivity()).getAllAlarmsByTZName(tzSelected, this);
@@ -44,28 +40,35 @@ public class TZAlarmsFragment extends Fragment implements OnRetrievedAllAlarmsBy
 		return rootView;
 	}
 
+	
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		this.activity = activity;
+	}
+	
+	
 	@Override
 	public void onRetrievedAllAlarmsByTZName(List<Alarm> listAlarm) {
-		mCardView.clearCards();
-
-		for (Alarm alarm : listAlarm) {
-			String tzSelected = getArguments().getString(ARG_SECTION_NAME);
-
-			if (alarm != null && alarm.getCity().getTimeZoneName().equalsIgnoreCase(tzSelected)) {
-				final MyCard newCard = new MyCard(alarm);
-				newCard.setOnClickListener(new OnClickListener() {
-
-					public void onClick(View v) {
-						Intent intent = new Intent(v.getContext(), UpdateAlarmActivity.class);
-						intent.putExtra("alamToUpdate", newCard.getAlarm());
-						getActivity().startActivityForResult(intent, REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM);
-					}
-				});
-
-				mCardView.addCard(newCard);
-			}
+		
+		Alarm[] data = new Alarm[listAlarm.size()];
+		
+		int i = 0;
+		for(Alarm alarm : listAlarm) {
+			
+			data[i] = alarm;
+			
+			i++;
 		}
 
-		mCardView.refresh();
+		AlarmAdapter adapter = new AlarmAdapter(activity, R.layout.alarm, data);
+		
+//		listAlarms = (ListView)activity.findViewById(android.R.id.list);
+		listAlarms = new ListView(activity);
+		listAlarms.setDivider(null);
+		
+		listAlarms.setAdapter(adapter);
+		
+		rootView.addView(listAlarms);
 	}
 }
