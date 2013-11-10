@@ -1,30 +1,23 @@
 package com.worldalarm.activities;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.worldalarm.R;
+import com.worldalarm.adapters.SectionsPagerAdapter;
 import com.worldalarm.db.Alarm;
 import com.worldalarm.db.TimeZoneDatabaseHelper;
 import com.worldalarm.db.TimeZoneDatabaseHelper.OnAddedTimeZoneListener;
-import com.worldalarm.fragments.AllAlarmsFragment;
-import com.worldalarm.fragments.TZAlarmsFragment;
 import com.worldalarm.fragments.TimeZonesDialogFragment;
 
-public class ListAlarmsSwipeViewActivity extends FragmentActivity implements View.OnClickListener, TimeZonesDialogFragment.NewTimeZoneListener {
+public class ListAlarmsSwipeViewActivity extends FragmentActivity implements TimeZonesDialogFragment.NewTimeZoneListener {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -54,14 +47,11 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity implements Vie
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
-		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), getApplicationContext());
 
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-		
-//		findViewById(R.id.NewAlarmButton).setOnClickListener(this);
-//		findViewById(R.id.NewTimeZoneButton).setOnClickListener(this);
 	}
 
 	@Override
@@ -72,48 +62,16 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity implements Vie
 	}
 	
 	@Override
-	public void onClick(View view) {
-//		switch(view.getId()) {
-//		case R.id.NewAlarmButton:
-//			Intent newAlarmIntent = new Intent(this, NewAlarmActivity.class);
-//			this.startActivityForResult(newAlarmIntent, REQUEST_CODE_RESOLVE_ERR_NEW_ALARM);
-//			break;
-//			
-//		case R.id.NewTimeZoneButton:
-//			
-//			CityDatabaseHelper.getInstance(this).getTimeZoneNamesAsync(new OnRetrievedTimeZoneNamesListener() {
-//				
-//				@Override
-//				public void onRetrievedTimeZoneNames(final String[] timeZoneNames) {
-//					
-//					TimeZonesDialogFragment fragment = new TimeZonesDialogFragment();
-//					
-//					fragment.setOnAddTimeZoneListener(new OnAddTimeZoneListener() {
-//						
-//						@Override
-//						public Bundle getBundle() {
-//							Bundle bundle = new Bundle();
-//							bundle.putStringArray("timeZones", timeZoneNames);
-//							
-//							return bundle;
-//						}
-//					});
-//					
-//					fragment.show(getSupportFragmentManager().beginTransaction(), "timeZones");
-//				}
-//			});
-//			
-//			break;
-//		}
-	}
-	
-	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_add:			
 			Intent newAlarmIntent = new Intent(this, NewAlarmActivity.class);
 			this.startActivityForResult(newAlarmIntent, REQUEST_CODE_RESOLVE_ERR_NEW_ALARM);
 			
+			break;
+			
+		case R.id.action_home:
+			mViewPager.setCurrentItem(0);
 			break;
 		}
 		
@@ -163,73 +121,4 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity implements Vie
 		int tzSelectedPosition = mSectionsPagerAdapter.getListTimeZones().lastIndexOf(timeZoneSelected);
 		mViewPager.setCurrentItem(tzSelectedPosition + 1);
 	}
-
-	/**
-	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-	 * one of the sections/tabs/pages.
-	 */
-	public class SectionsPagerAdapter extends FragmentStatePagerAdapter implements TimeZoneDatabaseHelper.OnRetrievedAllTimeZonesListener {
-
-		List<String> listTimeZones = new ArrayList<String>();
-		
-		public SectionsPagerAdapter(FragmentManager fm) {
-			super(fm);
-			
-			TimeZoneDatabaseHelper.getAllTimeZones(getApplicationContext(), this);
-		}
-
-		@Override
-		public Fragment getItem(int position) {
-			
-			if(position == 0) {
-				Fragment fragment = new AllAlarmsFragment();
-				return fragment;
-			} else {
-				Fragment fragment = new TZAlarmsFragment();
-				Bundle args = new Bundle();
-				args.putString(TZAlarmsFragment.ARG_SECTION_NAME, listTimeZones.get(position - 1));
-				fragment.setArguments(args);
-				return fragment;
-			}
-		}
-		
-		@Override
-		public int getItemPosition(Object object) {
-			
-			Fragment fragment = (Fragment) object;
-			
-			fragment.getActivity();
-			
-			return POSITION_NONE;
-		}
-
-		@Override
-		public int getCount() {
-			return listTimeZones.size() + 1;
-		}
-
-		@Override
-		public CharSequence getPageTitle(int position) {
-			if(position == 0) {
-				return "All Alarms";
-			} else {
-				return listTimeZones.get(position - 1);
-			}
-		}
-
-		@Override
-		public void OnRetrievedAllTimeZones(List<String> listTimeZones) {
-			this.listTimeZones = listTimeZones;
-			notifyDataSetChanged();
-		}
-		
-		public List<String> getListTimeZones() {
-			return listTimeZones;
-		}
-
-		public void setListTimeZones(List<String> listTimeZones) {
-			this.listTimeZones = listTimeZones;
-			notifyDataSetChanged();
-		}
-	}	
 }

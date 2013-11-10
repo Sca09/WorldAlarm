@@ -56,8 +56,7 @@ public class AllAlarmsFragment extends Fragment implements OnRetrievedAllAlarmsL
 		}
 
 		AlarmAdapter adapter = new AlarmAdapter(activity, R.layout.alarm, data);
-		
-//		listAlarms = (ListView)activity.findViewById(android.R.id.list);
+
 		listAlarms = new ListView(activity);
 		listAlarms.setDivider(null);
 				
