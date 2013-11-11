@@ -98,9 +98,14 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity implements Tim
 				
 				Alarm alamUpdated = (Alarm) data.getSerializableExtra("alamUpdated");
 				
-				String timeZoneSelected = alamUpdated.getCity().getTimeZoneName();
-				openTab(timeZoneSelected);
-			}
+				if(alamUpdated != null) {
+					String timeZoneSelected = alamUpdated.getCity().getTimeZoneName();
+					openTab(timeZoneSelected);
+				} else {
+					// Alarm deleted
+					mViewPager.setCurrentItem(0);
+				}
+			} 
 			break;
 		}
 	}

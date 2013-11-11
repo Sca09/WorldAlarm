@@ -52,7 +52,7 @@
             android:text="@string/set_alarm_text" />
 
         <Button
-            android:id="@+id/cancelButton"
+            android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -60,7 +60,7 @@
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@id/ViewColorPickerHelper"
             android:background="?android:attr/selectableItemBackground"
-            android:text="@string/cancel_text" />
+            android:text="@string/delete_text" />
 
         <View
             android:layout_width="match_parent"

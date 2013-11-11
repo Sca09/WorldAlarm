@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -15,6 +14,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -31,8 +31,10 @@ import com.worldalarm.db.City;
 import com.worldalarm.db.CityDatabaseHelper;
 import com.worldalarm.db.TimeZoneDatabaseHelper;
 import com.worldalarm.db.TimeZoneDatabaseHelper.OnAddedTimeZoneListener;
+import com.worldalarm.fragments.DeleteAlarmConfirmDialogFragment;
+import com.worldalarm.fragments.DeleteAlarmConfirmDialogFragment.OnDeleteAlarmDialogListener;
 
-public class UpdateAlarmActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.OnUpdatedAlarmListener, CityDatabaseHelper.OnRetrievedAllCitiesListener, CityDatabaseHelper.OnAddedCityListener, CityDatabaseHelper.OnFoundCityByNameListener {
+public class UpdateAlarmActivity extends FragmentActivity implements View.OnClickListener, AlarmDatabaseHelper.OnUpdatedAlarmListener, AlarmDatabaseHelper.OnDeletedAlarmListener, CityDatabaseHelper.OnRetrievedAllCitiesListener, CityDatabaseHelper.OnAddedCityListener, CityDatabaseHelper.OnFoundCityByNameListener {
 
 	HashMap<String, City> cityTimeZonesNames = new HashMap<String, City>();
 	TimePicker timePicker;
@@ -56,7 +58,8 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 		CityDatabaseHelper.getAllCities(this, this);
 		
 		findViewById(R.id.setAlarmButton).setOnClickListener(this);
-		findViewById(R.id.cancelButton).setOnClickListener(this);
+//		findViewById(R.id.cancelButton).setOnClickListener(this);
+		findViewById(R.id.deleteButton).setOnClickListener(this);
 	}
 
 	@Override
@@ -73,6 +76,25 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 			this.updateAlarm(view);
 			break;
 		
+		case R.id.deleteButton:
+
+			DeleteAlarmConfirmDialogFragment dialog = new DeleteAlarmConfirmDialogFragment();
+			
+			dialog.setOnDeleteAlarmDialogListener(new OnDeleteAlarmDialogListener() {
+				
+				@Override
+				public Bundle getBundle() {
+					Bundle bundle = new Bundle();
+					bundle.putSerializable("alarmToDelete", alarm);
+					
+					return bundle;
+				}
+			});
+
+			dialog.show(getSupportFragmentManager().beginTransaction(), "deleteAlarm");
+			
+			break;
+			
 		case R.id.cancelButton:
 			finish();
 			break;
@@ -266,6 +288,13 @@ public class UpdateAlarmActivity extends Activity implements View.OnClickListene
 		Intent returnIntent = new Intent();
 		returnIntent.putExtra("alamUpdated", alarm);
 		
+		setResult(RESULT_OK, returnIntent);     
+		finish();
+	}
+
+	@Override
+	public void onDeletedAlarmListener() {
+		Intent returnIntent = new Intent();
 		setResult(RESULT_OK, returnIntent);     
 		finish();
 	}

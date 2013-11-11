@@ -10,7 +10,7 @@
         android:id="@+id/action_home"
         android:orderInCategory="100"
         android:showAsAction="always"
-        android:icon="@android:drawable/ic_menu_info_details" 
+        android:icon="@drawable/ic_menu_back" 
         android:title="@string/go_home"/>
     <item
         android:id="@+id/action_settings"

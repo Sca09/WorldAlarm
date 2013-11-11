@@ -98,8 +98,8 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
 		task.execute(alarm);
 	}
 	
-	public void removeAlarmAsync(Alarm alarm) {
-		RemoveAlarmTask task = new RemoveAlarmTask();
+	public void removeAlarmAsync(Alarm alarm, OnDeletedAlarmListener onDeletedAlarmListener) {
+		RemoveAlarmTask task = new RemoveAlarmTask(onDeletedAlarmListener);
 		
 		task.execute(alarm);
 	}
@@ -328,12 +328,23 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
 	
 	private class RemoveAlarmTask extends AsyncTask<Alarm, Void, Void> {
 		
+		private OnDeletedAlarmListener onDeletedAlarmListener = null;
+		
+		public RemoveAlarmTask(OnDeletedAlarmListener onDeletedAlarmListener) {
+			this.onDeletedAlarmListener = onDeletedAlarmListener;
+		}
+		
 		@Override
 		protected Void doInBackground(Alarm... params) {
 			getWritableDatabase().delete(TABLE_NAME, COLUMN_ID +"="+ params[0].getId(), null);
 			
 			alarmsByTZSingleton = retrieveAlarmsByTZ();
 			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			this.onDeletedAlarmListener.onDeletedAlarmListener();
 		}
 	}
 	
@@ -351,5 +362,9 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
 	
 	public interface OnUpdatedAlarmListener {
 		void onUpdatedAlarm(Alarm alarm);
+	}
+	
+	public interface OnDeletedAlarmListener {
+		void onDeletedAlarmListener();
 	}
 }

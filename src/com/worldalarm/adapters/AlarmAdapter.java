@@ -2,13 +2,17 @@ package com.worldalarm.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.worldalarm.R;
+import com.worldalarm.activities.UpdateAlarmActivity;
 import com.worldalarm.db.Alarm;
 
 public class AlarmAdapter extends ArrayAdapter<Alarm> {
@@ -16,6 +20,8 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 	Context context; 
     int layoutResourceId;    
     Alarm data[] = null;
+
+    private static final int REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM = 6000;
     
     public AlarmAdapter(Context context, int layoutResourceId, Alarm data[]){
     	super(context, layoutResourceId, data);
@@ -48,7 +54,7 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 			holder = (AlarmHolder)row.getTag();
 		}
 		
-		Alarm alarm = data[position];
+		final Alarm alarm = data[position];
 		holder.alarmId.setText(String.valueOf(alarm.getId()));
 		holder.alarmHour.setText(alarm.getHour());
 		holder.alarmDate.setText(alarm.getDate());
@@ -56,6 +62,17 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		holder.alarmHourLocal.setText(alarm.getHourLocal());
 		holder.alarmDateLocal.setText(alarm.getDateLocal());
 		
+		row.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+				Intent intent = new Intent(context, UpdateAlarmActivity.class);
+				intent.putExtra("alamToUpdate", alarm);
+				
+				((Activity)context).startActivityForResult(intent, REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM);
+			}
+		});
 		
 		return row;
 	}
