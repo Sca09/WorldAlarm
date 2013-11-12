@@ -1,5 +1,6 @@
 package com.worldalarm.fragments;
 
+import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
@@ -8,28 +9,32 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
 
 import com.worldalarm.R;
-import com.worldalarm.adapters.AlarmAdapter;
+import com.worldalarm.adapters.ExpandableListAdapter;
 import com.worldalarm.db.Alarm;
 import com.worldalarm.db.AlarmDatabaseHelper;
-import com.worldalarm.db.AlarmDatabaseHelper.OnRetrievedAllAlarmsListener;
+import com.worldalarm.db.AlarmDatabaseHelper.OnRetrievedAllAlarmsByTZNameListener;
 
-public class AllAlarmsFragment extends Fragment implements OnRetrievedAllAlarmsListener {
+public class AllAlarmsFragment extends Fragment implements OnRetrievedAllAlarmsByTZNameListener {
 
 	RelativeLayout rootView;
 
-	private ListView listAlarms;
 	private Activity activity;
+	
+	ExpandableListAdapter listAdapter;
+    ExpandableListView expListView;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		
-		rootView = (RelativeLayout)inflater.inflate(R.layout.list_alarms, container, false);
+		rootView = (RelativeLayout)inflater.inflate(R.layout.activity_expandable_alarms, container, false);
 		
-		AlarmDatabaseHelper.getInstance(getActivity()).getAllAlarmsAsync(this);
+		expListView = (ExpandableListView) rootView.findViewById(R.id.expandableAlarmsView);
+		
+		AlarmDatabaseHelper.getAlarmsByTZInstance(getActivity(), this);
 
 		return rootView;
 	}
@@ -41,27 +46,19 @@ public class AllAlarmsFragment extends Fragment implements OnRetrievedAllAlarmsL
 		this.activity = activity;
 	}
 
-	
 	@Override
-	public void onRetrievedAllAlarms(List<Alarm> listAlarm) {
+	public void onRetrievedAllAlarmsByTZName(HashMap<String, List<Alarm>> listAlarms) {
+		listAdapter = new ExpandableListAdapter(activity, listAlarms);
+
+		expListView.setAdapter(listAdapter);
 		
-		Alarm[] data = new Alarm[listAlarm.size()];
-		
-		int i = 0;
-		for(Alarm alarm : listAlarm) {
-			
-			data[i] = alarm;
-			
-			i++;
+		this.expandAll();
+	}
+	
+	public void expandAll() {
+		int count = listAdapter.getGroupCount();
+		for (int i=0; i<count ; i++){
+			expListView.expandGroup(i);
 		}
-
-		AlarmAdapter adapter = new AlarmAdapter(activity, R.layout.alarm, data);
-
-		listAlarms = new ListView(activity);
-		listAlarms.setDivider(null);
-				
-		listAlarms.setAdapter(adapter);
-		
-		rootView.addView(listAlarms);	
 	}
 }

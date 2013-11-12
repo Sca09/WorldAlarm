@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.worldalarm.db.TimeZoneDatabaseHelper;
 import com.worldalarm.fragments.AlarmsListFragment;
+import com.worldalarm.fragments.AllAlarmsFragment;
 import com.worldalarm.fragments.TZAlarmsFragment;
 
 public class SectionsPagerAdapter extends FragmentStatePagerAdapter implements TimeZoneDatabaseHelper.OnRetrievedAllTimeZonesListener {
@@ -30,7 +31,8 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter implements T
 	public Fragment getItem(int position) {
 		
 		if(position == 0) {
-			Fragment fragment = new AlarmsListFragment();
+//			Fragment fragment = new AlarmsListFragment();
+			Fragment fragment = new AllAlarmsFragment();
 			return fragment;
 		} else {
 			Fragment fragment = new AlarmsListFragment();

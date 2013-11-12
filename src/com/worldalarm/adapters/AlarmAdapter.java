@@ -18,7 +18,7 @@ import com.worldalarm.db.Alarm;
 public class AlarmAdapter extends ArrayAdapter<Alarm> {
 	
 	Context context; 
-    int layoutResourceId;    
+    int layoutResourceId;
     Alarm data[] = null;
 
     private static final int REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM = 6000;

@@ -4,23 +4,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.worldalarm.R;
-import com.worldalarm.adapters.AlarmAdapter;
-import com.worldalarm.db.Alarm;
-import com.worldalarm.db.AlarmDatabaseHelper;
-import com.worldalarm.db.AlarmDatabaseHelper.OnRetrievedAllAlarmsByTZNameListener;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
+
+import com.worldalarm.R;
+import com.worldalarm.adapters.AlarmAdapter;
+import com.worldalarm.db.Alarm;
+import com.worldalarm.db.AlarmDatabaseHelper;
+import com.worldalarm.db.AlarmDatabaseHelper.OnRetrievedAllAlarmsByTZNameListener;
 
 public class AlarmsListFragment extends Fragment implements OnRetrievedAllAlarmsByTZNameListener {
 	/**
