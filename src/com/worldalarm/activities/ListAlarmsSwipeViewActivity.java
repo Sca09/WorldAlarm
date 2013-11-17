@@ -67,7 +67,6 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity implements Tim
 		case R.id.action_add:			
 			Intent newAlarmIntent = new Intent(this, NewAlarmActivity.class);
 			this.startActivityForResult(newAlarmIntent, REQUEST_CODE_RESOLVE_ERR_NEW_ALARM);
-			
 			break;
 			
 		case R.id.action_home:
@@ -83,7 +82,7 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity implements Tim
 		switch (requestCode) {
 		case REQUEST_CODE_RESOLVE_ERR_NEW_ALARM:
 			if (resultCode == RESULT_OK) {
-				mViewPager.getAdapter().notifyDataSetChanged();
+				mSectionsPagerAdapter.notifyDataSetChanged();
 				
 				Alarm newAlarm = (Alarm) data.getSerializableExtra("newAlarm");
 				
@@ -94,7 +93,7 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity implements Tim
 			
 		case REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM:
 			if (resultCode == Activity.RESULT_OK) {
-				mViewPager.getAdapter().notifyDataSetChanged();
+				mSectionsPagerAdapter.notifyDataSetChanged();
 				
 				Alarm alamUpdated = (Alarm) data.getSerializableExtra("alamUpdated");
 				

@@ -17,8 +17,10 @@ import com.worldalarm.adapters.ExpandableListAdapter;
 import com.worldalarm.db.Alarm;
 import com.worldalarm.db.AlarmDatabaseHelper;
 import com.worldalarm.db.AlarmDatabaseHelper.OnRetrievedAllAlarmsByTZNameListener;
+import com.worldalarm.db.TimeZoneDatabaseHelper;
+import com.worldalarm.db.TimeZoneDatabaseHelper.OnRetrievedAllTimeZonesListener;
 
-public class AllAlarmsFragment extends Fragment implements OnRetrievedAllAlarmsByTZNameListener {
+public class AllAlarmsFragment extends Fragment implements OnRetrievedAllAlarmsByTZNameListener, OnRetrievedAllTimeZonesListener {
 
 	RelativeLayout rootView;
 
@@ -26,6 +28,9 @@ public class AllAlarmsFragment extends Fragment implements OnRetrievedAllAlarmsB
 	
 	ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
+    
+    HashMap<String, List<Alarm>> listAlarms;
+    List<String> listTimeZones;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,6 +40,8 @@ public class AllAlarmsFragment extends Fragment implements OnRetrievedAllAlarmsB
 		expListView = (ExpandableListView) rootView.findViewById(R.id.expandableAlarmsView);
 		
 		AlarmDatabaseHelper.getAlarmsByTZInstance(getActivity(), this);
+		
+		TimeZoneDatabaseHelper.getAllTimeZones(getActivity(), this);
 
 		return rootView;
 	}
@@ -48,11 +55,28 @@ public class AllAlarmsFragment extends Fragment implements OnRetrievedAllAlarmsB
 
 	@Override
 	public void onRetrievedAllAlarmsByTZName(HashMap<String, List<Alarm>> listAlarms) {
-		listAdapter = new ExpandableListAdapter(activity, listAlarms);
-
-		expListView.setAdapter(listAdapter);
+		this.listAlarms = listAlarms; 
 		
-		this.expandAll();
+		if(this.listTimeZones != null) {
+			listAdapter = new ExpandableListAdapter(activity, this.listTimeZones, this.listAlarms);
+
+			expListView.setAdapter(listAdapter);
+		
+			this.expandAll();
+		}
+	}
+	
+	@Override
+	public void OnRetrievedAllTimeZones(List<String> listTimeZones) {
+		this.listTimeZones = listTimeZones;
+		
+		if(this.listAlarms != null) {
+			listAdapter = new ExpandableListAdapter(activity, this.listTimeZones, this.listAlarms);
+
+			expListView.setAdapter(listAdapter);
+		
+			this.expandAll();
+		}
 	}
 	
 	public void expandAll() {

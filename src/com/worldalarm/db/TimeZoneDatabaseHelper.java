@@ -16,6 +16,7 @@ public class TimeZoneDatabaseHelper extends SQLiteOpenHelper {
 
 	public static final String TABLE_NAME = "timezone";
 	public static final String COLUMN_ID = "_id";
+	public static final String COLUMN_ORDER = "position";
 	public static final String COLUMN_NAME = "name";
 	
 	private static final String DATABASE_NAME = "timezone.db";
@@ -23,9 +24,11 @@ public class TimeZoneDatabaseHelper extends SQLiteOpenHelper {
 	
     private static final String DATABASE_CREATE		= "CREATE TABLE "+ TABLE_NAME +" (" 
     												+ COLUMN_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, "
-    												+ COLUMN_NAME +" TEXT);";
+    												+ COLUMN_NAME +" TEXT, "
+    												+ COLUMN_ORDER +" INTEGER);";
 	
-    public static final String DATABASE_SELECT_ALL	= "SELECT * FROM "+ TABLE_NAME +";";
+    public static final String DATABASE_SELECT_ALL	= "SELECT * FROM "+ TABLE_NAME +" ORDER BY "+ COLUMN_ORDER +" ASC;";
+    public static final String DATABASE_SELECT_COUNT= "SELECT COUNT(*) FROM "+ TABLE_NAME +";";
 	
     private static TimeZoneDatabaseHelper singleton = null;
     
@@ -61,6 +64,7 @@ public class TimeZoneDatabaseHelper extends SQLiteOpenHelper {
 			TimeZone timeZone = TimeZone.getDefault();
 			
 			ContentValues insertValues = new ContentValues();
+			insertValues.put(COLUMN_ORDER, 1);
 			insertValues.put(COLUMN_NAME, timeZone.getDisplayName());
 			db.insert(TABLE_NAME, null, insertValues);
 			
@@ -140,8 +144,13 @@ public class TimeZoneDatabaseHelper extends SQLiteOpenHelper {
 			String newTimeZone = params[0];
 			
 			if(!listTimeZonesSingleton.contains(newTimeZone)) {
+				Cursor cursor = getReadableDatabase().rawQuery(DATABASE_SELECT_COUNT, null);
+				cursor.moveToFirst();
+				int count = cursor.getInt(0);
+				
 				ContentValues insertValues = new ContentValues();
 				insertValues.put(COLUMN_NAME, newTimeZone);
+				insertValues.put(COLUMN_ORDER, count + 1);
 				getWritableDatabase().insert(TABLE_NAME, null, insertValues);
 			
 				listTimeZonesSingleton.add(newTimeZone);

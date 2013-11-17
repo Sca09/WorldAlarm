@@ -13,11 +13,15 @@ import com.worldalarm.adapters.ExpandableListAdapter;
 import com.worldalarm.db.Alarm;
 import com.worldalarm.db.AlarmDatabaseHelper;
 import com.worldalarm.db.AlarmDatabaseHelper.OnRetrievedAllAlarmsByTZNameListener;
+import com.worldalarm.db.TimeZoneDatabaseHelper.OnRetrievedAllTimeZonesListener;
 
-public class ExpandableAlarmsActivity extends Activity implements OnRetrievedAllAlarmsByTZNameListener {
+public class ExpandableAlarmsActivity extends Activity implements OnRetrievedAllAlarmsByTZNameListener, OnRetrievedAllTimeZonesListener {
 
 	ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
+    
+    HashMap<String, List<Alarm>> listAlarms;
+    List<String> listTimeZones;
 	
 	
 	@Override
@@ -41,8 +45,24 @@ public class ExpandableAlarmsActivity extends Activity implements OnRetrievedAll
 	@Override
 	public void onRetrievedAllAlarmsByTZName(HashMap<String, List<Alarm>> listAlarms) {
 		
-		listAdapter = new ExpandableListAdapter(this, listAlarms);
-		expListView.setAdapter(listAdapter);
+		this.listAlarms = listAlarms; 
+		
+		if(this.listTimeZones != null) {
+			listAdapter = new ExpandableListAdapter(this, listTimeZones, listAlarms);
+
+			expListView.setAdapter(listAdapter);
+		}
+	}
+
+	@Override
+	public void OnRetrievedAllTimeZones(List<String> listTimeZones) {
+		this.listTimeZones = listTimeZones;
+		
+		if(this.listAlarms != null) {
+			listAdapter = new ExpandableListAdapter(this, listTimeZones, listAlarms);
+
+			expListView.setAdapter(listAdapter);			
+		}
 	}
 
 }

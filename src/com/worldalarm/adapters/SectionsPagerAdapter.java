@@ -31,7 +31,6 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter implements T
 	public Fragment getItem(int position) {
 		
 		if(position == 0) {
-//			Fragment fragment = new AlarmsListFragment();
 			Fragment fragment = new AllAlarmsFragment();
 			return fragment;
 		} else {

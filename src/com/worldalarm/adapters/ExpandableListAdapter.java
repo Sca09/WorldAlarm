@@ -1,47 +1,41 @@
 package com.worldalarm.adapters;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import com.worldalarm.R;
-import com.worldalarm.activities.UpdateAlarmActivity;
-import com.worldalarm.adapters.AlarmAdapter.AlarmHolder;
-import com.worldalarm.db.Alarm;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
+
+import com.worldalarm.R;
+import com.worldalarm.activities.UpdateAlarmActivity;
+import com.worldalarm.adapters.AlarmAdapter.AlarmHolder;
+import com.worldalarm.db.Alarm;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 	private Context context;
-	private List<String> timeZonesNames;
+	private List<String> listTimeZones;
 	private HashMap<String, List<Alarm>> listAlarms;
 	
 	private static final int REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM = 6000;
 	
-	public ExpandableListAdapter(Context context, HashMap<String, List<Alarm>> listAlarms) {
+	public ExpandableListAdapter(Context context, List<String> listTimeZones, HashMap<String, List<Alarm>> listAlarms) {
 		this.context = context;
+		this.listTimeZones = listTimeZones;
 		this.listAlarms = listAlarms;
-		
-		timeZonesNames = new ArrayList<String>();
-		
-		for(String timeZoneName : listAlarms.keySet()) {
-			timeZonesNames.add(timeZoneName);
-		}
 	}
 	
 	
 	@Override
 	public Object getChild(int groupPosition, int childPosition) {
-		return listAlarms.get(timeZonesNames.get(groupPosition)).get(childPosition);
+		return listAlarms.get(listTimeZones.get(groupPosition)).get(childPosition);
 	}
 
 	@Override
@@ -101,17 +95,24 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public int getChildrenCount(int groupPosition) {
-		return listAlarms.get(timeZonesNames.get(groupPosition)).size();
+		List<Alarm> list = listAlarms.get(listTimeZones.get(groupPosition));
+		
+		if(list != null) {
+			return list.size();
+		} else {
+			return 0;
+		}
+		
 	}
 
 	@Override
 	public Object getGroup(int groupPosition) {
-		return timeZonesNames.get(groupPosition);
+		return listTimeZones.get(groupPosition);
 	}
 
 	@Override
 	public int getGroupCount() {
-		return timeZonesNames.size();
+		return listTimeZones.size();
 	}
 
 	@Override
@@ -133,6 +134,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		
 		TextView headerTextView = (TextView) row.findViewById(R.id.expandableHeader);
 		headerTextView.setText(headerTitle);
+		
+//		((ExpandableListView) parent).expandGroup(groupPosition);
 		
 		return row;
 	}
