@@ -26,15 +26,14 @@ import android.widget.Toast;
 
 import com.worldalarm.R;
 import com.worldalarm.db.Alarm;
-import com.worldalarm.db.AlarmDatabaseHelper;
 import com.worldalarm.db.City;
 import com.worldalarm.db.CityDatabaseHelper;
-import com.worldalarm.db.TimeZoneDatabaseHelper;
-import com.worldalarm.db.TimeZoneDatabaseHelper.OnAddedTimeZoneListener;
 import com.worldalarm.fragments.DeleteAlarmConfirmDialogFragment;
 import com.worldalarm.fragments.DeleteAlarmConfirmDialogFragment.OnDeleteAlarmDialogListener;
+import com.worldalarm.preferences.AlarmPreferences;
+import com.worldalarm.preferences.TimeZonePreferences;
 
-public class UpdateAlarmActivity extends FragmentActivity implements View.OnClickListener, AlarmDatabaseHelper.OnUpdatedAlarmListener, AlarmDatabaseHelper.OnDeletedAlarmListener, CityDatabaseHelper.OnRetrievedAllCitiesListener, CityDatabaseHelper.OnAddedCityListener, CityDatabaseHelper.OnFoundCityByNameListener {
+public class UpdateAlarmActivity extends FragmentActivity implements View.OnClickListener, CityDatabaseHelper.OnRetrievedAllCitiesListener, CityDatabaseHelper.OnAddedCityListener, CityDatabaseHelper.OnFoundCityByNameListener {
 
 	HashMap<String, City> cityTimeZonesNames = new HashMap<String, City>();
 	TimePicker timePicker;
@@ -127,7 +126,7 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 			Alarm alarm = new Alarm(hourPicked, minutePicked, city);
 	    	this.alarm.setCalendar(alarm.getCalendar());
 	    	this.alarm.setCity(alarm.getCity());
-	    	AlarmDatabaseHelper.getInstance(this).updateAlarmAsync(this.alarm, this);
+	    	this.updateAlarm(this.alarm);
 			
 		} else {
 			City city = cityTimeZonesNames.get(cityPicked);
@@ -139,7 +138,7 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 				Alarm alarm = new Alarm(hourPicked, minutePicked, city);
 				this.alarm.setCalendar(alarm.getCalendar());
 				this.alarm.setCity(alarm.getCity());
-				AlarmDatabaseHelper.getInstance(this).updateAlarmAsync(this.alarm, this);
+				this.updateAlarm(this.alarm);
 			}
 		}
 	}
@@ -266,7 +265,7 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 			Alarm alarm = new Alarm(timePicker.getCurrentHour(), timePicker.getCurrentMinute(), city);
 			this.alarm.setCalendar(alarm.getCalendar());
 			this.alarm.setCity(alarm.getCity());
-			AlarmDatabaseHelper.getInstance(this).updateAlarmAsync(this.alarm, this);
+			this.updateAlarm(this.alarm);
 		} else {
 			Toast toastAlert = Toast.makeText(this, "City not found, please try again", Toast.LENGTH_LONG);
 			toastAlert.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 180);
@@ -274,16 +273,9 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 		}
 	}
 
-	@Override
-	public void onUpdatedAlarm(Alarm alarm) {
-		TimeZoneDatabaseHelper.getInstance(this).addTimeZoneAsync(alarm.getCity().getTimeZoneName(), new OnAddedTimeZoneListener() {
-			
-			@Override
-			public void OnAddedTimeZone(List<String> listTimeZones) {
-				// nothing to do here
-				
-			}
-		});
+	public void updateAlarm(Alarm alarm) {
+		this.updateAlarmPreference(alarm);
+		this.addTimeZone(alarm.getCity().getTimeZoneName());
 		
 		Intent returnIntent = new Intent();
 		returnIntent.putExtra("alamUpdated", alarm);
@@ -291,11 +283,12 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 		setResult(RESULT_OK, returnIntent);     
 		finish();
 	}
-
-	@Override
-	public void onDeletedAlarmListener() {
-		Intent returnIntent = new Intent();
-		setResult(RESULT_OK, returnIntent);     
-		finish();
+	
+	private void updateAlarmPreference(Alarm Alarm) {
+		AlarmPreferences.updateAlarm(alarm, this);
+	}
+	
+	private void addTimeZone(String timeZone) {
+		TimeZonePreferences.addTimeZone(timeZone, this);
 	}
 }

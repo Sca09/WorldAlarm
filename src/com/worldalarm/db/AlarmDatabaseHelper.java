@@ -126,7 +126,7 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
 			listByTZ.add(alarm);
 			
 			listAlarms.put(timeZoneName, listByTZ);
-
+			
 			cursor.moveToNext();
 		}
 		cursor.close();
@@ -144,7 +144,7 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
 		City city = new City(cityName, timeZoneID, timeZoneName);
 		
 		Alarm alarm = new Alarm(timeInMillis, city);
-		alarm.setId(id);
+		alarm.setId(String.valueOf(id));
 		
 		return alarm;
 	}
@@ -162,7 +162,7 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
 			ContentValues insertValues = params[0].getInsertContentValues();
 			long row = getWritableDatabase().insert(TABLE_NAME, null, insertValues);
 			
-			params[0].setId(row);
+			params[0].setId(String.valueOf(row));
 			
 			return params[0];
 		}

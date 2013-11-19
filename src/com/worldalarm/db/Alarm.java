@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
@@ -13,7 +14,7 @@ public class Alarm implements Serializable {
 
 	private static final long serialVersionUID = 1L; 
 	
-	private long id;
+	private String id;
 	private Calendar calendar;
 	private City city;
 	
@@ -21,6 +22,7 @@ public class Alarm implements Serializable {
 	 * Alarm with local localization at current time
 	 */
 	public Alarm() {
+		this.id = this.generateUniqueId();
 		this.calendar = Calendar.getInstance();
 		this.city = new City();
 	}
@@ -31,6 +33,7 @@ public class Alarm implements Serializable {
 	 * @param minutePicked
 	 */
 	public Alarm(int hourPicked, int minutePicked) {
+		this.id = this.generateUniqueId();
 		this.calendar = Calendar.getInstance();
 		this.calendar.set(Calendar.HOUR_OF_DAY, hourPicked);
 		this.calendar.set(Calendar.MINUTE, minutePicked);
@@ -47,6 +50,7 @@ public class Alarm implements Serializable {
 	 * @param timeInMillis
 	 */
 	public Alarm(long timeInMillis) {
+		this.id = this.generateUniqueId();
 		this.calendar = Calendar.getInstance();
 		this.calendar.setTimeInMillis(timeInMillis);
 		
@@ -58,6 +62,7 @@ public class Alarm implements Serializable {
 	}
 	
 	public Alarm(int hourPicked, int minutePicked, City cityPicked) {
+		this.id = this.generateUniqueId();
 		
 		if(cityPicked != null) {
 		
@@ -85,6 +90,8 @@ public class Alarm implements Serializable {
 	}
 	
 	public Alarm(long timeInMillis, City cityPicked) {
+		this.id = this.generateUniqueId();
+		
 		if(cityPicked != null) {
 			this.calendar = new GregorianCalendar(TimeZone.getTimeZone(cityPicked.getTimeZoneID()));
 			this.calendar.setTimeInMillis(timeInMillis);
@@ -107,6 +114,10 @@ public class Alarm implements Serializable {
 		}
 	}
 
+	private String generateUniqueId() {
+		return UUID.randomUUID().toString();
+	}
+	
 	@SuppressLint("SimpleDateFormat")
 	@Override
 	public String toString() {	
@@ -196,11 +207,11 @@ public class Alarm implements Serializable {
 		return insertValues;
 	}
 
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	

@@ -9,12 +9,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.worldalarm.db.TimeZoneDatabaseHelper;
 import com.worldalarm.fragments.AlarmsListFragment;
 import com.worldalarm.fragments.AllAlarmsFragment;
 import com.worldalarm.fragments.TZAlarmsFragment;
+import com.worldalarm.preferences.TimeZonePreferences;
 
-public class SectionsPagerAdapter extends FragmentStatePagerAdapter implements TimeZoneDatabaseHelper.OnRetrievedAllTimeZonesListener {
+public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
 	private Context context; 
 	
@@ -23,8 +23,8 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter implements T
 	public SectionsPagerAdapter(FragmentManager fm, Context context) {
 		super(fm);
 		this.context = context;
-		
-		TimeZoneDatabaseHelper.getAllTimeZones(this.context, this);
+
+		this.getAllTimeZones();
 	}
 
 	@Override
@@ -66,9 +66,8 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter implements T
 		}
 	}
 
-	@Override
-	public void OnRetrievedAllTimeZones(List<String> listTimeZones) {
-		this.listTimeZones = listTimeZones;
+	public void getAllTimeZones() {
+		this.listTimeZones = TimeZonePreferences.getAllTimeZones(this.context);
 		notifyDataSetChanged();
 	}
 	

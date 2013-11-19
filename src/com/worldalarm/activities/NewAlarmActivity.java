@@ -25,13 +25,12 @@ import android.widget.Toast;
 
 import com.worldalarm.R;
 import com.worldalarm.db.Alarm;
-import com.worldalarm.db.AlarmDatabaseHelper;
 import com.worldalarm.db.City;
 import com.worldalarm.db.CityDatabaseHelper;
-import com.worldalarm.db.TimeZoneDatabaseHelper;
-import com.worldalarm.db.TimeZoneDatabaseHelper.OnAddedTimeZoneListener;
+import com.worldalarm.preferences.AlarmPreferences;
+import com.worldalarm.preferences.TimeZonePreferences;
 
-public class NewAlarmActivity extends Activity implements View.OnClickListener, AlarmDatabaseHelper.OnSavedAlarmListener, CityDatabaseHelper.OnRetrievedAllCitiesListener, CityDatabaseHelper.OnAddedCityListener, CityDatabaseHelper.OnFoundCityByNameListener {
+public class NewAlarmActivity extends Activity implements View.OnClickListener, CityDatabaseHelper.OnRetrievedAllCitiesListener, CityDatabaseHelper.OnAddedCityListener, CityDatabaseHelper.OnFoundCityByNameListener {
 
 	HashMap<String, City> cityTimeZonesNames = new HashMap<String, City>();
 	TimePicker timePicker;
@@ -93,7 +92,7 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 			}
 			
 			Alarm newAlarm = new Alarm(hourPicked, minutePicked, city);
-	    	AlarmDatabaseHelper.getInstance(this).saveAlarmAsync(newAlarm, this);
+			this.saveAlarm(newAlarm);
 	    	
 		} else {
 			City city = cityTimeZonesNames.get(cityPicked);
@@ -103,7 +102,7 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 				
 			} else {
 				Alarm newAlarm = new Alarm(hourPicked, minutePicked, city);
-		    	AlarmDatabaseHelper.getInstance(this).saveAlarmAsync(newAlarm, this);
+				this.saveAlarm(newAlarm);
 			}
 		}
 	}
@@ -223,7 +222,7 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 	public void onFoundCityByName(City city) {
 		if(city != null) {
 			Alarm newAlarm = new Alarm(timePicker.getCurrentHour(), timePicker.getCurrentMinute(), city);
-			AlarmDatabaseHelper.getInstance(getApplicationContext()).saveAlarmAsync(newAlarm, this);
+			this.saveAlarm(newAlarm);
 		} else {
 			Toast toastAlert = Toast.makeText(this, "City not found, please try again", Toast.LENGTH_LONG);
 			toastAlert.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 180);
@@ -231,22 +230,23 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		}	
 	}
 
-	@Override
-	public void onSavedAlarm(Alarm alarm) {
+	public void saveAlarm(Alarm alarm) {
 		
-		TimeZoneDatabaseHelper.getInstance(this).addTimeZoneAsync(alarm.getCity().getTimeZoneName(), new OnAddedTimeZoneListener() {
-			
-			@Override
-			public void OnAddedTimeZone(List<String> listTimeZones) {
-				// nothing to do here
-				
-			}
-		});
+		this.addAlarmPreference(alarm);
+		this.addTimeZone(alarm.getCity().getTimeZoneName());
 		
 		Intent returnIntent = new Intent();
 		returnIntent.putExtra("newAlarm", alarm);
 		
 		setResult(RESULT_OK, returnIntent);     
 		finish();
+	}
+	
+	public void addAlarmPreference(Alarm alarm) {
+		AlarmPreferences.addAlarm(alarm, this);
+	}
+	
+	public void addTimeZone(String timeZone) {
+		TimeZonePreferences.addTimeZone(timeZone, this);
 	}
 }

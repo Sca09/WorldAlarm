@@ -17,9 +17,9 @@ import android.widget.SimpleAdapter;
 
 import com.worldalarm.R;
 import com.worldalarm.db.Alarm;
-import com.worldalarm.db.TimeZoneDatabaseHelper;
+import com.worldalarm.preferences.TimeZonePreferences;
 
-public class TimeZonesActivity extends FragmentActivity implements View.OnClickListener, TimeZoneDatabaseHelper.OnRetrievedAllTimeZonesListener, TimeZoneDatabaseHelper.OnAddedTimeZoneListener {
+public class TimeZonesActivity extends FragmentActivity implements View.OnClickListener {
 
 	private static final int REQUEST_CODE_RESOLVE_ERR_NEW_ALARM = 5000;
 	private static final int REQUEST_CODE_RESOLVE_ERR_NEW_TIME_ZONE = 7000;
@@ -32,10 +32,9 @@ public class TimeZonesActivity extends FragmentActivity implements View.OnClickL
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.time_zones);
 		
-//		findViewById(R.id.NewAlarmButton).setOnClickListener(this);
 //		findViewById(R.id.NewTimeZoneButton).setOnClickListener(this);
-		
-		TimeZoneDatabaseHelper.getAllTimeZones(getApplicationContext(), this);
+
+		this.getAllTimeZones();
 	}
 	
 	@Override
@@ -54,11 +53,6 @@ public class TimeZonesActivity extends FragmentActivity implements View.OnClickL
 	@Override
 	public void onClick(View view) {
 		switch(view.getId()) {
-//		case R.id.NewAlarmButton:
-//			Intent newAlarmIntent = new Intent(this, NewAlarmActivity.class);
-//			this.startActivityForResult(newAlarmIntent, REQUEST_CODE_RESOLVE_ERR_NEW_ALARM);
-//			break;
-//			
 //		case R.id.NewTimeZoneButton:
 //			
 //			CityDatabaseHelper.getInstance(this).getTimeZoneNamesAsync(new OnRetrievedTimeZoneNamesListener() {
@@ -103,27 +97,21 @@ public class TimeZonesActivity extends FragmentActivity implements View.OnClickL
 			break;
 			
 		case REQUEST_CODE_RESOLVE_ERR_NEW_TIME_ZONE:
-			// TODO: to get new timeZone from Dialog
-			TimeZoneDatabaseHelper.getInstance(this).addTimeZoneAsync("", this);
+			this.addTimeZone("");
 			break;
 		}
 	}
 
-	@Override
-	public void OnRetrievedAllTimeZones(List<String> listTimeZones) {
-		
-		this.listTimeZones = listTimeZones;
+	public void getAllTimeZones() {
+		this.listTimeZones = TimeZonePreferences.getAllTimeZones(this);
 		
 		this.refreshTimeZoneList();
 	}
 	
-	@Override
-	public void OnAddedTimeZone(List<String> listTimeZones) {
-		
-		this.listTimeZones = listTimeZones;
+	public void addTimeZone(String timeZone) {
+		this.listTimeZones = TimeZonePreferences.addTimeZone(timeZone, this);
 		
 		this.refreshTimeZoneList();
-		
 	}
 	
 	private void refreshTimeZoneList() {

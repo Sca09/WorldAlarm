@@ -15,10 +15,9 @@ import android.widget.RelativeLayout;
 import com.worldalarm.R;
 import com.worldalarm.adapters.AlarmAdapter;
 import com.worldalarm.db.Alarm;
-import com.worldalarm.db.AlarmDatabaseHelper;
-import com.worldalarm.db.AlarmDatabaseHelper.OnRetrievedAllAlarmsByTZNameListener;
+import com.worldalarm.preferences.AlarmPreferences;
 
-public class TZAlarmsFragment extends Fragment implements OnRetrievedAllAlarmsByTZNameListener {
+public class TZAlarmsFragment extends Fragment {
 	/**
 	 * The fragment argument representing the section number for this fragment.
 	 */
@@ -41,8 +40,7 @@ public class TZAlarmsFragment extends Fragment implements OnRetrievedAllAlarmsBy
 			timeZone = tzSelected;
 		}
 
-//		AlarmDatabaseHelper.getInstance(getActivity()).getAllAlarmsByTZName(tzSelected, this);
-		AlarmDatabaseHelper.getInstance(getActivity()).getAllAlarmsByTZName(this);
+		this.getAllAlarmsByTZName();
 
 		return rootView;
 	}
@@ -54,9 +52,8 @@ public class TZAlarmsFragment extends Fragment implements OnRetrievedAllAlarmsBy
 		this.activity = activity;
 	}
 	
-	
-	@Override
-	public void onRetrievedAllAlarmsByTZName(HashMap<String, List<Alarm>> listAlarms) {
+	public void getAllAlarmsByTZName() {
+		HashMap<String, List<Alarm>> listAlarms = AlarmPreferences.getAlarmsByTZInstance(getActivity());
 		
 		List<Alarm> timeZoneList = listAlarms.get(timeZone);
 		
@@ -86,28 +83,4 @@ public class TZAlarmsFragment extends Fragment implements OnRetrievedAllAlarmsBy
 		
 		rootView.addView(listViewAlarms);
 	}
-	
-//	@Override
-//	public void onRetrievedAllAlarmsByTZName(List<Alarm> listAlarm) {
-//		HashMap<String, List<Alarm>> listAlarms
-//		
-//		Alarm[] data = new Alarm[listAlarm.size()];
-//		
-//		int i = 0;
-//		for(Alarm alarm : listAlarm) {
-//			
-//			data[i] = alarm;
-//			
-//			i++;
-//		}
-//
-//		AlarmAdapter adapter = new AlarmAdapter(activity, R.layout.alarm, data);
-//
-//		listAlarms = new ListView(activity);
-//		listAlarms.setDivider(null);
-//		
-//		listAlarms.setAdapter(adapter);
-//		
-//		rootView.addView(listAlarms);
-//	}
 }

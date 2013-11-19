@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import com.worldalarm.R;
@@ -136,6 +137,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		headerTextView.setText(headerTitle);
 		
 //		((ExpandableListView) parent).expandGroup(groupPosition);
+		
+		System.out.println("1 - groupPosition["+ groupPosition +"] - Expanded["+ ((ExpandableListView) parent).isGroupExpanded(groupPosition) +"]");
 		
 		return row;
 	}

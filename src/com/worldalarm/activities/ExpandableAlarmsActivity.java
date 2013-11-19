@@ -11,11 +11,10 @@ import android.widget.ExpandableListView;
 import com.worldalarm.R;
 import com.worldalarm.adapters.ExpandableListAdapter;
 import com.worldalarm.db.Alarm;
-import com.worldalarm.db.AlarmDatabaseHelper;
-import com.worldalarm.db.AlarmDatabaseHelper.OnRetrievedAllAlarmsByTZNameListener;
-import com.worldalarm.db.TimeZoneDatabaseHelper.OnRetrievedAllTimeZonesListener;
+import com.worldalarm.preferences.AlarmPreferences;
+import com.worldalarm.preferences.TimeZonePreferences;
 
-public class ExpandableAlarmsActivity extends Activity implements OnRetrievedAllAlarmsByTZNameListener, OnRetrievedAllTimeZonesListener {
+public class ExpandableAlarmsActivity extends Activity {
 
 	ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
@@ -31,8 +30,16 @@ public class ExpandableAlarmsActivity extends Activity implements OnRetrievedAll
 		
 		expListView = (ExpandableListView) findViewById(R.id.expandableAlarmsView);
 		
-		AlarmDatabaseHelper.getAlarmsByTZInstance(this, this);
+		this.getAllAlarmsByTZName();
+		this.getAllTimeZones();
 		
+		if(this.listTimeZones != null && this.listAlarms != null) {
+			listAdapter = new ExpandableListAdapter(this, listTimeZones, listAlarms);
+
+			expListView.setAdapter(listAdapter);
+		}
+		
+		this.expandAll();
 	}
 
 	@Override
@@ -42,27 +49,20 @@ public class ExpandableAlarmsActivity extends Activity implements OnRetrievedAll
 		return true;
 	}
 
-	@Override
-	public void onRetrievedAllAlarmsByTZName(HashMap<String, List<Alarm>> listAlarms) {
-		
-		this.listAlarms = listAlarms; 
-		
-		if(this.listTimeZones != null) {
-			listAdapter = new ExpandableListAdapter(this, listTimeZones, listAlarms);
-
-			expListView.setAdapter(listAdapter);
+	public void getAllAlarmsByTZName() {
+		this.listAlarms = AlarmPreferences.getAlarmsByTZInstance(this);
+	}
+	
+	private void getAllTimeZones() {
+		this.listTimeZones = TimeZonePreferences.getAllTimeZones(this);
+	}
+	
+	public void expandAll() {
+		int count = listAdapter.getGroupCount();
+		for (int i=0; i<count ; i++){
+			expListView.expandGroup(i);
+			System.out.println("3 - groupPosition["+ i +"] - Expanded["+  expListView.isGroupExpanded(i) +"]");
 		}
 	}
-
-	@Override
-	public void OnRetrievedAllTimeZones(List<String> listTimeZones) {
-		this.listTimeZones = listTimeZones;
-		
-		if(this.listAlarms != null) {
-			listAdapter = new ExpandableListAdapter(this, listTimeZones, listAlarms);
-
-			expListView.setAdapter(listAdapter);			
-		}
-	}
-
+	
 }

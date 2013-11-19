@@ -1,17 +1,18 @@
 package com.worldalarm.fragments;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
 import com.worldalarm.R;
 import com.worldalarm.db.Alarm;
-import com.worldalarm.db.AlarmDatabaseHelper;
-import com.worldalarm.db.AlarmDatabaseHelper.OnDeletedAlarmListener;
+import com.worldalarm.preferences.AlarmPreferences;
 
 public class DeleteAlarmConfirmDialogFragment extends DialogFragment {
 
@@ -39,20 +40,7 @@ public class DeleteAlarmConfirmDialogFragment extends DialogFragment {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				AlarmDatabaseHelper.getInstance(getActivity()).removeAlarmAsync(alarm, (OnDeletedAlarmListener) getActivity()); 
-						
-						
-//						new OnDeletedAlarmListener() {
-//					
-//					@Override
-//					public void onDeletedAlarmListener() {
-//						
-//						OnDeletedAlarmListener activity = (OnDeletedAlarmListener) getActivity();
-//						activity.onDeletedAlarmListener();
-//						
-//					}
-//				});
-				
+				deleteAlarm(alarm);				
 			}
 		});
 		
@@ -60,5 +48,13 @@ public class DeleteAlarmConfirmDialogFragment extends DialogFragment {
 
 		return builder.create();
 		
+	}
+
+	private void deleteAlarm(final Alarm alarm) {
+		AlarmPreferences.deleteAlarm(alarm, getActivity());
+		
+		Intent returnIntent = new Intent();
+		getActivity().setResult(Activity.RESULT_OK, returnIntent);     
+		getActivity().finish();
 	}
 }
