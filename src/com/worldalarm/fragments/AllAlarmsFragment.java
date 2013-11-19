@@ -67,6 +67,7 @@ public class AllAlarmsFragment extends Fragment {
 		// TODO Auto-generated method stub
 		super.onResume();
 		System.out.println("onResume");
+		this.expandAll();
 	}
 
 
