@@ -104,7 +104,7 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 		}
 	}
 
-	private void openTab(String timeZoneSelected) {
+	public void openTab(String timeZoneSelected) {
 		int tzSelectedPosition = mSectionsPagerAdapter.getListTimeZones().lastIndexOf(timeZoneSelected);
 		mViewPager.setCurrentItem(tzSelectedPosition + 1);
 	}

@@ -10,9 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.RelativeLayout;
 
 import com.worldalarm.R;
+import com.worldalarm.activities.ListAlarmsSwipeViewActivity;
 import com.worldalarm.adapters.ExpandableListAdapter;
 import com.worldalarm.db.Alarm;
 import com.worldalarm.preferences.AlarmPreferences;
@@ -44,6 +46,19 @@ public class AllAlarmsFragment extends Fragment {
 			listAdapter = new ExpandableListAdapter(activity, this.listTimeZones, this.listAlarms); 
 			
 			expListView.setAdapter(listAdapter);
+			
+			expListView.setOnGroupClickListener(new OnGroupClickListener() {
+				
+				@Override
+				public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+					
+					expListView.expandGroup(groupPosition);
+					
+					((ListAlarmsSwipeViewActivity) getActivity()).openTab(listTimeZones.get(groupPosition));
+					
+					return true;
+				}
+			});
 		
 			this.expandAll();
 		}
