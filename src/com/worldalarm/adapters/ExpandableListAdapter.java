@@ -136,10 +136,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		TextView headerTextView = (TextView) row.findViewById(R.id.expandableHeader);
 		headerTextView.setText(headerTitle);
 		
-//		((ExpandableListView) parent).expandGroup(groupPosition);
-		
-		System.out.println("1 - groupPosition["+ groupPosition +"] - Expanded["+ ((ExpandableListView) parent).isGroupExpanded(groupPosition) +"]");
-		
 		return row;
 	}
 

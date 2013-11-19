@@ -51,35 +51,11 @@ public class AllAlarmsFragment extends Fragment {
 		return rootView;
 	}
 
-	
-	
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onActivityCreated(savedInstanceState);
-		System.out.println("onActivityCreated");
-	}
-
-
-
 	@Override
 	public void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
-		System.out.println("onResume");
 		this.expandAll();
 	}
-
-
-
-	@Override
-	public void onStart() {
-		// TODO Auto-generated method stub
-		super.onStart();
-		System.out.println("onStart");
-	}
-
-
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -99,7 +75,6 @@ public class AllAlarmsFragment extends Fragment {
 		int count = listAdapter.getGroupCount();
 		for (int i=0; i<count ; i++){
 			expListView.expandGroup(i);
-			System.out.println("2 - groupPosition["+ i +"] - Expanded["+  expListView.isGroupExpanded(i) +"]");
 		}
 	}
 }
