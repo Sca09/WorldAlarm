@@ -48,7 +48,7 @@
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@id/ViewColorPickerHelper"
             android:background="?android:attr/selectableItemBackground"
-            android:text="@string/set_alarm_text" />
+            android:text="@string/set_text" />
 
         <Button
             android:id="@+id/cancelButton"

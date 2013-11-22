@@ -73,6 +73,14 @@ public class TimeZonePreferences {
 		return timeZonesSingleton;
 	}
 	
+	public static List<String> saveTimeZone(List<String> timeZonesList, Context context) {
+		timeZonesSingleton = timeZonesList;
+				
+		savePreferences(context);
+		
+		return timeZonesSingleton;
+	}
+	
 	private static void savePreferences(Context context) {
 		Gson gson = new Gson();
 		String listTimeZonesJson = gson.toJson(timeZonesSingleton);

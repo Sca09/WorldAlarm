@@ -111,6 +111,7 @@ public class AlarmPreferences {
 			for(Alarm currentAlarm : listAlarms) {
 				if(currentAlarm.getId().equals(alarm.getId())) {
 					listAlarms.remove(currentAlarm);
+					break;
 				}
 			}
 		}
@@ -122,6 +123,20 @@ public class AlarmPreferences {
 		return alarmsByTZSingleton;
 	}
 
+	public synchronized static HashMap<String, List<Alarm>> deleteAlarmByTZ(List<String> listTimeZonesToDelete, Context context) {
+		if(alarmsByTZSingleton == null) {
+			alarmsByTZSingleton = getAlarmsFromPreferences(context);
+		}
+		
+		for(String timeZone : listTimeZonesToDelete) {
+			alarmsByTZSingleton.remove(timeZone);
+		}
+		
+		savePreferences(context);
+		
+		return alarmsByTZSingleton;
+	}
+	
 	private static void savePreferences(Context context) {
 		Gson gson = new Gson();
 		String listAlarmsJson = gson.toJson(alarmsByTZSingleton);

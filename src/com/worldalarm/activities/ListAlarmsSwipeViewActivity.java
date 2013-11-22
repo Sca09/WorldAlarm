@@ -31,6 +31,7 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 
 	private static final int REQUEST_CODE_RESOLVE_ERR_NEW_ALARM = 5000;
 	private static final int REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM = 6000;
+	private static final int REQUEST_CODE_RESOLVE_ERR_TIME_ZONE_CONF = 7000;
 	
 	public static final String ARG_SECTION_NAME = "section_name";
 	public static final String ARG_LIST_ALARMS = "list_alarms";
@@ -67,6 +68,11 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 		case R.id.action_home:
 			mViewPager.setCurrentItem(0);
 			break;
+			
+		case R.id.action_settings_time_zones_conf:
+			Intent timeZonesConf = new Intent(this, TimeZonesActivity.class);
+			this.startActivityForResult(timeZonesConf, REQUEST_CODE_RESOLVE_ERR_TIME_ZONE_CONF);
+			break;
 		}
 		
 		return true;
@@ -97,9 +103,15 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 					openTab(timeZoneSelected);
 				} else {
 					// Alarm deleted
-					mViewPager.setCurrentItem(0);
+//					mViewPager.setCurrentItem(0);
 				}
 			} 
+			break;
+			
+		case REQUEST_CODE_RESOLVE_ERR_TIME_ZONE_CONF:
+			mSectionsPagerAdapter.notifyDataSetChanged();
+			mSectionsPagerAdapter.getAllTimeZones();
+			mViewPager.setCurrentItem(0);
 			break;
 		}
 	}

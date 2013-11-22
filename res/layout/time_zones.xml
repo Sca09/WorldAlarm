@@ -7,73 +7,58 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".TimeZonesActivity" >
-
-    <!-- 
+    
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
+    
     <RelativeLayout
         android:id="@+id/buttonsPanel"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" >
-		
+        android:layout_height="55dp"
+        android:layout_below="@android:id/list"
+        android:layout_centerHorizontal="true" >
+
         <View
             android:id="@+id/ViewColorPickerHelper"
             android:layout_width="1dip"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="4dip"
-            android:layout_marginTop="4dip"
-            android:background="?android:attr/dividerVertical" 
-            android:layout_centerHorizontal="true"/>
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:background="@color/blue_light" />
+
         <Button
-            android:id="@+id/NewAlarmButton"
+            android:id="@+id/cancelTimeZoneConf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@id/ViewColorPickerHelper"
             android:background="?android:attr/selectableItemBackground"
-            android:text="@string/new_alarm_text" 
-            android:layout_alignParentBottom="true"/>
+            android:text="@string/cancel_text" />
+
         <Button
-            android:id="@+id/NewTimeZoneButton"
+            android:id="@+id/setTimeZoneConf"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/ViewColorPickerHelper"
             android:background="?android:attr/selectableItemBackground"
-            android:text="@string/new_time_zone_text" 
-            android:layout_alignParentBottom="true" 
-            android:layout_toRightOf="@id/ViewColorPickerHelper"/>
+            android:text="@string/set_text" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dip"
-            android:layout_marginLeft="4dip"
-            android:layout_marginRight="4dip"
-            android:background="?android:attr/dividerVertical"
-            android:layout_alignParentBottom="true" />
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/ViewColorPickerHelper"
+            android:background="@color/blue_light" />
+
     </RelativeLayout>
-     
-    <ListView
-        android:id="@android:id/list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/buttonsPanel" >
 
-    </ListView>
-    -->
-
-    <ListView
-        android:id="@android:id/list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" >
-
-    </ListView>
-    
 </RelativeLayout>

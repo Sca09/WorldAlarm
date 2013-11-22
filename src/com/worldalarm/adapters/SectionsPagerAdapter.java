@@ -11,11 +11,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.worldalarm.fragments.AlarmsListFragment;
 import com.worldalarm.fragments.AllAlarmsFragment;
-import com.worldalarm.fragments.TZAlarmsFragment;
 import com.worldalarm.preferences.TimeZonePreferences;
 
 public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
+	public static final String ARG_SECTION_NAME = "section_name";
+	
 	private Context context; 
 	
 	List<String> listTimeZones = new ArrayList<String>();
@@ -36,7 +37,7 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 		} else {
 			Fragment fragment = new AlarmsListFragment();
 			Bundle args = new Bundle();
-			args.putString(TZAlarmsFragment.ARG_SECTION_NAME, listTimeZones.get(position - 1));
+			args.putString(ARG_SECTION_NAME, listTimeZones.get(position - 1));
 			fragment.setArguments(args);
 			return fragment;
 		}
