@@ -48,7 +48,9 @@ public class TimeZonePreferences {
 			timeZoneList.add(timeZone.getDisplayName());
 		}
 		
-		return timeZoneList;
+		timeZonesSingleton = timeZoneList;
+		
+		return timeZonesSingleton;
 	}
 	
 	public static List<String> addTimeZone(String timeZone, Context context) {

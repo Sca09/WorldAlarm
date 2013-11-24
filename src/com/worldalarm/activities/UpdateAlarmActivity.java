@@ -27,13 +27,14 @@ import android.widget.Toast;
 import com.worldalarm.R;
 import com.worldalarm.db.Alarm;
 import com.worldalarm.db.City;
-import com.worldalarm.db.CityDatabaseHelper;
 import com.worldalarm.fragments.DeleteAlarmConfirmDialogFragment;
 import com.worldalarm.fragments.DeleteAlarmConfirmDialogFragment.OnDeleteAlarmDialogListener;
 import com.worldalarm.preferences.AlarmPreferences;
+import com.worldalarm.preferences.CityPreferences;
+import com.worldalarm.preferences.SearchCityByNameTaskData;
 import com.worldalarm.preferences.TimeZonePreferences;
 
-public class UpdateAlarmActivity extends FragmentActivity implements View.OnClickListener, CityDatabaseHelper.OnRetrievedAllCitiesListener, CityDatabaseHelper.OnAddedCityListener, CityDatabaseHelper.OnFoundCityByNameListener {
+public class UpdateAlarmActivity extends FragmentActivity implements View.OnClickListener, SearchCityByNameTaskData.OnFoundCityByNameListener {
 
 	HashMap<String, City> cityTimeZonesNames = new HashMap<String, City>();
 	TimePicker timePicker;
@@ -54,10 +55,9 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 		alarm = (Alarm) intent.getSerializableExtra("alamToUpdate");
 		
 		this.initTimePicker();
-		CityDatabaseHelper.getAllCities(this, this);
+		this.getAllCities();
 		
 		findViewById(R.id.setAlarmButton).setOnClickListener(this);
-//		findViewById(R.id.cancelButton).setOnClickListener(this);
 		findViewById(R.id.deleteButton).setOnClickListener(this);
 	}
 
@@ -120,7 +120,9 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 			City city = cityTimeZonesNames.get(cityPicked);
 			
 			if(city == null) { //Current city is not in TZ database > using default TZ and saving new pair city-TZ
-				CityDatabaseHelper.getInstance(this).addCityAsync(city, this);
+				cityTimeZonesNames = CityPreferences.addCity(currentCity, this);
+				
+				city = cityTimeZonesNames.get(cityPicked);
 			}
 			
 			Alarm alarm = new Alarm(hourPicked, minutePicked, city);
@@ -132,7 +134,8 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 			City city = cityTimeZonesNames.get(cityPicked);
 			
 			if(city == null) { //City chosen is not in TZ database
-				CityDatabaseHelper.getInstance(this).searchCityByNameAsync(cityPicked, this);
+				SearchCityByNameTaskData task = new SearchCityByNameTaskData(this);
+				task.execute(cityPicked);
 					
 			} else {
 				Alarm alarm = new Alarm(hourPicked, minutePicked, city);
@@ -233,9 +236,8 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 		public void onProviderDisabled(String provider) {}
 	};
 	
-	@Override
-	public void onRetrievedAllCities(HashMap<String, City> cities) {
-		cityTimeZonesNames = cities;
+	public void getAllCities() {
+		cityTimeZonesNames = CityPreferences.getCitiesInstance(this);
 		
 		String[] citiesArray = cityTimeZonesNames.keySet().toArray(new String[cityTimeZonesNames.size()]);
 		
@@ -248,15 +250,8 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
         	cityPickerAutoComplete.setHint(R.string.choose_city);
         }
         
-        Log.d("UpdateAlarmActivity", "hint["+ cityPickerAutoComplete.getHint() +"]");
-        
         cityPickerAutoComplete.setText(alarm.getCity().getCityName());
         cityPickerAutoComplete.clearFocus();
-	}
-
-	@Override
-	public void onAddedCity(City city) {
-		// Nothing to do here
 	}
 
 	@Override

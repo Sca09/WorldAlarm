@@ -8,7 +8,6 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
 
 public class Alarm implements Serializable {
 
@@ -185,26 +184,6 @@ public class Alarm implements Serializable {
 		}
 		
 		return sdf.format(calendar.getTime());
-	}
-	
-	public ContentValues getUpdateContentValues() {
-		ContentValues updateValues = new ContentValues();
-		updateValues.put(AlarmDatabaseHelper.COLUMN_NAME_TIME_IN_MILLIS, getTimeInMillis());
-		updateValues.put(AlarmDatabaseHelper.COLUMN_NAME_CITY, city.getCityName());
-		updateValues.put(AlarmDatabaseHelper.COLUMN_NAME_TIME_ZONE_ID, city.getTimeZoneID());
-		updateValues.put(AlarmDatabaseHelper.COLUMN_NAME_TIME_ZONE_NAME, city.getTimeZoneName());
-
-		return updateValues;
-	}
-	
-	public ContentValues getInsertContentValues() {
-		ContentValues insertValues = new ContentValues();
-		insertValues.put(AlarmDatabaseHelper.COLUMN_NAME_TIME_IN_MILLIS, getTimeInMillis());
-		insertValues.put(AlarmDatabaseHelper.COLUMN_NAME_CITY, city.getCityName());
-		insertValues.put(AlarmDatabaseHelper.COLUMN_NAME_TIME_ZONE_ID, city.getTimeZoneID());
-		insertValues.put(AlarmDatabaseHelper.COLUMN_NAME_TIME_ZONE_NAME, city.getTimeZoneName());
-		
-		return insertValues;
 	}
 
 	public String getId() {

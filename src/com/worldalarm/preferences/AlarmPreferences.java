@@ -43,7 +43,9 @@ public class AlarmPreferences {
 			alarmsList = gson.fromJson(alarmSet, type);
 		}
 		
-		return alarmsList;
+		alarmsByTZSingleton = alarmsList;
+		
+		return alarmsByTZSingleton;
 	}
 	
 	public synchronized static HashMap<String, List<Alarm>> addAlarm(Alarm alarm, Context context) {
