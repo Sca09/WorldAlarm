@@ -135,7 +135,7 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 		timePicker.setCurrentHour(alarm.getCalendar().get(Calendar.HOUR_OF_DAY));
 		timePicker.setCurrentMinute(alarm.getCalendar().get(Calendar.MINUTE));
 		
-		List<Integer> repeatDays = this.alarm.getRepeatDays();
+		
 		ToggleButton repeatDay_Sun = (ToggleButton) findViewById(R.id.repeat_day_toggle_sun);
 		ToggleButton repeatDay_Mon = (ToggleButton) findViewById(R.id.repeat_day_toggle_mon);
 		ToggleButton repeatDay_Tue = (ToggleButton) findViewById(R.id.repeat_day_toggle_tue);
@@ -144,8 +144,9 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 		ToggleButton repeatDay_Fri = (ToggleButton) findViewById(R.id.repeat_day_toggle_fri);
 		ToggleButton repeatDay_Sat = (ToggleButton) findViewById(R.id.repeat_day_toggle_sat);
 		
+		List<Integer> repeatDays = this.alarm.getRepeatDays();
+		
 		for(Integer day : repeatDays) {
-			
 			if(Alarm.REPEAT_DAY_SUN.equals(day)) {
 				repeatDay_Sun.setChecked(true);
 				repeatDay_Sun.setTypeface(Typeface.DEFAULT_BOLD);
