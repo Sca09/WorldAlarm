@@ -1,5 +1,6 @@
 package com.worldalarm.activities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -8,6 +9,7 @@ import java.util.TimeZone;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -22,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.worldalarm.R;
 import com.worldalarm.db.Alarm;
@@ -51,6 +54,14 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		
 		findViewById(R.id.setAlarmButton).setOnClickListener(this);
 		findViewById(R.id.cancelButton).setOnClickListener(this);
+		
+		findViewById(R.id.repeat_day_toggle_sun).setOnClickListener(this);
+		findViewById(R.id.repeat_day_toggle_mon).setOnClickListener(this);
+		findViewById(R.id.repeat_day_toggle_tue).setOnClickListener(this);
+		findViewById(R.id.repeat_day_toggle_wed).setOnClickListener(this);
+		findViewById(R.id.repeat_day_toggle_thu).setOnClickListener(this);
+		findViewById(R.id.repeat_day_toggle_fri).setOnClickListener(this);
+		findViewById(R.id.repeat_day_toggle_sat).setOnClickListener(this);
 	}
 
 	private void initTimePicker() {
@@ -75,6 +86,23 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		case R.id.cancelButton:
 			finish();
 			break;
+			
+		case R.id.repeat_day_toggle_sun:
+		case R.id.repeat_day_toggle_mon:
+		case R.id.repeat_day_toggle_tue:
+		case R.id.repeat_day_toggle_wed:
+		case R.id.repeat_day_toggle_thu:
+		case R.id.repeat_day_toggle_fri:
+		case R.id.repeat_day_toggle_sat:
+			ToggleButton button = (ToggleButton) view;
+			
+			if(button.isChecked()) {
+				button.setTypeface(Typeface.DEFAULT_BOLD);
+			} else {
+				button.setTypeface(Typeface.DEFAULT);
+			}
+			
+			break;
 		}
 	}
 	
@@ -83,6 +111,7 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		int hourPicked 			= timePicker.getCurrentHour();
 		int minutePicked 		= timePicker.getCurrentMinute();	
 		String cityPicked 		= cityPickerAutoComplete.getText().toString();
+		List<Integer> repeatDays = this.getCheckedRepeatDays();
 		if(cityPicked.equals("")) { //User didn't pick a city > Using the current one
 			cityPicked = currentCity.getCityName();
 			
@@ -95,6 +124,7 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 			}
 			
 			Alarm newAlarm = new Alarm(hourPicked, minutePicked, city);
+			newAlarm.setRepeatDays(repeatDays);
 			this.saveAlarm(newAlarm);
 	    	
 		} else {
@@ -105,11 +135,53 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 				task.execute(cityPicked);
 			} else {
 				Alarm newAlarm = new Alarm(hourPicked, minutePicked, city);
+				newAlarm.setRepeatDays(repeatDays);
 				this.saveAlarm(newAlarm);
 			}
 		}
 	}
 
+	private List<Integer> getCheckedRepeatDays() {
+		List<Integer> repeatDays = new ArrayList<Integer>();
+		
+		ToggleButton sun = (ToggleButton) findViewById(R.id.repeat_day_toggle_sun);
+		if(sun.isChecked()) {
+			repeatDays.add(Alarm.REPEAT_DAY_SUN);
+		}
+		
+		ToggleButton mon = (ToggleButton) findViewById(R.id.repeat_day_toggle_mon);
+		if(mon.isChecked()) {
+			repeatDays.add(Alarm.REPEAT_DAY_MON);
+		}
+		
+		ToggleButton tue = (ToggleButton) findViewById(R.id.repeat_day_toggle_tue);
+		if(tue.isChecked()) {
+			repeatDays.add(Alarm.REPEAT_DAY_TUE);
+		}
+		
+		ToggleButton wed = (ToggleButton) findViewById(R.id.repeat_day_toggle_wed);
+		if(wed.isChecked()) {
+			repeatDays.add(Alarm.REPEAT_DAY_WED);
+		}
+		
+		ToggleButton thu = (ToggleButton) findViewById(R.id.repeat_day_toggle_thu);
+		if(thu.isChecked()) {
+			repeatDays.add(Alarm.REPEAT_DAY_THU);
+		}
+		
+		ToggleButton fri = (ToggleButton) findViewById(R.id.repeat_day_toggle_fri);
+		if(fri.isChecked()) {
+			repeatDays.add(Alarm.REPEAT_DAY_FRI);
+		}
+		
+		ToggleButton sat = (ToggleButton) findViewById(R.id.repeat_day_toggle_sat);
+		if(sat.isChecked()) {
+			repeatDays.add(Alarm.REPEAT_DAY_SAT);
+		}
+		
+		return repeatDays;
+	}
+	
 	private void getCurrentCityLocation() {		
 		try {
 			String currentTimeZoneID = TimeZone.getDefault().getID();

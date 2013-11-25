@@ -6,18 +6,22 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListView;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.worldalarm.R;
 import com.worldalarm.activities.UpdateAlarmActivity;
 import com.worldalarm.adapters.AlarmAdapter.AlarmHolder;
 import com.worldalarm.db.Alarm;
+import com.worldalarm.preferences.AlarmPreferences;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
@@ -47,7 +51,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 	@Override
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 		View row = convertView;
-		AlarmHolder holder = null;
+		AlarmHolder holder;
 		
 		if(row == null) {
 			
@@ -61,6 +65,14 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 			holder.alarmCity = (TextView)row.findViewById(R.id.alarmCity);
 			holder.alarmHourLocal = (TextView)row.findViewById(R.id.alarmHourLocal);
 			holder.alarmDateLocal = (TextView)row.findViewById(R.id.alarmDateLocal);
+			holder.alarmSwitchButton = (Switch)row.findViewById(R.id.alarmSwitchButton); 
+			holder.repeatDay_Sun = (TextView)row.findViewById(R.id.repeat_day_sun);
+			holder.repeatDay_Mon = (TextView)row.findViewById(R.id.repeat_day_mon);
+			holder.repeatDay_Tue = (TextView)row.findViewById(R.id.repeat_day_tue);
+			holder.repeatDay_Wed = (TextView)row.findViewById(R.id.repeat_day_wed);
+			holder.repeatDay_Thu = (TextView)row.findViewById(R.id.repeat_day_thu);
+			holder.repeatDay_Fri = (TextView)row.findViewById(R.id.repeat_day_fri);
+			holder.repeatDay_Sat = (TextView)row.findViewById(R.id.repeat_day_sat);
 			
 			row.setTag(holder);
 			
@@ -76,6 +88,46 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		holder.alarmCity.setText(alarm.getCity().getCityName());
 		holder.alarmHourLocal.setText(alarm.getHourLocal());
 		holder.alarmDateLocal.setText(alarm.getDateLocal());
+		holder.alarmSwitchButton.setChecked(alarm.isActive());
+		
+		holder.alarmSwitchButton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				alarm.setActive(isChecked);
+				
+				AlarmPreferences.updateAlarm(alarm, context);
+			}
+		});
+		
+		
+		List<Integer> repeatDays = alarm.getRepeatDays();
+		
+		for(Integer day : repeatDays) {
+		
+			if(Alarm.REPEAT_DAY_SUN.equals(day)) {
+				holder.repeatDay_Sun.setTextColor(context.getResources().getColor(R.color.blue_light));
+				holder.repeatDay_Sun.setTypeface(Typeface.DEFAULT_BOLD);
+			} else if(Alarm.REPEAT_DAY_MON.equals(day)) {
+				holder.repeatDay_Mon.setTextColor(context.getResources().getColor(R.color.blue_light));
+				holder.repeatDay_Mon.setTypeface(Typeface.DEFAULT_BOLD);
+			} if(Alarm.REPEAT_DAY_TUE.equals(day)) {
+				holder.repeatDay_Tue.setTextColor(context.getResources().getColor(R.color.blue_light));
+				holder.repeatDay_Tue.setTypeface(Typeface.DEFAULT_BOLD);
+			} else if(Alarm.REPEAT_DAY_WED.equals(day)) {
+				holder.repeatDay_Wed.setTextColor(context.getResources().getColor(R.color.blue_light));
+				holder.repeatDay_Wed.setTypeface(Typeface.DEFAULT_BOLD);
+			} else if(Alarm.REPEAT_DAY_THU.equals(day)) {
+				holder.repeatDay_Thu.setTextColor(context.getResources().getColor(R.color.blue_light));
+				holder.repeatDay_Thu.setTypeface(Typeface.DEFAULT_BOLD);
+			} else if(Alarm.REPEAT_DAY_FRI.equals(day)) {
+				holder.repeatDay_Fri.setTextColor(context.getResources().getColor(R.color.blue_light));
+				holder.repeatDay_Fri.setTypeface(Typeface.DEFAULT_BOLD);
+			} else if(Alarm.REPEAT_DAY_SAT.equals(day)) {
+				holder.repeatDay_Sat.setTextColor(context.getResources().getColor(R.color.blue_light));
+				holder.repeatDay_Sat.setTypeface(Typeface.DEFAULT_BOLD);
+			}
+		}
 		
 		row.setOnClickListener(new OnClickListener() {
 			

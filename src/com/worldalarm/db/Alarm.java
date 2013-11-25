@@ -2,8 +2,10 @@ package com.worldalarm.db;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -16,6 +18,16 @@ public class Alarm implements Serializable {
 	private String id;
 	private Calendar calendar;
 	private City city;
+	private boolean active;
+	private List<Integer> repeat_days = new ArrayList<Integer>();
+	
+	public static final Integer REPEAT_DAY_SUN		= 0;
+	public static final Integer REPEAT_DAY_MON		= 1;
+	public static final Integer REPEAT_DAY_TUE		= 2;
+	public static final Integer REPEAT_DAY_WED		= 3;
+	public static final Integer REPEAT_DAY_THU		= 4;
+	public static final Integer REPEAT_DAY_FRI		= 5;
+	public static final Integer REPEAT_DAY_SAT		= 6;
 	
 	/**
 	 * Alarm with local localization at current time
@@ -24,6 +36,7 @@ public class Alarm implements Serializable {
 		this.id = this.generateUniqueId();
 		this.calendar = Calendar.getInstance();
 		this.city = new City();
+		this.active = Boolean.TRUE;
 	}
 	
 	/**
@@ -42,6 +55,7 @@ public class Alarm implements Serializable {
 		}
 
 		this.city = new City();
+		this.active = Boolean.TRUE;
 	}
 	
 	/**
@@ -58,6 +72,7 @@ public class Alarm implements Serializable {
 		}
 
 		this.city = new City();
+		this.active = Boolean.TRUE;
 	}
 	
 	public Alarm(int hourPicked, int minutePicked, City cityPicked) {
@@ -74,6 +89,7 @@ public class Alarm implements Serializable {
 			}
 
 			this.city = cityPicked;
+			this.active = Boolean.TRUE;
 			
 		} else {
 			this.calendar = Calendar.getInstance();
@@ -85,6 +101,7 @@ public class Alarm implements Serializable {
 			}
 			
 			this.city = new City();
+			this.active = Boolean.TRUE;
 		}
 	}
 	
@@ -100,6 +117,7 @@ public class Alarm implements Serializable {
 			}
 
 			this.city = cityPicked;
+			this.active = Boolean.TRUE;
 			
 		} else {
 			this.calendar = Calendar.getInstance();
@@ -110,6 +128,7 @@ public class Alarm implements Serializable {
 			}
 			
 			this.city = new City();
+			this.active = Boolean.TRUE;
 		}
 	}
 
@@ -217,5 +236,21 @@ public class Alarm implements Serializable {
 	public void setCity(City city) {
 		this.city = city;
 		this.calendar.setTimeZone(TimeZone.getTimeZone(city.getTimeZoneID()));
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public List<Integer> getRepeatDays() {
+		return repeat_days;
+	}
+
+	public void setRepeatDays(List<Integer> repeat_days) {
+		this.repeat_days = repeat_days;
 	}
 }

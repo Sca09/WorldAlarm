@@ -146,6 +146,8 @@ public class AlarmPreferences {
 		SharedPreferences.Editor editor = context.getSharedPreferences(preferences_file_alarm, Context.MODE_PRIVATE).edit();
 		editor.putString(preferences_name, listAlarmsJson);
 		editor.commit();
+		
+		System.out.println("listAlarmsJson["+ listAlarmsJson +"]");
 	}
 	
 }

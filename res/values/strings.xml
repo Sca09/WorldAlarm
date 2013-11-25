@@ -20,5 +20,12 @@
     <string name="title_activity_expandable_alarms">ExpandableAlarmsActivity</string>
     <string name="title_activity_new_time_zones_list">NewTimeZonesListActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="repeat_day_sun">SUN</string>
+    <string name="repeat_day_mon">MON</string>
+    <string name="repeat_day_tue">TUE</string>
+    <string name="repeat_day_wed">WED</string>
+    <string name="repeat_day_thu">THU</string>
+    <string name="repeat_day_fri">FRI</string>
+    <string name="repeat_day_sat">SAT</string>
 
 </resources>
