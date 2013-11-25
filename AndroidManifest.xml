@@ -20,17 +20,11 @@
         <activity
             android:name="com.worldalarm.activities.ListAlarmsSwipeViewActivity"
             android:label="@string/app_name" >
-            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-        </activity>
-        <activity
-            android:name="com.worldalarm.activities.ListAlarmsActivity"
-            android:label="@string/app_name" >
         </activity>
         <activity
             android:name="com.worldalarm.activities.NewAlarmActivity"
@@ -45,18 +39,19 @@
         <activity
             android:name="com.worldalarm.activities.TimeZonesActivity"
             android:label="@string/app_name" >
-        </activity>
-        <activity
-            android:name="com.worldalarm.activities.ExpandableAlarmsActivity"
-            android:label="@string/app_name" >
-            <!-- 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
+            <!--
+			<intent-filter> 
+                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             -->
         </activity>
+        <activity
+            android:name="com.worldalarm.activities.ExpandableAlarmsActivity"
+            android:label="@string/app_name" >
+        </activity>
+        
     </application>
 
 </manifest>

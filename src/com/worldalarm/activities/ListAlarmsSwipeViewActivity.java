@@ -1,7 +1,5 @@
 package com.worldalarm.activities;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,11 +11,8 @@ import android.view.MenuItem;
 import com.worldalarm.R;
 import com.worldalarm.adapters.SectionsPagerAdapter;
 import com.worldalarm.db.Alarm;
-import com.worldalarm.db.TimeZoneDatabaseHelper;
-import com.worldalarm.db.TimeZoneDatabaseHelper.OnAddedTimeZoneListener;
-import com.worldalarm.fragments.TimeZonesDialogFragment;
 
-public class ListAlarmsSwipeViewActivity extends FragmentActivity implements TimeZonesDialogFragment.NewTimeZoneListener {
+public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -36,6 +31,7 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity implements Tim
 
 	private static final int REQUEST_CODE_RESOLVE_ERR_NEW_ALARM = 5000;
 	private static final int REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM = 6000;
+	private static final int REQUEST_CODE_RESOLVE_ERR_TIME_ZONE_CONF = 7000;
 	
 	public static final String ARG_SECTION_NAME = "section_name";
 	public static final String ARG_LIST_ALARMS = "list_alarms";
@@ -72,6 +68,11 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity implements Tim
 		case R.id.action_home:
 			mViewPager.setCurrentItem(0);
 			break;
+			
+		case R.id.action_settings_time_zones_conf:
+			Intent timeZonesConf = new Intent(this, TimeZonesActivity.class);
+			this.startActivityForResult(timeZonesConf, REQUEST_CODE_RESOLVE_ERR_TIME_ZONE_CONF);
+			break;
 		}
 		
 		return true;
@@ -102,26 +103,20 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity implements Tim
 					openTab(timeZoneSelected);
 				} else {
 					// Alarm deleted
-					mViewPager.setCurrentItem(0);
+//					mViewPager.setCurrentItem(0);
 				}
 			} 
+			break;
+			
+		case REQUEST_CODE_RESOLVE_ERR_TIME_ZONE_CONF:
+			mSectionsPagerAdapter.notifyDataSetChanged();
+			mSectionsPagerAdapter.getAllTimeZones();
+			mViewPager.setCurrentItem(0);
 			break;
 		}
 	}
 
-	@Override
-	public void addTimeZone(final String timeZone) {
-		TimeZoneDatabaseHelper.getInstance(this).addTimeZoneAsync(timeZone, new OnAddedTimeZoneListener() {
-			
-			@Override
-			public void OnAddedTimeZone(List<String> listTimeZones) {
-				mViewPager.getAdapter().notifyDataSetChanged();
-				openTab(timeZone);
-			}
-		});
-	}
-	
-	private void openTab(String timeZoneSelected) {
+	public void openTab(String timeZoneSelected) {
 		int tzSelectedPosition = mSectionsPagerAdapter.getListTimeZones().lastIndexOf(timeZoneSelected);
 		mViewPager.setCurrentItem(tzSelectedPosition + 1);
 	}

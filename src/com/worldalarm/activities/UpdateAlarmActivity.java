@@ -1,5 +1,6 @@
 package com.worldalarm.activities;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.TimeZone;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -23,18 +25,19 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.worldalarm.R;
 import com.worldalarm.db.Alarm;
-import com.worldalarm.db.AlarmDatabaseHelper;
 import com.worldalarm.db.City;
-import com.worldalarm.db.CityDatabaseHelper;
-import com.worldalarm.db.TimeZoneDatabaseHelper;
-import com.worldalarm.db.TimeZoneDatabaseHelper.OnAddedTimeZoneListener;
 import com.worldalarm.fragments.DeleteAlarmConfirmDialogFragment;
 import com.worldalarm.fragments.DeleteAlarmConfirmDialogFragment.OnDeleteAlarmDialogListener;
+import com.worldalarm.preferences.AlarmPreferences;
+import com.worldalarm.preferences.CityPreferences;
+import com.worldalarm.preferences.SearchCityByNameTaskData;
+import com.worldalarm.preferences.TimeZonePreferences;
 
-public class UpdateAlarmActivity extends FragmentActivity implements View.OnClickListener, AlarmDatabaseHelper.OnUpdatedAlarmListener, AlarmDatabaseHelper.OnDeletedAlarmListener, CityDatabaseHelper.OnRetrievedAllCitiesListener, CityDatabaseHelper.OnAddedCityListener, CityDatabaseHelper.OnFoundCityByNameListener {
+public class UpdateAlarmActivity extends FragmentActivity implements View.OnClickListener, SearchCityByNameTaskData.OnFoundCityByNameListener {
 
 	HashMap<String, City> cityTimeZonesNames = new HashMap<String, City>();
 	TimePicker timePicker;
@@ -55,11 +58,18 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 		alarm = (Alarm) intent.getSerializableExtra("alamToUpdate");
 		
 		this.initTimePicker();
-		CityDatabaseHelper.getAllCities(this, this);
+		this.getAllCities();
 		
 		findViewById(R.id.setAlarmButton).setOnClickListener(this);
-//		findViewById(R.id.cancelButton).setOnClickListener(this);
 		findViewById(R.id.deleteButton).setOnClickListener(this);
+		
+		findViewById(R.id.repeat_day_toggle_sun).setOnClickListener(this);
+		findViewById(R.id.repeat_day_toggle_mon).setOnClickListener(this);
+		findViewById(R.id.repeat_day_toggle_tue).setOnClickListener(this);
+		findViewById(R.id.repeat_day_toggle_wed).setOnClickListener(this);
+		findViewById(R.id.repeat_day_toggle_thu).setOnClickListener(this);
+		findViewById(R.id.repeat_day_toggle_fri).setOnClickListener(this);
+		findViewById(R.id.repeat_day_toggle_sat).setOnClickListener(this);
 	}
 
 	@Override
@@ -98,6 +108,23 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 		case R.id.cancelButton:
 			finish();
 			break;
+			
+		case R.id.repeat_day_toggle_sun:
+		case R.id.repeat_day_toggle_mon:
+		case R.id.repeat_day_toggle_tue:
+		case R.id.repeat_day_toggle_wed:
+		case R.id.repeat_day_toggle_thu:
+		case R.id.repeat_day_toggle_fri:
+		case R.id.repeat_day_toggle_sat:
+			ToggleButton button = (ToggleButton) view;
+			
+			if(button.isChecked()) {
+				button.setTypeface(Typeface.DEFAULT_BOLD);
+			} else {
+				button.setTypeface(Typeface.DEFAULT);
+			}
+			
+			break;
 		}
 	}
 	
@@ -108,6 +135,41 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 		timePicker.setCurrentHour(alarm.getCalendar().get(Calendar.HOUR_OF_DAY));
 		timePicker.setCurrentMinute(alarm.getCalendar().get(Calendar.MINUTE));
 		
+		
+		ToggleButton repeatDay_Sun = (ToggleButton) findViewById(R.id.repeat_day_toggle_sun);
+		ToggleButton repeatDay_Mon = (ToggleButton) findViewById(R.id.repeat_day_toggle_mon);
+		ToggleButton repeatDay_Tue = (ToggleButton) findViewById(R.id.repeat_day_toggle_tue);
+		ToggleButton repeatDay_Wed = (ToggleButton) findViewById(R.id.repeat_day_toggle_wed);
+		ToggleButton repeatDay_Thu = (ToggleButton) findViewById(R.id.repeat_day_toggle_thu);
+		ToggleButton repeatDay_Fri = (ToggleButton) findViewById(R.id.repeat_day_toggle_fri);
+		ToggleButton repeatDay_Sat = (ToggleButton) findViewById(R.id.repeat_day_toggle_sat);
+		
+		List<Integer> repeatDays = this.alarm.getRepeatDays();
+		
+		for(Integer day : repeatDays) {
+			if(Alarm.REPEAT_DAY_SUN.equals(day)) {
+				repeatDay_Sun.setChecked(true);
+				repeatDay_Sun.setTypeface(Typeface.DEFAULT_BOLD);
+			} else if(Alarm.REPEAT_DAY_MON.equals(day)) {
+				repeatDay_Mon.setChecked(true);
+				repeatDay_Mon.setTypeface(Typeface.DEFAULT_BOLD);
+			} if(Alarm.REPEAT_DAY_TUE.equals(day)) {
+				repeatDay_Tue.setChecked(true);
+				repeatDay_Tue.setTypeface(Typeface.DEFAULT_BOLD);
+			} else if(Alarm.REPEAT_DAY_WED.equals(day)) {
+				repeatDay_Wed.setChecked(true);
+				repeatDay_Wed.setTypeface(Typeface.DEFAULT_BOLD);
+			} else if(Alarm.REPEAT_DAY_THU.equals(day)) {
+				repeatDay_Thu.setChecked(true);
+				repeatDay_Thu.setTypeface(Typeface.DEFAULT_BOLD);
+			} else if(Alarm.REPEAT_DAY_FRI.equals(day)) {
+				repeatDay_Fri.setChecked(true);
+				repeatDay_Fri.setTypeface(Typeface.DEFAULT_BOLD);
+			} else if(Alarm.REPEAT_DAY_SAT.equals(day)) {
+				repeatDay_Sat.setChecked(true);
+				repeatDay_Sat.setTypeface(Typeface.DEFAULT_BOLD);
+			}
+		}
 	}
 
 	public void updateAlarm(View view) {
@@ -115,33 +177,80 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 		int hourPicked 			= timePicker.getCurrentHour();
 		int minutePicked 		= timePicker.getCurrentMinute();	
 		String cityPicked 		= cityPickerAutoComplete.getText().toString();
+		List<Integer> repeatDays = this.getCheckedRepeatDays();
 		if(cityPicked.equals("")) { //User didn't pick a city > Using the current one
 			cityPicked = currentCity.getCityName();
 			
 			City city = cityTimeZonesNames.get(cityPicked);
 			
 			if(city == null) { //Current city is not in TZ database > using default TZ and saving new pair city-TZ
-				CityDatabaseHelper.getInstance(this).addCityAsync(city, this);
+				cityTimeZonesNames = CityPreferences.addCity(currentCity, this);
+				
+				city = cityTimeZonesNames.get(cityPicked);
 			}
 			
 			Alarm alarm = new Alarm(hourPicked, minutePicked, city);
 	    	this.alarm.setCalendar(alarm.getCalendar());
 	    	this.alarm.setCity(alarm.getCity());
-	    	AlarmDatabaseHelper.getInstance(this).updateAlarmAsync(this.alarm, this);
+	    	this.alarm.setRepeatDays(repeatDays);
+	    	this.updateAlarm(this.alarm);
 			
 		} else {
 			City city = cityTimeZonesNames.get(cityPicked);
 			
 			if(city == null) { //City chosen is not in TZ database
-				CityDatabaseHelper.getInstance(this).searchCityByNameAsync(cityPicked, this);
+				SearchCityByNameTaskData task = new SearchCityByNameTaskData(this);
+				task.execute(cityPicked);
 					
 			} else {
 				Alarm alarm = new Alarm(hourPicked, minutePicked, city);
 				this.alarm.setCalendar(alarm.getCalendar());
 				this.alarm.setCity(alarm.getCity());
-				AlarmDatabaseHelper.getInstance(this).updateAlarmAsync(this.alarm, this);
+				this.alarm.setRepeatDays(repeatDays);
+				this.updateAlarm(this.alarm);
 			}
 		}
+	}
+	
+	private List<Integer> getCheckedRepeatDays() {
+		List<Integer> repeatDays = new ArrayList<Integer>();
+		
+		ToggleButton sun = (ToggleButton) findViewById(R.id.repeat_day_toggle_sun);
+		if(sun.isChecked()) {
+			repeatDays.add(Alarm.REPEAT_DAY_SUN);
+		}
+		
+		ToggleButton mon = (ToggleButton) findViewById(R.id.repeat_day_toggle_mon);
+		if(mon.isChecked()) {
+			repeatDays.add(Alarm.REPEAT_DAY_MON);
+		}
+		
+		ToggleButton tue = (ToggleButton) findViewById(R.id.repeat_day_toggle_tue);
+		if(tue.isChecked()) {
+			repeatDays.add(Alarm.REPEAT_DAY_TUE);
+		}
+		
+		ToggleButton wed = (ToggleButton) findViewById(R.id.repeat_day_toggle_wed);
+		if(wed.isChecked()) {
+			repeatDays.add(Alarm.REPEAT_DAY_WED);
+		}
+		
+		ToggleButton thu = (ToggleButton) findViewById(R.id.repeat_day_toggle_thu);
+		if(thu.isChecked()) {
+			repeatDays.add(Alarm.REPEAT_DAY_THU);
+		}
+		
+		ToggleButton fri = (ToggleButton) findViewById(R.id.repeat_day_toggle_fri);
+		if(fri.isChecked()) {
+			repeatDays.add(Alarm.REPEAT_DAY_FRI);
+		}
+		
+		ToggleButton sat = (ToggleButton) findViewById(R.id.repeat_day_toggle_sat);
+		if(sat.isChecked()) {
+			repeatDays.add(Alarm.REPEAT_DAY_SAT);
+		}
+		
+		return repeatDays;
 	}
 	
 	private void getCurrentCityLocation() {		
@@ -234,9 +343,8 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 		public void onProviderDisabled(String provider) {}
 	};
 	
-	@Override
-	public void onRetrievedAllCities(HashMap<String, City> cities) {
-		cityTimeZonesNames = cities;
+	public void getAllCities() {
+		cityTimeZonesNames = CityPreferences.getCitiesInstance(this);
 		
 		String[] citiesArray = cityTimeZonesNames.keySet().toArray(new String[cityTimeZonesNames.size()]);
 		
@@ -249,15 +357,8 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
         	cityPickerAutoComplete.setHint(R.string.choose_city);
         }
         
-        Log.d("UpdateAlarmActivity", "hint["+ cityPickerAutoComplete.getHint() +"]");
-        
         cityPickerAutoComplete.setText(alarm.getCity().getCityName());
         cityPickerAutoComplete.clearFocus();
-	}
-
-	@Override
-	public void onAddedCity(City city) {
-		// Nothing to do here
 	}
 
 	@Override
@@ -266,7 +367,7 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 			Alarm alarm = new Alarm(timePicker.getCurrentHour(), timePicker.getCurrentMinute(), city);
 			this.alarm.setCalendar(alarm.getCalendar());
 			this.alarm.setCity(alarm.getCity());
-			AlarmDatabaseHelper.getInstance(this).updateAlarmAsync(this.alarm, this);
+			this.updateAlarm(this.alarm);
 		} else {
 			Toast toastAlert = Toast.makeText(this, "City not found, please try again", Toast.LENGTH_LONG);
 			toastAlert.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 180);
@@ -274,16 +375,9 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 		}
 	}
 
-	@Override
-	public void onUpdatedAlarm(Alarm alarm) {
-		TimeZoneDatabaseHelper.getInstance(this).addTimeZoneAsync(alarm.getCity().getTimeZoneName(), new OnAddedTimeZoneListener() {
-			
-			@Override
-			public void OnAddedTimeZone(List<String> listTimeZones) {
-				// nothing to do here
-				
-			}
-		});
+	public void updateAlarm(Alarm alarm) {
+		this.updateAlarmPreference(alarm);
+		this.addTimeZone(alarm.getCity().getTimeZoneName());
 		
 		Intent returnIntent = new Intent();
 		returnIntent.putExtra("alamUpdated", alarm);
@@ -291,11 +385,12 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 		setResult(RESULT_OK, returnIntent);     
 		finish();
 	}
-
-	@Override
-	public void onDeletedAlarmListener() {
-		Intent returnIntent = new Intent();
-		setResult(RESULT_OK, returnIntent);     
-		finish();
+	
+	private void updateAlarmPreference(Alarm Alarm) {
+		AlarmPreferences.updateAlarm(alarm, this);
+	}
+	
+	private void addTimeZone(String timeZone) {
+		TimeZonePreferences.addTimeZone(timeZone, this);
 	}
 }

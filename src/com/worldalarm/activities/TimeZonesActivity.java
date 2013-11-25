@@ -1,41 +1,44 @@
 package com.worldalarm.activities;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.TimeZone;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
+import android.widget.ArrayAdapter;
 
+import com.mobeta.android.dslv.DragSortListView;
 import com.worldalarm.R;
-import com.worldalarm.db.Alarm;
-import com.worldalarm.db.TimeZoneDatabaseHelper;
+import com.worldalarm.adapters.TimeZoneAdapter;
+import com.worldalarm.fragments.TimeZonesDialogFragment;
+import com.worldalarm.fragments.TimeZonesDialogFragment.OnAddTimeZoneListener;
+import com.worldalarm.preferences.AlarmPreferences;
+import com.worldalarm.preferences.TimeZonePreferences;
 
-public class TimeZonesActivity extends FragmentActivity implements View.OnClickListener, TimeZoneDatabaseHelper.OnRetrievedAllTimeZonesListener, TimeZoneDatabaseHelper.OnAddedTimeZoneListener {
-
-	private static final int REQUEST_CODE_RESOLVE_ERR_NEW_ALARM = 5000;
-	private static final int REQUEST_CODE_RESOLVE_ERR_NEW_TIME_ZONE = 7000;
+public class TimeZonesActivity extends FragmentActivity implements View.OnClickListener {
 	
-	SimpleAdapter mAdapter;
-	List<String> listTimeZones;
+	private ArrayAdapter<String> adapter;
+	private DragSortListView listView;
+	
+	List<String> listTimeZones = new ArrayList<String>();
+	List<String> listTimeZonesToSave = new ArrayList<String>();
+	List<String> listTimeZonesToDelete = new ArrayList<String>();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.time_zones);
+		setContentView(R.layout.warp_main);
 		
-//		findViewById(R.id.NewAlarmButton).setOnClickListener(this);
-//		findViewById(R.id.NewTimeZoneButton).setOnClickListener(this);
+		listView = (DragSortListView)findViewById(android.R.id.list);
 		
-		TimeZoneDatabaseHelper.getAllTimeZones(getApplicationContext(), this);
+		findViewById(R.id.saveTimeZoneConf).setOnClickListener(this);
+		findViewById(R.id.cancelTimeZoneConf).setOnClickListener(this);
+
+		this.getAllTimeZones();
 	}
 	
 	@Override
@@ -54,107 +57,140 @@ public class TimeZonesActivity extends FragmentActivity implements View.OnClickL
 	@Override
 	public void onClick(View view) {
 		switch(view.getId()) {
-//		case R.id.NewAlarmButton:
-//			Intent newAlarmIntent = new Intent(this, NewAlarmActivity.class);
-//			this.startActivityForResult(newAlarmIntent, REQUEST_CODE_RESOLVE_ERR_NEW_ALARM);
-//			break;
-//			
-//		case R.id.NewTimeZoneButton:
-//			
-//			CityDatabaseHelper.getInstance(this).getTimeZoneNamesAsync(new OnRetrievedTimeZoneNamesListener() {
-//				
-//				@Override
-//				public void onRetrievedTimeZoneNames(final String[] timeZoneNames) {
-//					
-//					TimeZonesDialogFragment fragment = new TimeZonesDialogFragment();
-//					
-//					fragment.setOnAddTimeZoneListener(new OnAddTimeZoneListener() {
-//						
-//						@Override
-//						public Bundle getBundle() {
-//							Bundle bundle = new Bundle();
-//							bundle.putStringArray("timeZones", timeZoneNames);
-//							
-//							return bundle;
-//						}
-//					});
-//					
-//					fragment.show(getSupportFragmentManager(), "timeZones");
-//				}
-//			});
-//			
-//			break;
+		case R.id.saveTimeZoneConf:
+			TimeZonePreferences.saveTimeZone(listTimeZonesToSave, this);
+			if(listTimeZonesToDelete.size() > 0) {
+				AlarmPreferences.deleteAlarmByTZ(listTimeZonesToDelete, this);
+			}
+			finish();
+			break;
+		case R.id.cancelTimeZoneConf:
+			finish();
+			break;
 		}
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		switch (requestCode) {
-		case REQUEST_CODE_RESOLVE_ERR_NEW_ALARM:
-			if (resultCode == RESULT_OK) {
-				this.refreshTimeZoneList();
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_add:
+			
+			TimeZonesDialogFragment fragment = new TimeZonesDialogFragment();
+			
+			fragment.setOnAddTimeZoneListener(new OnAddTimeZoneListener() {
 				
-				Alarm newAlarm = (Alarm) data.getSerializableExtra("newAlarm");
-				
-				Intent listAlarmsIntent = new Intent(getApplicationContext(), ListAlarmsSwipeViewActivity.class).putExtra("timeZoneSelected", newAlarm.getCity().getTimeZoneName());
-				startActivity(listAlarmsIntent);
-				
-			}
+				@Override
+				public Bundle getBundle() {
+					
+					String[] availableIDs = TimeZone.getAvailableIDs();
+					
+					List<String> timeZoneNames = new ArrayList<String>();
+					
+					for(String tzId : availableIDs) {
+						
+						String tzName = TimeZone.getTimeZone(tzId).getDisplayName();
+						
+						if(!timeZoneNames.contains(tzName)) {
+							timeZoneNames.add(tzName);
+						}
+					}
+					
+					String[] timeZonesArray = new String[timeZoneNames.size()];
+					timeZonesArray = timeZoneNames.toArray(timeZonesArray);
+					
+					Bundle bundle = new Bundle();
+					bundle.putStringArray("timeZones", timeZonesArray);
+					
+					return bundle;
+				}
+			});
+			
+			fragment.show(getSupportFragmentManager(), "timeZones");
+			
 			break;
 			
-		case REQUEST_CODE_RESOLVE_ERR_NEW_TIME_ZONE:
-			// TODO: to get new timeZone from Dialog
-			TimeZoneDatabaseHelper.getInstance(this).addTimeZoneAsync("", this);
+		default:
 			break;
 		}
+		
+		return true;
 	}
 
-	@Override
-	public void OnRetrievedAllTimeZones(List<String> listTimeZones) {
+	
+	public void getAllTimeZones() {
+		this.listTimeZones = TimeZonePreferences.getAllTimeZones(this);
 		
-		this.listTimeZones = listTimeZones;
+		this.listTimeZonesToSave.addAll(listTimeZones);
 		
 		this.refreshTimeZoneList();
 	}
 	
-	@Override
-	public void OnAddedTimeZone(List<String> listTimeZones) {
-		
-		this.listTimeZones = listTimeZones;
+	public void addTimeZone(String timeZone) {
+		if(!listTimeZonesToSave.contains(timeZone)) {
+			listTimeZonesToSave.add(timeZone);
+		}
 		
 		this.refreshTimeZoneList();
-		
 	}
 	
 	private void refreshTimeZoneList() {
-		List<Map<String, String>> timeZoneList = new ArrayList<Map<String,String>>();
-		
-		if(listTimeZones != null) {
-			for(String timeZone : listTimeZones) {
-				HashMap<String, String> aux = new HashMap<String, String>();
-				aux.put("timeZone", timeZone);
+		if(listTimeZonesToSave != null) {
+			String[] data;
 			
-				timeZoneList.add(aux);
+			if(listTimeZonesToSave != null) {
+				data = new String[listTimeZonesToSave.size()];
+				
+				int i = 0;
+				for(String timeZone : listTimeZonesToSave) {
+					data[i] = timeZone;
+					
+					i++;
+				}
+			} else {
+				data = new String[0];
 			}
 			
-			mAdapter = new SimpleAdapter(this, timeZoneList, android.R.layout.simple_list_item_1, new String[]{"timeZone"}, new int[]{android.R.id.text1});
-			
-			ListView lv = (ListView) findViewById(android.R.id.list);
-			lv.setAdapter(mAdapter);
-			
-			lv.setOnItemClickListener(new OnItemClickListener() {
+			adapter = new TimeZoneAdapter(this, R.layout.time_zone_row, data);
 	
-				@Override
-				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-					
-					@SuppressWarnings("unchecked")
-					HashMap<String, String> map = (HashMap<String, String>) parent.getItemAtPosition(position);
-					
-					Intent listAlarmsIntent = new Intent(getApplicationContext(), ListAlarmsSwipeViewActivity.class).putExtra("timeZoneSelected", map.get("timeZone"));
-					
-					startActivity(listAlarmsIntent);
-				}
-			});
+			listView.setDropListener(onDrop);
+			listView.setRemoveListener(onRemove);
+			listView.setDragScrollProfile(ssProfile);
+			
+//	        adapter = new ArrayAdapter<String>(this, R.layout.list_item_handle_right, R.id.text, listTimeZones);
+	        adapter = new ArrayAdapter<String>(this, R.layout.list_item_handle_left, R.id.text, listTimeZonesToSave);
+
+	        listView.setAdapter(adapter);
 		}
 	}
+	
+	private DragSortListView.DropListener onDrop = new DragSortListView.DropListener() {
+		@Override
+		public void drop(int from, int to) {
+			String item=adapter.getItem(from);
+
+			adapter.notifyDataSetChanged();
+			adapter.remove(item);
+			adapter.insert(item, to);
+		}
+	};
+
+	private DragSortListView.RemoveListener onRemove = new DragSortListView.RemoveListener() {
+		@Override
+		public void remove(int which) {
+			listTimeZonesToDelete.add(adapter.getItem(which));
+			adapter.remove(adapter.getItem(which));
+		}
+	};
+
+	private DragSortListView.DragScrollProfile ssProfile = new DragSortListView.DragScrollProfile() {
+		@Override
+		public float getSpeed(float w, long t) {
+			if (w > 0.8f) {
+				// Traverse all views in a millisecond
+				return ((float) adapter.getCount()) / 0.001f;
+			} else {
+				return 10.0f * w;
+			}
+		}
+	};
 }

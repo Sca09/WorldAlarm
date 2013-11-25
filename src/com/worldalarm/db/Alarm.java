@@ -2,27 +2,41 @@ package com.worldalarm.db;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
 
 public class Alarm implements Serializable {
 
 	private static final long serialVersionUID = 1L; 
 	
-	private long id;
+	private String id;
 	private Calendar calendar;
 	private City city;
+	private boolean active;
+	private List<Integer> repeat_days = new ArrayList<Integer>();
+	
+	public static final Integer REPEAT_DAY_SUN		= 0;
+	public static final Integer REPEAT_DAY_MON		= 1;
+	public static final Integer REPEAT_DAY_TUE		= 2;
+	public static final Integer REPEAT_DAY_WED		= 3;
+	public static final Integer REPEAT_DAY_THU		= 4;
+	public static final Integer REPEAT_DAY_FRI		= 5;
+	public static final Integer REPEAT_DAY_SAT		= 6;
 	
 	/**
 	 * Alarm with local localization at current time
 	 */
 	public Alarm() {
+		this.id = this.generateUniqueId();
 		this.calendar = Calendar.getInstance();
 		this.city = new City();
+		this.active = Boolean.TRUE;
 	}
 	
 	/**
@@ -31,6 +45,7 @@ public class Alarm implements Serializable {
 	 * @param minutePicked
 	 */
 	public Alarm(int hourPicked, int minutePicked) {
+		this.id = this.generateUniqueId();
 		this.calendar = Calendar.getInstance();
 		this.calendar.set(Calendar.HOUR_OF_DAY, hourPicked);
 		this.calendar.set(Calendar.MINUTE, minutePicked);
@@ -40,6 +55,7 @@ public class Alarm implements Serializable {
 		}
 
 		this.city = new City();
+		this.active = Boolean.TRUE;
 	}
 	
 	/**
@@ -47,6 +63,7 @@ public class Alarm implements Serializable {
 	 * @param timeInMillis
 	 */
 	public Alarm(long timeInMillis) {
+		this.id = this.generateUniqueId();
 		this.calendar = Calendar.getInstance();
 		this.calendar.setTimeInMillis(timeInMillis);
 		
@@ -55,9 +72,11 @@ public class Alarm implements Serializable {
 		}
 
 		this.city = new City();
+		this.active = Boolean.TRUE;
 	}
 	
 	public Alarm(int hourPicked, int minutePicked, City cityPicked) {
+		this.id = this.generateUniqueId();
 		
 		if(cityPicked != null) {
 		
@@ -70,6 +89,7 @@ public class Alarm implements Serializable {
 			}
 
 			this.city = cityPicked;
+			this.active = Boolean.TRUE;
 			
 		} else {
 			this.calendar = Calendar.getInstance();
@@ -81,10 +101,13 @@ public class Alarm implements Serializable {
 			}
 			
 			this.city = new City();
+			this.active = Boolean.TRUE;
 		}
 	}
 	
 	public Alarm(long timeInMillis, City cityPicked) {
+		this.id = this.generateUniqueId();
+		
 		if(cityPicked != null) {
 			this.calendar = new GregorianCalendar(TimeZone.getTimeZone(cityPicked.getTimeZoneID()));
 			this.calendar.setTimeInMillis(timeInMillis);
@@ -94,6 +117,7 @@ public class Alarm implements Serializable {
 			}
 
 			this.city = cityPicked;
+			this.active = Boolean.TRUE;
 			
 		} else {
 			this.calendar = Calendar.getInstance();
@@ -104,9 +128,14 @@ public class Alarm implements Serializable {
 			}
 			
 			this.city = new City();
+			this.active = Boolean.TRUE;
 		}
 	}
 
+	private String generateUniqueId() {
+		return UUID.randomUUID().toString();
+	}
+	
 	@SuppressLint("SimpleDateFormat")
 	@Override
 	public String toString() {	
@@ -175,32 +204,12 @@ public class Alarm implements Serializable {
 		
 		return sdf.format(calendar.getTime());
 	}
-	
-	public ContentValues getUpdateContentValues() {
-		ContentValues updateValues = new ContentValues();
-		updateValues.put(AlarmDatabaseHelper.COLUMN_NAME_TIME_IN_MILLIS, getTimeInMillis());
-		updateValues.put(AlarmDatabaseHelper.COLUMN_NAME_CITY, city.getCityName());
-		updateValues.put(AlarmDatabaseHelper.COLUMN_NAME_TIME_ZONE_ID, city.getTimeZoneID());
-		updateValues.put(AlarmDatabaseHelper.COLUMN_NAME_TIME_ZONE_NAME, city.getTimeZoneName());
 
-		return updateValues;
-	}
-	
-	public ContentValues getInsertContentValues() {
-		ContentValues insertValues = new ContentValues();
-		insertValues.put(AlarmDatabaseHelper.COLUMN_NAME_TIME_IN_MILLIS, getTimeInMillis());
-		insertValues.put(AlarmDatabaseHelper.COLUMN_NAME_CITY, city.getCityName());
-		insertValues.put(AlarmDatabaseHelper.COLUMN_NAME_TIME_ZONE_ID, city.getTimeZoneID());
-		insertValues.put(AlarmDatabaseHelper.COLUMN_NAME_TIME_ZONE_NAME, city.getTimeZoneName());
-		
-		return insertValues;
-	}
-
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	
@@ -227,5 +236,21 @@ public class Alarm implements Serializable {
 	public void setCity(City city) {
 		this.city = city;
 		this.calendar.setTimeZone(TimeZone.getTimeZone(city.getTimeZoneID()));
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public List<Integer> getRepeatDays() {
+		return repeat_days;
+	}
+
+	public void setRepeatDays(List<Integer> repeat_days) {
+		this.repeat_days = repeat_days;
 	}
 }

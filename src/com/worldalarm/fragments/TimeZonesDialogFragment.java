@@ -6,9 +6,9 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 
 import com.worldalarm.R;
+import com.worldalarm.activities.TimeZonesActivity;
 
 public class TimeZonesDialogFragment extends DialogFragment {
 
@@ -29,8 +29,6 @@ public class TimeZonesDialogFragment extends DialogFragment {
 		
 		final String[] timeZones = bundle.getStringArray("timeZones");
 		
-		Log.d("TimeZonesDialogFragment", "timeZones["+ timeZones +"]");
-		
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		
 		builder.setTitle(R.string.choose_time_zone);
@@ -42,7 +40,7 @@ public class TimeZonesDialogFragment extends DialogFragment {
 			public void onClick(DialogInterface dialog, int which) {
 				String newTimeZone = timeZones[which];
 				
-				NewTimeZoneListener activity = (NewTimeZoneListener) getActivity();
+				TimeZonesActivity activity = (TimeZonesActivity) getActivity();
 				activity.addTimeZone(newTimeZone);
 			}
 		});

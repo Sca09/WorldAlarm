@@ -3,8 +3,6 @@ package com.worldalarm.db;
 import java.io.Serializable;
 import java.util.TimeZone;
 
-import android.content.ContentValues;
-
 public class City implements Serializable{
 
 
@@ -45,14 +43,5 @@ public class City implements Serializable{
 	}
 	public void setTimeZoneName(String timeZoneName) {
 		this.timeZoneName = timeZoneName;
-	}
-	
-	public ContentValues getInsertContentValues() {
-		ContentValues insertValues = new ContentValues();
-		insertValues.put(CityDatabaseHelper.COLUMN_NAME_CITY, cityName);
-		insertValues.put(CityDatabaseHelper.COLUMN_NAME_TIME_ZONE_ID, timeZoneID);
-		insertValues.put(CityDatabaseHelper.COLUMN_NAME_TIME_ZONE_NAME, timeZoneName);
-		
-		return insertValues;
 	}
 }

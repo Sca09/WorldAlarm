@@ -16,10 +16,9 @@ import android.widget.RelativeLayout;
 import com.worldalarm.R;
 import com.worldalarm.adapters.AlarmAdapter;
 import com.worldalarm.db.Alarm;
-import com.worldalarm.db.AlarmDatabaseHelper;
-import com.worldalarm.db.AlarmDatabaseHelper.OnRetrievedAllAlarmsByTZNameListener;
+import com.worldalarm.preferences.AlarmPreferences;
 
-public class AlarmsListFragment extends Fragment implements OnRetrievedAllAlarmsByTZNameListener {
+public class AlarmsListFragment extends Fragment {
 	/**
 	 * The fragment argument representing the section number for this fragment.
 	 */
@@ -45,7 +44,7 @@ public class AlarmsListFragment extends Fragment implements OnRetrievedAllAlarms
 			}
 		}
 
-		AlarmDatabaseHelper.getAlarmsByTZInstance(getActivity(), this);
+		this.getAllAlarmsByTZName();
 
 		return rootView;
 	}
@@ -56,10 +55,9 @@ public class AlarmsListFragment extends Fragment implements OnRetrievedAllAlarms
 		super.onAttach(activity);
 		this.activity = activity;
 	}
-	
-	
-	@Override
-	public void onRetrievedAllAlarmsByTZName(HashMap<String, List<Alarm>> listAlarms) {
+
+	public void getAllAlarmsByTZName() {
+		HashMap<String, List<Alarm>> listAlarms = AlarmPreferences.getAlarmsByTZInstance(getActivity());
 		
 		List<Alarm> timeZoneList = this.getListAlarms(listAlarms);
 		
