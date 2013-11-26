@@ -66,6 +66,13 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 			return listTimeZones.get(position - 1);
 		}
 	}
+	
+	public void notifyDataSetChanged(String currentTimeZone){
+		
+		if(listTimeZones.indexOf(currentTimeZone) == 0) {
+			notifyDataSetChanged();
+		}
+	}
 
 	public void getAllTimeZones() {
 		this.listTimeZones = TimeZonePreferences.getAllTimeZones(this.context);

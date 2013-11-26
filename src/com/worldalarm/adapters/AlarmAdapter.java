@@ -88,7 +88,7 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 				
 				AlarmPreferences.updateAlarm(alarm, context);
 				
-				((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged();
+				((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged(alarm.getCity().getTimeZoneName());
 			}
 		});
 		
