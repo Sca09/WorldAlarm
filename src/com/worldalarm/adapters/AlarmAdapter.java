@@ -17,6 +17,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.worldalarm.R;
+import com.worldalarm.activities.ListAlarmsSwipeViewActivity;
 import com.worldalarm.activities.UpdateAlarmActivity;
 import com.worldalarm.db.Alarm;
 import com.worldalarm.preferences.AlarmPreferences;
@@ -75,6 +76,8 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		holder.alarmCity.setText(alarm.getCity().getCityName());
 		holder.alarmHourLocal.setText(alarm.getHourLocal());
 		holder.alarmDateLocal.setText(alarm.getDateLocal());
+		
+		holder.alarmSwitchButton.setOnCheckedChangeListener(null);
 		holder.alarmSwitchButton.setChecked(alarm.isActive());
 		
 		holder.alarmSwitchButton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -84,6 +87,8 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 				alarm.setActive(isChecked);
 				
 				AlarmPreferences.updateAlarm(alarm, context);
+				
+				((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged();
 			}
 		});
 		
@@ -131,13 +136,6 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		
 		return row;
 	}
-
-    
-    private Object getResources() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 	static class AlarmHolder
     {

@@ -80,22 +80,26 @@ public class AlarmPreferences {
 			if(list.size() > 0) {
 				for(Alarm currentAlarm : list) {
 					if(currentAlarm.getId().equals(alarm.getId())) {
-						list.remove(currentAlarm);
+						if(currentAlarm.getCity().getTimeZoneName().equals(alarm.getCity().getTimeZoneName())) {
+							list.set(list.indexOf(currentAlarm), alarm);
+						} else {
+							list.remove(currentAlarm);
+							
+							List<Alarm> listAlarms = alarmsByTZSingleton.get(alarm.getCity().getTimeZoneName());
+							
+							if(listAlarms == null) {
+								listAlarms = new ArrayList<Alarm>();
+							}
+							
+							listAlarms.add(alarm);
+							
+							alarmsByTZSingleton.put(alarm.getCity().getTimeZoneName(), listAlarms);
+						}
 						break;
 					}
 				}
 			}
 		}
-		
-		List<Alarm> listAlarms = alarmsByTZSingleton.get(alarm.getCity().getTimeZoneName());
-		
-		if(listAlarms == null) {
-			listAlarms = new ArrayList<Alarm>();
-		}
-		
-		listAlarms.add(alarm);
-		
-		alarmsByTZSingleton.put(alarm.getCity().getTimeZoneName(), listAlarms);
 		
 		savePreferences(context);
 		

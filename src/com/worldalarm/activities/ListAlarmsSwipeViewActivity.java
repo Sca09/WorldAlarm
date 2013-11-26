@@ -22,7 +22,7 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 	 * intensive, it may be best to switch to a
 	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
-	SectionsPagerAdapter mSectionsPagerAdapter;
+	public SectionsPagerAdapter mSectionsPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
@@ -119,5 +119,13 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 	public void openTab(String timeZoneSelected) {
 		int tzSelectedPosition = mSectionsPagerAdapter.getListTimeZones().lastIndexOf(timeZoneSelected);
 		mViewPager.setCurrentItem(tzSelectedPosition + 1);
+	}
+	
+	public SectionsPagerAdapter getmSectionsPagerAdapter() {
+		return mSectionsPagerAdapter;
+	}
+
+	public void setmSectionsPagerAdapter(SectionsPagerAdapter mSectionsPagerAdapter) {
+		this.mSectionsPagerAdapter = mSectionsPagerAdapter;
 	}
 }

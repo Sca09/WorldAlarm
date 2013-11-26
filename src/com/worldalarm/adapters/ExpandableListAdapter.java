@@ -18,6 +18,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.worldalarm.R;
+import com.worldalarm.activities.ListAlarmsSwipeViewActivity;
 import com.worldalarm.activities.UpdateAlarmActivity;
 import com.worldalarm.adapters.AlarmAdapter.AlarmHolder;
 import com.worldalarm.db.Alarm;
@@ -88,6 +89,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		holder.alarmCity.setText(alarm.getCity().getCityName());
 		holder.alarmHourLocal.setText(alarm.getHourLocal());
 		holder.alarmDateLocal.setText(alarm.getDateLocal());
+		
+		holder.alarmSwitchButton.setOnCheckedChangeListener(null);
 		holder.alarmSwitchButton.setChecked(alarm.isActive());
 		
 		holder.alarmSwitchButton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -97,6 +100,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 				alarm.setActive(isChecked);
 				
 				AlarmPreferences.updateAlarm(alarm, context);
+				
+				((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged();
 			}
 		});
 		
