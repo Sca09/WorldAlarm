@@ -84,12 +84,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		final Alarm alarm = (Alarm) getChild(groupPosition, childPosition);
 		
 		holder.alarmId.setText(String.valueOf(alarm.getId()));
-		holder.alarmHour.setText(alarm.getHour());
-		holder.alarmDate.setText(alarm.getDate());
+		holder.alarmHour.setText(alarm.getFormattedHour());
 		holder.alarmCity.setText(alarm.getCity().getCityName());
-		holder.alarmHourLocal.setText(alarm.getHourLocal());
-		holder.alarmDateLocal.setText(alarm.getDateLocal());
-		
+		holder.alarmHourLocal.setText(alarm.getFormattedLocalHour());
 		holder.alarmSwitchButton.setOnCheckedChangeListener(null);
 		holder.alarmSwitchButton.setChecked(alarm.isActive());
 		

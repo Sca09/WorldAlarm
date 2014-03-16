@@ -1,7 +1,6 @@
 package com.worldalarm.activities;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -60,7 +59,7 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 		this.initTimePicker();
 		this.getAllCities();
 		
-		findViewById(R.id.setAlarmButton).setOnClickListener(this);
+		findViewById(R.id.updateAlarmButton).setOnClickListener(this);
 		findViewById(R.id.deleteButton).setOnClickListener(this);
 		
 		findViewById(R.id.repeat_day_toggle_sun).setOnClickListener(this);
@@ -82,12 +81,11 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 	@Override
 	public void onClick(View view) {
 		switch(view.getId()) {
-		case R.id.setAlarmButton:			
+		case R.id.updateAlarmButton:			
 			this.updateAlarm(view);
 			break;
 		
 		case R.id.deleteButton:
-
 			DeleteAlarmConfirmDialogFragment dialog = new DeleteAlarmConfirmDialogFragment();
 			
 			dialog.setOnDeleteAlarmDialogListener(new OnDeleteAlarmDialogListener() {
@@ -130,11 +128,8 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 	
 	private void initTimePicker() {
 		timePicker = (TimePicker) findViewById(R.id.alarmPicker);
-//		timePicker.setIs24HourView(DateFormat.is24HourFormat(this));
-		
-		timePicker.setCurrentHour(alarm.getCalendar().get(Calendar.HOUR_OF_DAY));
-		timePicker.setCurrentMinute(alarm.getCalendar().get(Calendar.MINUTE));
-		
+		timePicker.setCurrentHour(alarm.getHour());
+		timePicker.setCurrentMinute(alarm.getMinute());
 		
 		ToggleButton repeatDay_Sun = (ToggleButton) findViewById(R.id.repeat_day_toggle_sun);
 		ToggleButton repeatDay_Mon = (ToggleButton) findViewById(R.id.repeat_day_toggle_mon);
@@ -190,7 +185,8 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 			}
 			
 			Alarm alarm = new Alarm(hourPicked, minutePicked, city);
-	    	this.alarm.setCalendar(alarm.getCalendar());
+			this.alarm.setHour(alarm.getHour());
+			this.alarm.setMinute(alarm.getMinute());
 	    	this.alarm.setCity(alarm.getCity());
 	    	this.alarm.setRepeatDays(repeatDays);
 	    	this.updateAlarm(this.alarm);
@@ -204,7 +200,8 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 					
 			} else {
 				Alarm alarm = new Alarm(hourPicked, minutePicked, city);
-				this.alarm.setCalendar(alarm.getCalendar());
+				this.alarm.setHour(alarm.getHour());
+				this.alarm.setMinute(alarm.getMinute());
 				this.alarm.setCity(alarm.getCity());
 				this.alarm.setRepeatDays(repeatDays);
 				this.updateAlarm(this.alarm);
@@ -365,7 +362,8 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 	public void onFoundCityByName(City city) {
 		if(city != null) {
 			Alarm alarm = new Alarm(timePicker.getCurrentHour(), timePicker.getCurrentMinute(), city);
-			this.alarm.setCalendar(alarm.getCalendar());
+			this.alarm.setHour(alarm.getHour());
+			this.alarm.setMinute(alarm.getMinute());
 			this.alarm.setCity(alarm.getCity());
 			this.updateAlarm(this.alarm);
 		} else {

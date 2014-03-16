@@ -127,7 +127,7 @@
             android:background="@color/blue_light" />
 
         <Button
-            android:id="@+id/setAlarmButton"
+            android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -135,7 +135,30 @@
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@id/ViewColorPickerHelper"
             android:background="?android:attr/selectableItemBackground"
-            android:text="@string/set_text" />
+            android:text="@string/delete_text" />
+
+        <Button
+            android:id="@+id/updateAlarmButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/ViewColorPickerHelper"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="@string/update_text" />
+        
+        <!-- 
+        <Button
+            android:id="@+id/updateAlarmButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@id/ViewColorPickerHelper"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="@string/update_text" />
 
         <Button
             android:id="@+id/deleteButton"
@@ -147,7 +170,8 @@
             android:layout_toRightOf="@id/ViewColorPickerHelper"
             android:background="?android:attr/selectableItemBackground"
             android:text="@string/delete_text" />
-
+		-->
+		
         <View
             android:layout_width="match_parent"
             android:layout_height="1dip"

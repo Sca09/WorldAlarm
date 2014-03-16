@@ -191,10 +191,10 @@ containing a value of this type.
     }
     public static final class id {
         public static final int ViewColorPickerHelper=0x7f040025;
-        public static final int action_add=0x7f04002e;
-        public static final int action_home=0x7f04002f;
-        public static final int action_settings=0x7f04002d;
-        public static final int action_settings_time_zones_conf=0x7f040030;
+        public static final int action_add=0x7f04002f;
+        public static final int action_home=0x7f040030;
+        public static final int action_settings=0x7f04002e;
+        public static final int action_settings_time_zones_conf=0x7f040031;
         public static final int alarmCity=0x7f04000e;
         public static final int alarmDate=0x7f04000d;
         public static final int alarmDateLocal=0x7f04000a;
@@ -204,7 +204,7 @@ containing a value of this type.
         public static final int alarmPicker=0x7f04001b;
         public static final int alarmSwitchButton=0x7f04000b;
         public static final int buttonsPanel=0x7f040024;
-        public static final int cancelButton=0x7f040027;
+        public static final int cancelButton=0x7f040026;
         public static final int cancelTimeZoneConf=0x7f040029;
         public static final int cityPickerAutoComplete=0x7f04001a;
         public static final int clickRemove=0x7f040000;
@@ -234,11 +234,12 @@ containing a value of this type.
         public static final int repeat_day_toggle_wed=0x7f040020;
         public static final int repeat_day_tue=0x7f040011;
         public static final int repeat_day_wed=0x7f040012;
-        public static final int saveTimeZoneConf=0x7f04002c;
-        public static final int setAlarmButton=0x7f040026;
+        public static final int saveTimeZoneConf=0x7f04002d;
+        public static final int setAlarmButton=0x7f040027;
         public static final int setTimeZoneConf=0x7f04002a;
         public static final int text=0x7f040019;
         public static final int timeZoneTitle=0x7f040028;
+        public static final int updateAlarmButton=0x7f04002c;
     }
     public static final class layout {
         public static final int activity_expandable_alarms=0x7f030000;
@@ -263,32 +264,33 @@ containing a value of this type.
         public static final int time_zones=0x7f090004;
     }
     public static final class string {
-        public static final int action_settings=0x7f07000e;
-        public static final int action_settings_time_zones_conf=0x7f07000f;
+        public static final int action_settings=0x7f07000f;
+        public static final int action_settings_time_zones_conf=0x7f070010;
         public static final int app_name=0x7f070000;
-        public static final int by_default=0x7f07000b;
-        public static final int cancel_text=0x7f070006;
-        public static final int choose_city=0x7f070009;
-        public static final int choose_time_zone=0x7f07000a;
-        public static final int delete_confirm_question=0x7f070008;
-        public static final int delete_text=0x7f070007;
+        public static final int by_default=0x7f07000c;
+        public static final int cancel_text=0x7f070007;
+        public static final int choose_city=0x7f07000a;
+        public static final int choose_time_zone=0x7f07000b;
+        public static final int delete_confirm_question=0x7f070009;
+        public static final int delete_text=0x7f070008;
         public static final int go_home=0x7f070003;
-        public static final int hello_world=0x7f070012;
+        public static final int hello_world=0x7f070013;
         public static final int new_alarm_text=0x7f070001;
         public static final int new_time_zone_text=0x7f070002;
-        public static final int repeat_day_fri=0x7f070018;
-        public static final int repeat_day_mon=0x7f070014;
-        public static final int repeat_day_sat=0x7f070019;
-        public static final int repeat_day_sun=0x7f070013;
-        public static final int repeat_day_thu=0x7f070017;
-        public static final int repeat_day_tue=0x7f070015;
-        public static final int repeat_day_wed=0x7f070016;
-        public static final int save_text=0x7f070005;
+        public static final int repeat_day_fri=0x7f070019;
+        public static final int repeat_day_mon=0x7f070015;
+        public static final int repeat_day_sat=0x7f07001a;
+        public static final int repeat_day_sun=0x7f070014;
+        public static final int repeat_day_thu=0x7f070018;
+        public static final int repeat_day_tue=0x7f070016;
+        public static final int repeat_day_wed=0x7f070017;
+        public static final int save_text=0x7f070006;
         public static final int set_text=0x7f070004;
-        public static final int settings_menu_text=0x7f07000c;
-        public static final int title_activity_expandable_alarms=0x7f070010;
-        public static final int title_activity_list_alarms_swipe_view=0x7f07000d;
-        public static final int title_activity_new_time_zones_list=0x7f070011;
+        public static final int settings_menu_text=0x7f07000d;
+        public static final int title_activity_expandable_alarms=0x7f070011;
+        public static final int title_activity_list_alarms_swipe_view=0x7f07000e;
+        public static final int title_activity_new_time_zones_list=0x7f070012;
+        public static final int update_text=0x7f070005;
     }
     public static final class style {
         /** 

@@ -16,7 +16,8 @@ public class Alarm implements Serializable {
 	private static final long serialVersionUID = 1L; 
 	
 	private String id;
-	private Calendar calendar;
+	private int hour;
+	private int minute;
 	private City city;
 	private boolean active;
 	private List<Integer> repeat_days = new ArrayList<Integer>();
@@ -34,7 +35,11 @@ public class Alarm implements Serializable {
 	 */
 	public Alarm() {
 		this.id = this.generateUniqueId();
-		this.calendar = Calendar.getInstance();
+		
+		Calendar calendar = Calendar.getInstance();
+		this.hour = calendar.get(Calendar.HOUR_OF_DAY);
+		this.minute = calendar.get(Calendar.MINUTE);
+		
 		this.city = new City();
 		this.active = Boolean.TRUE;
 	}
@@ -46,14 +51,8 @@ public class Alarm implements Serializable {
 	 */
 	public Alarm(int hourPicked, int minutePicked) {
 		this.id = this.generateUniqueId();
-		this.calendar = Calendar.getInstance();
-		this.calendar.set(Calendar.HOUR_OF_DAY, hourPicked);
-		this.calendar.set(Calendar.MINUTE, minutePicked);
-		
-		if(this.calendar.equals(Calendar.getInstance()) || this.calendar.before(Calendar.getInstance())) {
-			this.calendar.add(Calendar.DAY_OF_MONTH, 1);
-		}
-
+		this.hour = hourPicked;
+		this.minute = minutePicked;
 		this.city = new City();
 		this.active = Boolean.TRUE;
 	}
@@ -64,13 +63,12 @@ public class Alarm implements Serializable {
 	 */
 	public Alarm(long timeInMillis) {
 		this.id = this.generateUniqueId();
-		this.calendar = Calendar.getInstance();
-		this.calendar.setTimeInMillis(timeInMillis);
 		
-		if(this.calendar.equals(Calendar.getInstance()) || this.calendar.before(Calendar.getInstance())) {
-			this.calendar.add(Calendar.DAY_OF_MONTH, 1);
-		}
-
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(timeInMillis);
+		this.hour = calendar.get(Calendar.HOUR_OF_DAY);
+		this.minute = calendar.get(Calendar.MINUTE);
+		
 		this.city = new City();
 		this.active = Boolean.TRUE;
 	}
@@ -78,58 +76,32 @@ public class Alarm implements Serializable {
 	public Alarm(int hourPicked, int minutePicked, City cityPicked) {
 		this.id = this.generateUniqueId();
 		
-		if(cityPicked != null) {
-		
-			this.calendar = new GregorianCalendar(TimeZone.getTimeZone(cityPicked.getTimeZoneID()));
-			this.calendar.set(Calendar.HOUR_OF_DAY, hourPicked);
-			this.calendar.set(Calendar.MINUTE, minutePicked);
-			
-			if(this.calendar.equals(new GregorianCalendar(TimeZone.getTimeZone(cityPicked.getTimeZoneID()))) || this.calendar.before(new GregorianCalendar(TimeZone.getTimeZone(cityPicked.getTimeZoneID())))) {
-				calendar.add(Calendar.DAY_OF_MONTH, 1);
-			}
-
-			this.city = cityPicked;
-			this.active = Boolean.TRUE;
-			
-		} else {
-			this.calendar = Calendar.getInstance();
-			this.calendar.set(Calendar.HOUR_OF_DAY, hourPicked);
-			this.calendar.set(Calendar.MINUTE, minutePicked);
-			
-			if(this.calendar.equals(Calendar.getInstance()) || this.calendar.before(Calendar.getInstance())) {
-				calendar.add(Calendar.DAY_OF_MONTH, 1);
-			}
-			
+		if(cityPicked == null) {
 			this.city = new City();
-			this.active = Boolean.TRUE;
+		} else {
+			this.city = cityPicked;
 		}
+			
+		this.hour = hourPicked;
+		this.minute = minutePicked;
+		this.active = Boolean.TRUE;
 	}
 	
 	public Alarm(long timeInMillis, City cityPicked) {
 		this.id = this.generateUniqueId();
 		
-		if(cityPicked != null) {
-			this.calendar = new GregorianCalendar(TimeZone.getTimeZone(cityPicked.getTimeZoneID()));
-			this.calendar.setTimeInMillis(timeInMillis);
-		
-			if(this.calendar.equals(Calendar.getInstance(TimeZone.getTimeZone(cityPicked.getTimeZoneID()))) || this.calendar.before(Calendar.getInstance(TimeZone.getTimeZone(cityPicked.getTimeZoneID())))) {
-				this.calendar.add(Calendar.DAY_OF_MONTH, 1);
-			}
-
-			this.city = cityPicked;
-			this.active = Boolean.TRUE;
-			
-		} else {
-			this.calendar = Calendar.getInstance();
-			this.calendar.setTimeInMillis(timeInMillis);
-			
-			if(this.calendar.equals(Calendar.getInstance()) || this.calendar.before(Calendar.getInstance())) {
-				this.calendar.add(Calendar.DAY_OF_MONTH, 1);
-			}
-			
+		if(cityPicked == null) {
 			this.city = new City();
-			this.active = Boolean.TRUE;
+		} else {
+			this.city = cityPicked;
 		}
+		
+		Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone(cityPicked.getTimeZoneID()));
+		calendar.setTimeInMillis(timeInMillis);
+		
+		this.hour = calendar.get(Calendar.HOUR_OF_DAY);
+		this.minute = calendar.get(Calendar.MINUTE);
+		this.active = Boolean.TRUE;
 	}
 
 	private String generateUniqueId() {
@@ -139,69 +111,39 @@ public class Alarm implements Serializable {
 	@SuppressLint("SimpleDateFormat")
 	@Override
 	public String toString() {	
-//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
 		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a, MMM d");
 		sdf.setTimeZone(TimeZone.getTimeZone(city.getTimeZoneID()));
+		
+		Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone(this.city.getTimeZoneID()));
+		calendar.set(Calendar.HOUR_OF_DAY, this.hour);
+		calendar.set(Calendar.MINUTE, this.minute);
 		
 		return sdf.format(calendar.getTime());
 	}
 	
 	@SuppressLint("SimpleDateFormat")
-	public String getHour() {
+	public String getFormattedHour() {
 		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
 		sdf.setTimeZone(TimeZone.getTimeZone(city.getTimeZoneID()));
-		
-		return sdf.format(calendar.getTime());
-	}
-	
-	@SuppressLint("SimpleDateFormat")
-	public String getDate() {
-		SimpleDateFormat sdf = new SimpleDateFormat("MMM d");
-		sdf.setTimeZone(TimeZone.getTimeZone(city.getTimeZoneID()));
-		
-		return sdf.format(calendar.getTime());
-	}
-	
-	@SuppressLint("SimpleDateFormat")
-	public String getLocalDate() {
-//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
-		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a, MMM d");
-		
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(this.calendar.getTimeInMillis());
-		
-		if(calendar.before(Calendar.getInstance())) {
-			calendar.add(Calendar.DAY_OF_MONTH, 1);
-		}
+
+		Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone(this.city.getTimeZoneID()));
+		calendar.set(Calendar.HOUR_OF_DAY, this.hour);
+		calendar.set(Calendar.MINUTE, this.minute);
 
 		return sdf.format(calendar.getTime());
 	}
 	
 	@SuppressLint("SimpleDateFormat")
-	public String getHourLocal() {
+	public String getFormattedLocalHour() {
 		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
 		
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(this.calendar.getTimeInMillis());
+		Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone(this.city.getTimeZoneID()));
+		calendar.set(Calendar.HOUR_OF_DAY, this.hour);
+		calendar.set(Calendar.MINUTE, this.minute);
 		
-		if(calendar.before(Calendar.getInstance())) {
-			calendar.add(Calendar.DAY_OF_MONTH, 1);
-		}
-		
-		return sdf.format(calendar.getTime());
-	}
-	
-	@SuppressLint("SimpleDateFormat")
-	public String getDateLocal() {
-		SimpleDateFormat sdf = new SimpleDateFormat("MMM d");
-		
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(this.calendar.getTimeInMillis());
-		
-		if(calendar.before(Calendar.getInstance())) {
-			calendar.add(Calendar.DAY_OF_MONTH, 1);
-		}
-		
+		Calendar localCalendar = Calendar.getInstance();
+		localCalendar.setTimeInMillis(calendar.getTimeInMillis());
+
 		return sdf.format(calendar.getTime());
 	}
 
@@ -212,21 +154,21 @@ public class Alarm implements Serializable {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
-	public long getTimeInMillis() {
-		return calendar.getTimeInMillis();
-	}
-	
-	public void setTimeInMillis(long milliseconds) {
-		calendar.setTimeInMillis(milliseconds);
+
+	public int getHour() {
+		return hour;
 	}
 
-	public Calendar getCalendar() {
-		return calendar;
+	public void setHour(int hour) {
+		this.hour = hour;
 	}
 
-	public void setCalendar(Calendar calendar) {
-		this.calendar = calendar;
+	public int getMinute() {
+		return minute;
+	}
+
+	public void setMinute(int minute) {
+		this.minute = minute;
 	}
 	
 	public City getCity() {
@@ -235,7 +177,6 @@ public class Alarm implements Serializable {
 
 	public void setCity(City city) {
 		this.city = city;
-		this.calendar.setTimeZone(TimeZone.getTimeZone(city.getTimeZoneID()));
 	}
 
 	public boolean isActive() {

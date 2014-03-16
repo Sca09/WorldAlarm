@@ -41,42 +41,32 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View row = convertView;
 		AlarmHolder holder = null;
+			
+		LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+		row = inflater.inflate(layoutResourceId, parent, false);
 		
-		if(row == null) {
-			
-			LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-			row = inflater.inflate(layoutResourceId, parent, false);
-			
-			holder = new AlarmHolder();
-			holder.alarmId = (TextView)row.findViewById(R.id.alarmId);
-			holder.alarmHour = (TextView)row.findViewById(R.id.alarmHour);
-			holder.alarmDate = (TextView)row.findViewById(R.id.alarmDate);
-			holder.alarmCity = (TextView)row.findViewById(R.id.alarmCity);
-			holder.alarmHourLocal = (TextView)row.findViewById(R.id.alarmHourLocal);
-			holder.alarmDateLocal = (TextView)row.findViewById(R.id.alarmDateLocal);
-			holder.alarmSwitchButton = (Switch)row.findViewById(R.id.alarmSwitchButton);
-			holder.repeatDay_Sun = (TextView)row.findViewById(R.id.repeat_day_sun);
-			holder.repeatDay_Mon = (TextView)row.findViewById(R.id.repeat_day_mon);
-			holder.repeatDay_Tue = (TextView)row.findViewById(R.id.repeat_day_tue);
-			holder.repeatDay_Wed = (TextView)row.findViewById(R.id.repeat_day_wed);
-			holder.repeatDay_Thu = (TextView)row.findViewById(R.id.repeat_day_thu);
-			holder.repeatDay_Fri = (TextView)row.findViewById(R.id.repeat_day_fri);
-			holder.repeatDay_Sat = (TextView)row.findViewById(R.id.repeat_day_sat);
-			
-			row.setTag(holder);
-			
-		} else {
-			holder = (AlarmHolder)row.getTag();
-		}
-		
+		holder = new AlarmHolder();
+		holder.alarmId = (TextView)row.findViewById(R.id.alarmId);
+		holder.alarmHour = (TextView)row.findViewById(R.id.alarmHour);
+		holder.alarmDate = (TextView)row.findViewById(R.id.alarmDate);
+		holder.alarmCity = (TextView)row.findViewById(R.id.alarmCity);
+		holder.alarmHourLocal = (TextView)row.findViewById(R.id.alarmHourLocal);
+		holder.alarmDateLocal = (TextView)row.findViewById(R.id.alarmDateLocal);
+		holder.alarmSwitchButton = (Switch)row.findViewById(R.id.alarmSwitchButton);
+		holder.repeatDay_Sun = (TextView)row.findViewById(R.id.repeat_day_sun);
+		holder.repeatDay_Mon = (TextView)row.findViewById(R.id.repeat_day_mon);
+		holder.repeatDay_Tue = (TextView)row.findViewById(R.id.repeat_day_tue);
+		holder.repeatDay_Wed = (TextView)row.findViewById(R.id.repeat_day_wed);
+		holder.repeatDay_Thu = (TextView)row.findViewById(R.id.repeat_day_thu);
+		holder.repeatDay_Fri = (TextView)row.findViewById(R.id.repeat_day_fri);
+		holder.repeatDay_Sat = (TextView)row.findViewById(R.id.repeat_day_sat);
+		row.setTag(holder);
+					
 		final Alarm alarm = data[position];
 		holder.alarmId.setText(String.valueOf(alarm.getId()));
-		holder.alarmHour.setText(alarm.getHour());
-		holder.alarmDate.setText(alarm.getDate());
+		holder.alarmHour.setText(alarm.getFormattedHour());
 		holder.alarmCity.setText(alarm.getCity().getCityName());
-		holder.alarmHourLocal.setText(alarm.getHourLocal());
-		holder.alarmDateLocal.setText(alarm.getDateLocal());
-		
+		holder.alarmHourLocal.setText(alarm.getFormattedLocalHour());
 		holder.alarmSwitchButton.setOnCheckedChangeListener(null);
 		holder.alarmSwitchButton.setChecked(alarm.isActive());
 		
@@ -136,7 +126,7 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		
 		return row;
 	}
-
+  
 	static class AlarmHolder
     {
     	TextView alarmId;

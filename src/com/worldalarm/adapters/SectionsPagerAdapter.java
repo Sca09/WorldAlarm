@@ -63,7 +63,11 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 		if(position == 0) {
 			return "All Alarms";
 		} else {
-			return listTimeZones.get(position - 1);
+			if(listTimeZones.size() < position){
+				return null;
+			} else {
+				return listTimeZones.get(position - 1);
+			}
 		}
 	}
 	
