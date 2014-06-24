@@ -27,6 +27,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.worldalarm.R;
+import com.worldalarm.broadcast.AlarmManagerBroadcastReceiver;
 import com.worldalarm.db.Alarm;
 import com.worldalarm.db.City;
 import com.worldalarm.fragments.DeleteAlarmConfirmDialogFragment;
@@ -45,6 +46,8 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 	Alarm alarm;
 	
 	City currentCity;
+	
+	private AlarmManagerBroadcastReceiver alarmManager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,8 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 		findViewById(R.id.repeat_day_toggle_thu).setOnClickListener(this);
 		findViewById(R.id.repeat_day_toggle_fri).setOnClickListener(this);
 		findViewById(R.id.repeat_day_toggle_sat).setOnClickListener(this);
+		
+		alarmManager = new AlarmManagerBroadcastReceiver();
 	}
 
 	@Override
@@ -187,9 +192,10 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 			Alarm alarm = new Alarm(hourPicked, minutePicked, city);
 			this.alarm.setHour(alarm.getHour());
 			this.alarm.setMinute(alarm.getMinute());
-	    	this.alarm.setCity(alarm.getCity());
-	    	this.alarm.setRepeatDays(repeatDays);
-	    	this.updateAlarm(this.alarm);
+			this.alarm.setCity(alarm.getCity());
+			this.alarm.setRepeatDays(repeatDays);
+			this.alarm.setActive(Boolean.TRUE);
+			this.updateAlarm(this.alarm);
 			
 		} else {
 			City city = cityTimeZonesNames.get(cityPicked);
@@ -204,6 +210,7 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 				this.alarm.setMinute(alarm.getMinute());
 				this.alarm.setCity(alarm.getCity());
 				this.alarm.setRepeatDays(repeatDays);
+				this.alarm.setActive(Boolean.TRUE);
 				this.updateAlarm(this.alarm);
 			}
 		}
@@ -259,19 +266,19 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 			LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 						
 			boolean gpsEnabled = false;
-		    boolean networkEnabled = false;
+			boolean networkEnabled = false;
 			try {
 				gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-	        } catch (Exception ex) {}
-	        try {
-	        	networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-	        } catch (Exception ex) {}
+			} catch (Exception ex) {}
+			try {
+				networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+			} catch (Exception ex) {}
 						
 			Location location = null;
-	        if (gpsEnabled)
-	        	location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-	        if (networkEnabled)
-	        	location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+			if (gpsEnabled)
+				location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			if (networkEnabled)
+				location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
 
 			Geocoder gcd = new Geocoder(this, Locale.getDefault());
@@ -279,7 +286,7 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 			if(location != null) {
 				double latitude = location.getLatitude();
 				double longitude = location.getLongitude();
-        
+
 				List<Address> addresses = gcd.getFromLocation(latitude, longitude, 1);
 				if (addresses.size() > 0) { 
 					currentCityName = addresses.get(0).getLocality();
@@ -287,8 +294,8 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 			} else {
 				if (gpsEnabled)
 					locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-		        if (networkEnabled)
-		        	locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+				if (networkEnabled)
+					locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 			}
 			
 			TimeZone timeZone = TimeZone.getTimeZone(currentTimeZoneID);
@@ -297,10 +304,10 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 			currentCity = new City(currentCityName, currentTimeZoneID, currentTimeZoneName);
 			
 
-        } catch (Exception e) {
-        	
-        	Log.d("NewAlarmActivity", "No location obtained from device");
-        }
+		} catch (Exception e) {
+	
+			Log.d("NewAlarmActivity", "No location obtained from device");
+		}
 	}
 	
 	LocationListener locationListener = new LocationListener() {
@@ -309,7 +316,7 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 		public void onLocationChanged(Location location) {
 			double latitude = location.getLatitude();
 			double longitude = location.getLongitude();
-    
+
 			LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 			Geocoder gcd = new Geocoder(getApplicationContext(), Locale.ENGLISH);
 			
@@ -346,16 +353,16 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 		String[] citiesArray = cityTimeZonesNames.keySet().toArray(new String[cityTimeZonesNames.size()]);
 		
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, citiesArray);
-        cityPickerAutoComplete = (AutoCompleteTextView) findViewById(R.id.cityPickerAutoComplete);
-        cityPickerAutoComplete.setAdapter(adapter);
-        if(currentCity != null && currentCity.getCityName() != null && currentCity.getCityName().length() > 0) {
-        	cityPickerAutoComplete.setHint(currentCity.getCityName() +" "+ getString(R.string.by_default));
-        } else {
-        	cityPickerAutoComplete.setHint(R.string.choose_city);
-        }
-        
-        cityPickerAutoComplete.setText(alarm.getCity().getCityName());
-        cityPickerAutoComplete.clearFocus();
+		cityPickerAutoComplete = (AutoCompleteTextView) findViewById(R.id.cityPickerAutoComplete);
+		cityPickerAutoComplete.setAdapter(adapter);
+		if(currentCity != null && currentCity.getCityName() != null && currentCity.getCityName().length() > 0) {
+			cityPickerAutoComplete.setHint(currentCity.getCityName() +" "+ getString(R.string.by_default));
+		} else {
+			cityPickerAutoComplete.setHint(R.string.choose_city);
+		}
+		
+		cityPickerAutoComplete.setText(alarm.getCity().getCityName());
+		cityPickerAutoComplete.clearFocus();
 	}
 
 	@Override
@@ -365,6 +372,7 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 			this.alarm.setHour(alarm.getHour());
 			this.alarm.setMinute(alarm.getMinute());
 			this.alarm.setCity(alarm.getCity());
+			this.alarm.setActive(Boolean.TRUE);
 			this.updateAlarm(this.alarm);
 		} else {
 			Toast toastAlert = Toast.makeText(this, "City not found, please try again", Toast.LENGTH_LONG);
@@ -374,13 +382,15 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 	}
 
 	public void updateAlarm(Alarm alarm) {
+		alarmManager.setOnetimeTimer(this.getApplicationContext(), alarm);
+		
 		this.updateAlarmPreference(alarm);
 		this.addTimeZone(alarm.getCity().getTimeZoneName());
 		
 		Intent returnIntent = new Intent();
 		returnIntent.putExtra("alamUpdated", alarm);
 		
-		setResult(RESULT_OK, returnIntent);     
+		setResult(RESULT_OK, returnIntent);
 		finish();
 	}
 	

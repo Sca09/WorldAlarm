@@ -26,7 +26,12 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.googlecode.flickrjandroid.Flickr;
+import com.googlecode.flickrjandroid.photos.Photo;
+import com.googlecode.flickrjandroid.photos.PhotoList;
+import com.googlecode.flickrjandroid.photos.SearchParameters;
 import com.worldalarm.R;
+import com.worldalarm.broadcast.AlarmManagerBroadcastReceiver;
 import com.worldalarm.db.Alarm;
 import com.worldalarm.db.City;
 import com.worldalarm.preferences.AlarmPreferences;
@@ -41,6 +46,8 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 	AutoCompleteTextView cityPickerAutoComplete;
 	
 	City currentCity;
+
+	private AlarmManagerBroadcastReceiver alarmManager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +69,8 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		findViewById(R.id.repeat_day_toggle_thu).setOnClickListener(this);
 		findViewById(R.id.repeat_day_toggle_fri).setOnClickListener(this);
 		findViewById(R.id.repeat_day_toggle_sat).setOnClickListener(this);
+		
+		alarmManager = new AlarmManagerBroadcastReceiver();
 	}
 
 	private void initTimePicker() {
@@ -79,7 +88,7 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 	@Override
 	public void onClick(View view) {
 		switch(view.getId()) {
-		case R.id.setAlarmButton:			
+		case R.id.setAlarmButton:
 			this.setAlarm(view);
 			break;
 			
@@ -106,12 +115,11 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		}
 	}
 	
-	public void setAlarm(View view) {
-	
-		int hourPicked 			= timePicker.getCurrentHour();
-		int minutePicked 		= timePicker.getCurrentMinute();	
+	public void setAlarm(final View view) {
+		final int hourPicked 			= timePicker.getCurrentHour();
+		final int minutePicked 		= timePicker.getCurrentMinute();	
 		String cityPicked 		= cityPickerAutoComplete.getText().toString();
-		List<Integer> repeatDays = this.getCheckedRepeatDays();
+		final List<Integer> repeatDays = this.getCheckedRepeatDays();
 		if(cityPicked.equals("")) { //User didn't pick a city > Using the current one
 			cityPicked = currentCity.getCityName();
 			
@@ -123,10 +131,39 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 				city = cityTimeZonesNames.get(cityPicked);
 			}
 			
-			Alarm newAlarm = new Alarm(hourPicked, minutePicked, city);
-			newAlarm.setRepeatDays(repeatDays);
-			this.saveAlarm(newAlarm);
-	    	
+			if(city.getPicUrl() == null) {
+				final City cityForThread = city;
+				new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						try {
+							Flickr flickr = new Flickr("ec643177a22bea18f2a9f2e653ea29ed", "9da255f54b63bc56");
+									
+							SearchParameters searchParams = new SearchParameters();
+							searchParams.setText(cityForThread.getCityName() +" downtown");
+							searchParams.setSort(SearchParameters.INTERESTINGNESS_DESC);
+							
+							PhotoList photoList = flickr.getPhotosInterface().search(searchParams, 5, 0);
+							if(photoList.size() > 0) {
+								Photo photo = photoList.get(0);
+								String picUrl = photo.getMedium800Url();
+								cityForThread.setPicUrl(picUrl);
+							}
+							Alarm newAlarm = new Alarm(hourPicked, minutePicked, cityForThread);
+							newAlarm.setRepeatDays(repeatDays);
+							NewAlarmActivity.this.saveAlarm(newAlarm);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}).start();
+			} else{
+				Alarm newAlarm = new Alarm(hourPicked, minutePicked, city);
+				newAlarm.setRepeatDays(repeatDays);
+				this.saveAlarm(newAlarm);
+			}
+
 		} else {
 			City city = cityTimeZonesNames.get(cityPicked);
 			
@@ -134,9 +171,38 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 				SearchCityByNameTaskData task = new SearchCityByNameTaskData(this);
 				task.execute(cityPicked);
 			} else {
-				Alarm newAlarm = new Alarm(hourPicked, minutePicked, city);
-				newAlarm.setRepeatDays(repeatDays);
-				this.saveAlarm(newAlarm);
+				if(city.getPicUrl() == null) {
+					final City cityForThread = city;
+					new Thread(new Runnable() {
+						
+						@Override
+						public void run() {
+							try {
+								Flickr flickr = new Flickr("ec643177a22bea18f2a9f2e653ea29ed", "9da255f54b63bc56");
+										
+								SearchParameters searchParams = new SearchParameters();
+								searchParams.setText(cityForThread.getCityName() +" downtown");
+								searchParams.setSort(SearchParameters.INTERESTINGNESS_DESC);
+								
+								PhotoList photoList = flickr.getPhotosInterface().search(searchParams, 5, 0);
+								if(photoList.size() > 0) {
+									Photo photo = photoList.get(0);
+									String picUrl = photo.getMedium800Url();
+									cityForThread.setPicUrl(picUrl);
+								}
+								Alarm newAlarm = new Alarm(hourPicked, minutePicked, cityForThread);
+								newAlarm.setRepeatDays(repeatDays);
+								NewAlarmActivity.this.saveAlarm(newAlarm);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}).start();
+				} else {
+					Alarm newAlarm = new Alarm(hourPicked, minutePicked, city);
+					newAlarm.setRepeatDays(repeatDays);
+					this.saveAlarm(newAlarm);
+				}
 			}
 		}
 	}
@@ -191,27 +257,26 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 			LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 						
 			boolean gpsEnabled = false;
-		    boolean networkEnabled = false;
+			boolean networkEnabled = false;
 			try {
 				gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-	        } catch (Exception ex) {}
-	        try {
-	        	networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-	        } catch (Exception ex) {}
+			} catch (Exception ex) {}
+			try {
+				networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+			} catch (Exception ex) {}
 						
 			Location location = null;
-	        if (gpsEnabled)
-	        	location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-	        if (networkEnabled)
-	        	location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
+			if (gpsEnabled)
+				location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			if (networkEnabled)
+				location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
 			Geocoder gcd = new Geocoder(this, Locale.getDefault());
 			
 			if(location != null) {
 				double latitude = location.getLatitude();
 				double longitude = location.getLongitude();
-        
+
 				List<Address> addresses = gcd.getFromLocation(latitude, longitude, 1);
 				if (addresses.size() > 0) { 
 					currentCityName = addresses.get(0).getLocality();
@@ -219,8 +284,8 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 			} else {
 				if (gpsEnabled)
 					locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-		        if (networkEnabled)
-		        	locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+				if (networkEnabled)
+					locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 			}
 			
 			TimeZone timeZone = TimeZone.getTimeZone(currentTimeZoneID);
@@ -229,10 +294,10 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 			currentCity = new City(currentCityName, currentTimeZoneID, currentTimeZoneName);
 			
 
-        } catch (Exception e) {
-        	
-        	Log.d("NewAlarmActivity", "No location obtained from device");
-        }
+		} catch (Exception e) {
+			
+			Log.d("NewAlarmActivity", "No location obtained from device");
+		}
 	}
 
 	LocationListener locationListener = new LocationListener() {
@@ -278,22 +343,49 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		String[] citiesArray = cityTimeZonesNames.keySet().toArray(new String[cityTimeZonesNames.size()]);
 		
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, citiesArray);
-        cityPickerAutoComplete = (AutoCompleteTextView) findViewById(R.id.cityPickerAutoComplete);
-        cityPickerAutoComplete.setAdapter(adapter);
-        if(currentCity != null && currentCity.getCityName() != null && currentCity.getCityName().length() > 0) {
-        	cityPickerAutoComplete.setHint(currentCity.getCityName() +" "+ getString(R.string.by_default));
-        } else {
-        	cityPickerAutoComplete.setHint(R.string.choose_city);
-        }
+		cityPickerAutoComplete = (AutoCompleteTextView) findViewById(R.id.cityPickerAutoComplete);
+		cityPickerAutoComplete.setAdapter(adapter);
+		if(currentCity != null && currentCity.getCityName() != null && currentCity.getCityName().length() > 0) {
+			cityPickerAutoComplete.setHint(currentCity.getCityName() +" "+ getString(R.string.by_default));
+		} else {
+			cityPickerAutoComplete.setHint(R.string.choose_city);
+		}
 	}
 
 	@Override
 	public void onFoundCityByName(City city) {
-		CityPreferences.addCity(city, this);
-		
 		if(city != null) {
-			Alarm newAlarm = new Alarm(timePicker.getCurrentHour(), timePicker.getCurrentMinute(), city);
-			this.saveAlarm(newAlarm);
+			CityPreferences.addCity(city, this);
+			if(city.getPicUrl() == null) {
+				final City cityForThread = city;
+				new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						try {
+							Flickr flickr = new Flickr("ec643177a22bea18f2a9f2e653ea29ed", "9da255f54b63bc56");
+									
+							SearchParameters searchParams = new SearchParameters();
+							searchParams.setText(cityForThread.getCityName() +" downtown");
+							searchParams.setSort(SearchParameters.INTERESTINGNESS_DESC);
+							
+							PhotoList photoList = flickr.getPhotosInterface().search(searchParams, 5, 0);
+							if(photoList.size() > 0) {
+								Photo photo = photoList.get(0);
+								String picUrl = photo.getMedium800Url();
+								cityForThread.setPicUrl(picUrl);
+							}
+							Alarm newAlarm = new Alarm(timePicker.getCurrentHour(), timePicker.getCurrentMinute(), cityForThread);
+							NewAlarmActivity.this.saveAlarm(newAlarm);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}).start();
+			} else {
+				Alarm newAlarm = new Alarm(timePicker.getCurrentHour(), timePicker.getCurrentMinute(), city);
+				this.saveAlarm(newAlarm);
+			}	
 		} else {
 			Toast toastAlert = Toast.makeText(this, "City not found, please try again", Toast.LENGTH_LONG);
 			toastAlert.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 180);
@@ -302,6 +394,7 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 	}
 	
 	public void saveAlarm(Alarm alarm) {
+		alarmManager.setOnetimeTimer(this.getApplicationContext(), alarm);
 		
 		this.addAlarmPreference(alarm);
 		this.addTimeZone(alarm.getCity().getTimeZoneName());
@@ -309,7 +402,8 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		Intent returnIntent = new Intent();
 		returnIntent.putExtra("newAlarm", alarm);
 		
-		setResult(RESULT_OK, returnIntent);     
+		setResult(RESULT_OK, returnIntent);
+
 		finish();
 	}
 	

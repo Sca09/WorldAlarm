@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.worldalarm.broadcast.AlarmManagerBroadcastReceiver;
 import com.worldalarm.db.Alarm;
 
 public class AlarmPreferences {
@@ -135,6 +136,14 @@ public class AlarmPreferences {
 		}
 		
 		for(String timeZone : listTimeZonesToDelete) {
+			AlarmManagerBroadcastReceiver alarmManager = new AlarmManagerBroadcastReceiver();
+			
+			List<Alarm> alarms = alarmsByTZSingleton.get(timeZone);
+			
+			for(Alarm alarm : alarms) {
+				alarmManager.cancelAlarm(context, alarm);
+			}
+			
 			alarmsByTZSingleton.remove(timeZone);
 		}
 		

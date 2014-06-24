@@ -6,12 +6,14 @@
         android:showAsAction="always"
         android:icon="@android:drawable/ic_menu_add" 
         android:title="@string/new_alarm_text"/>
+    <!-- 
     <item
         android:id="@+id/action_home"
         android:orderInCategory="100"
         android:showAsAction="always"
         android:icon="@drawable/ic_menu_home"
         android:title="@string/go_home"/>
+    -->
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

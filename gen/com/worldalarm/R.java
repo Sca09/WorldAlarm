@@ -165,9 +165,12 @@ containing a value of this type.
         public static final int use_default_controller=0x7f010011;
     }
     public static final class color {
+        public static final int apptheme_color=0x7f050002;
         public static final int appwidget_text=0x7f050001;
+        /**  <color name="blue_light">#ff33b5e5</color> 
+         */
         public static final int blue_light=0x7f050000;
-        public static final int repeat_day_color=0x7f050002;
+        public static final int repeat_day_color=0x7f050003;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -182,64 +185,133 @@ containing a value of this type.
         public static final int item_height=0x7f060003;
     }
     public static final class drawable {
-        public static final int back=0x7f020000;
-        public static final int drag=0x7f020001;
-        public static final int ic_launcher=0x7f020002;
-        public static final int ic_menu_back=0x7f020003;
-        public static final int ic_menu_home=0x7f020004;
-        public static final int toggle_button_custom=0x7f020005;
+        public static final int ab_background_textured_blue=0x7f020000;
+        public static final int ab_bottom_solid_blue=0x7f020001;
+        public static final int ab_solid_blue=0x7f020002;
+        public static final int ab_stacked_solid_blue=0x7f020003;
+        public static final int ab_texture_tile_blue=0x7f020004;
+        public static final int ab_transparent_blue=0x7f020005;
+        public static final int apptheme_activated_background_holo_light=0x7f020006;
+        public static final int apptheme_btn_default_disabled_focused_holo_light=0x7f020007;
+        public static final int apptheme_btn_default_disabled_holo_light=0x7f020008;
+        public static final int apptheme_btn_default_focused_holo_light=0x7f020009;
+        public static final int apptheme_btn_default_holo_light=0x7f02000a;
+        public static final int apptheme_btn_default_normal_holo_light=0x7f02000b;
+        public static final int apptheme_btn_default_pressed_holo_light=0x7f02000c;
+        public static final int apptheme_btn_toggle_holo_light=0x7f02000d;
+        public static final int apptheme_btn_toggle_off_disabled_focused_holo_light=0x7f02000e;
+        public static final int apptheme_btn_toggle_off_disabled_holo_light=0x7f02000f;
+        public static final int apptheme_btn_toggle_off_focused_holo_light=0x7f020010;
+        public static final int apptheme_btn_toggle_off_normal_holo_light=0x7f020011;
+        public static final int apptheme_btn_toggle_off_pressed_holo_light=0x7f020012;
+        public static final int apptheme_btn_toggle_on_disabled_focused_holo_light=0x7f020013;
+        public static final int apptheme_btn_toggle_on_disabled_holo_light=0x7f020014;
+        public static final int apptheme_btn_toggle_on_focused_holo_light=0x7f020015;
+        public static final int apptheme_btn_toggle_on_normal_holo_light=0x7f020016;
+        public static final int apptheme_btn_toggle_on_pressed_holo_light=0x7f020017;
+        public static final int apptheme_edit_text_holo_light=0x7f020018;
+        public static final int apptheme_item_background_holo_light=0x7f020019;
+        public static final int apptheme_list_activated_holo=0x7f02001a;
+        public static final int apptheme_list_focused_holo=0x7f02001b;
+        public static final int apptheme_list_longpressed_holo=0x7f02001c;
+        public static final int apptheme_list_pressed_holo_light=0x7f02001d;
+        public static final int apptheme_list_selector_background_transition_holo_light=0x7f02001e;
+        public static final int apptheme_list_selector_disabled_holo_light=0x7f02001f;
+        public static final int apptheme_list_selector_holo_light=0x7f020020;
+        public static final int apptheme_switch_bg_disabled_holo_light=0x7f020021;
+        public static final int apptheme_switch_bg_focused_holo_light=0x7f020022;
+        public static final int apptheme_switch_bg_holo_light=0x7f020023;
+        public static final int apptheme_switch_inner_holo_light=0x7f020024;
+        public static final int apptheme_switch_thumb_activated_holo_light=0x7f020025;
+        public static final int apptheme_switch_thumb_disabled_holo_light=0x7f020026;
+        public static final int apptheme_switch_thumb_holo_light=0x7f020027;
+        public static final int apptheme_switch_thumb_pressed_holo_light=0x7f020028;
+        public static final int apptheme_switch_track_holo_light=0x7f020029;
+        public static final int apptheme_text_select_handle_left=0x7f02002a;
+        public static final int apptheme_text_select_handle_middle=0x7f02002b;
+        public static final int apptheme_text_select_handle_right=0x7f02002c;
+        public static final int apptheme_textfield_activated_holo_light=0x7f02002d;
+        public static final int apptheme_textfield_default_holo_light=0x7f02002e;
+        public static final int apptheme_textfield_disabled_focused_holo_light=0x7f02002f;
+        public static final int apptheme_textfield_disabled_holo_light=0x7f020030;
+        public static final int apptheme_textfield_focused_holo_light=0x7f020031;
+        public static final int back=0x7f020032;
+        public static final int btn_cab_done_blue=0x7f020033;
+        public static final int btn_cab_done_default_blue=0x7f020034;
+        public static final int btn_cab_done_focused_blue=0x7f020035;
+        public static final int btn_cab_done_pressed_blue=0x7f020036;
+        public static final int cab_background_bottom_blue=0x7f020037;
+        public static final int cab_background_top_blue=0x7f020038;
+        public static final int drag=0x7f020039;
+        public static final int ic_launcher=0x7f02003a;
+        public static final int ic_menu_back=0x7f02003b;
+        public static final int ic_menu_home=0x7f02003c;
+        public static final int list_focused_blue=0x7f02003d;
+        public static final int list_pressed_blue=0x7f02003e;
+        public static final int menu_dropdown_panel_blue=0x7f02003f;
+        public static final int progress_bg_blue=0x7f020040;
+        public static final int progress_horizontal_blue=0x7f020041;
+        public static final int progress_primary_blue=0x7f020042;
+        public static final int progress_secondary_blue=0x7f020043;
+        public static final int selectable_background_blue=0x7f020044;
+        public static final int spinner_ab_default_blue=0x7f020045;
+        public static final int spinner_ab_disabled_blue=0x7f020046;
+        public static final int spinner_ab_focused_blue=0x7f020047;
+        public static final int spinner_ab_pressed_blue=0x7f020048;
+        public static final int spinner_background_ab_blue=0x7f020049;
+        public static final int tab_indicator_ab_blue=0x7f02004a;
+        public static final int tab_selected_blue=0x7f02004b;
+        public static final int tab_selected_focused_blue=0x7f02004c;
+        public static final int tab_selected_pressed_blue=0x7f02004d;
+        public static final int tab_unselected_blue=0x7f02004e;
+        public static final int tab_unselected_focused_blue=0x7f02004f;
+        public static final int tab_unselected_pressed_blue=0x7f020050;
+        public static final int toggle_button_custom=0x7f020051;
     }
     public static final class id {
-        public static final int ViewColorPickerHelper=0x7f040025;
-        public static final int action_add=0x7f04002f;
-        public static final int action_home=0x7f040030;
-        public static final int action_settings=0x7f04002e;
-        public static final int action_settings_time_zones_conf=0x7f040031;
-        public static final int alarmCity=0x7f04000e;
-        public static final int alarmDate=0x7f04000d;
-        public static final int alarmDateLocal=0x7f04000a;
-        public static final int alarmHour=0x7f04000c;
-        public static final int alarmHourLocal=0x7f040009;
-        public static final int alarmId=0x7f040008;
-        public static final int alarmPicker=0x7f04001b;
-        public static final int alarmSwitchButton=0x7f04000b;
-        public static final int buttonsPanel=0x7f040024;
-        public static final int cancelButton=0x7f040026;
-        public static final int cancelTimeZoneConf=0x7f040029;
-        public static final int cityPickerAutoComplete=0x7f04001a;
+        public static final int ViewColorPickerHelper=0x7f04001f;
+        public static final int action_add=0x7f040029;
+        public static final int action_settings=0x7f040028;
+        public static final int action_settings_time_zones_conf=0x7f04002a;
+        public static final int alarmCity=0x7f04000f;
+        public static final int alarmDate=0x7f04000e;
+        public static final int alarmDateLocal=0x7f04000b;
+        public static final int alarmHour=0x7f04000d;
+        public static final int alarmHourLocal=0x7f04000a;
+        public static final int alarmId=0x7f040009;
+        public static final int alarmPicker=0x7f04001d;
+        public static final int alarmSwitchButton=0x7f04000c;
+        public static final int background_img=0x7f040008;
+        public static final int buttonsPanel=0x7f04001e;
+        public static final int cancelButton=0x7f040020;
+        public static final int cancelTimeZoneConf=0x7f040023;
+        public static final int cityPickerAutoComplete=0x7f04001c;
         public static final int clickRemove=0x7f040000;
         public static final int click_remove=0x7f040006;
-        public static final int deleteButton=0x7f04002b;
+        public static final int deleteButton=0x7f040025;
         public static final int drag_handle=0x7f040005;
         public static final int expandableAlarmsView=0x7f040007;
-        public static final int expandableHeader=0x7f040016;
+        public static final int expandableHeader=0x7f040018;
         public static final int flingRemove=0x7f040001;
         public static final int onDown=0x7f040002;
         public static final int onLongPress=0x7f040004;
         public static final int onMove=0x7f040003;
-        public static final int pager=0x7f040017;
-        public static final int pager_title_strip=0x7f040018;
-        public static final int repeat_day_fri=0x7f040014;
-        public static final int repeat_day_mon=0x7f040010;
-        public static final int repeat_day_panel=0x7f04001c;
-        public static final int repeat_day_sat=0x7f040015;
-        public static final int repeat_day_sun=0x7f04000f;
-        public static final int repeat_day_thu=0x7f040013;
-        public static final int repeat_day_toggle_fri=0x7f040022;
-        public static final int repeat_day_toggle_mon=0x7f04001e;
-        public static final int repeat_day_toggle_sat=0x7f040023;
-        public static final int repeat_day_toggle_sun=0x7f04001d;
-        public static final int repeat_day_toggle_thu=0x7f040021;
-        public static final int repeat_day_toggle_tue=0x7f04001f;
-        public static final int repeat_day_toggle_wed=0x7f040020;
-        public static final int repeat_day_tue=0x7f040011;
-        public static final int repeat_day_wed=0x7f040012;
-        public static final int saveTimeZoneConf=0x7f04002d;
-        public static final int setAlarmButton=0x7f040027;
-        public static final int setTimeZoneConf=0x7f04002a;
-        public static final int text=0x7f040019;
-        public static final int timeZoneTitle=0x7f040028;
-        public static final int updateAlarmButton=0x7f04002c;
+        public static final int pager=0x7f040019;
+        public static final int pager_title_strip=0x7f04001a;
+        public static final int repeat_day_panel=0x7f040010;
+        public static final int repeat_day_toggle_fri=0x7f040016;
+        public static final int repeat_day_toggle_mon=0x7f040012;
+        public static final int repeat_day_toggle_sat=0x7f040017;
+        public static final int repeat_day_toggle_sun=0x7f040011;
+        public static final int repeat_day_toggle_thu=0x7f040015;
+        public static final int repeat_day_toggle_tue=0x7f040013;
+        public static final int repeat_day_toggle_wed=0x7f040014;
+        public static final int saveTimeZoneConf=0x7f040027;
+        public static final int setAlarmButton=0x7f040021;
+        public static final int setTimeZoneConf=0x7f040024;
+        public static final int text=0x7f04001b;
+        public static final int timeZoneTitle=0x7f040022;
+        public static final int updateAlarmButton=0x7f040026;
     }
     public static final class layout {
         public static final int activity_expandable_alarms=0x7f030000;
@@ -293,6 +365,10 @@ containing a value of this type.
         public static final int update_text=0x7f070005;
     }
     public static final class style {
+        public static final int ActionBar_Solid_Blue=0x7f080007;
+        public static final int ActionBar_Transparent_Blue=0x7f080008;
+        public static final int ActionBarTabStyle_Blue=0x7f08000b;
+        public static final int ActionButton_CloseMode_Blue=0x7f08000e;
         /** 
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
@@ -319,6 +395,19 @@ containing a value of this type.
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f080001;
+        public static final int AutoCompleteTextViewAppTheme=0x7f080002;
+        public static final int ButtonAppTheme=0x7f080003;
+        public static final int DropDownListView_Blue=0x7f08000a;
+        public static final int DropDownNav_Blue=0x7f08000c;
+        public static final int ImageButtonAppTheme=0x7f080004;
+        public static final int PopupMenu_Blue=0x7f080009;
+        public static final int ProgressBar_Blue=0x7f08000d;
+        public static final int Theme_Blue=0x7f080006;
+        /**  this style is only referenced in a Light.DarkActionBar based theme 
+         */
+        public static final int Theme_Blue_Widget=0x7f08000f;
+        public static final int ToggleAppTheme=0x7f080005;
+        public static final int _AppTheme=0x7f080010;
     }
     public static final class styleable {
         /** Attributes that can be used with a DragSortListView.

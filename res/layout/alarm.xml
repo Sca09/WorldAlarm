@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+  <ImageView 
+      android:id="@+id/background_img"
+      android:layout_width="match_parent" 
+      android:layout_height="400px" />
+  
+  <View 
+      android:layout_width="match_parent" 
+      android:layout_height="400px"
+      android:maxHeight="400px" 
+      android:background="#88000000" />
+  
+    
+<LinearLayout 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -40,8 +57,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-			android:layout_marginRight="5dp" 
-			android:checked="true"/>
+            android:layout_marginRight="5dp" 
+            android:checked="true"
+            android:thumb="@drawable/apptheme_switch_inner_holo_light"
+            android:track="@drawable/apptheme_switch_track_holo_light"/>
         
     </RelativeLayout>
     
@@ -81,6 +100,10 @@
 
     </RelativeLayout>
     
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <!-- 
     <LinearLayout 
         android:layout_width="fill_parent"
         android:layout_height="30dp"
@@ -164,14 +187,98 @@
             android:textSize="18sp"
             android:textColor="@android:color/darker_gray"
             android:text="@string/repeat_day_sat" />
-        
     </LinearLayout>
-	 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginRight="10dp"
-        android:background="@color/blue_light" />
-	 
+    -->
+        <RelativeLayout
+            android:id="@+id/repeat_day_panel"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_centerHorizontal="true">
+
+            <ToggleButton 
+                android:id="@+id/repeat_day_toggle_sun"
+                android:layout_width="40dip"
+                android:layout_height="wrap_content"
+                android:background="@drawable/toggle_button_custom"
+                android:textSize="15sp"
+                android:textColor="@color/repeat_day_color"
+                android:textOn="@string/repeat_day_sun"
+                android:textOff="@string/repeat_day_sun" />
+
+            <ToggleButton 
+                android:id="@+id/repeat_day_toggle_mon"
+                android:layout_width="40dip"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/repeat_day_toggle_sun"
+                android:background="@drawable/toggle_button_custom"
+                android:textSize="15sp"
+                android:textColor="@color/repeat_day_color"
+                android:textOn="@string/repeat_day_mon"
+                android:textOff="@string/repeat_day_mon" />
+
+            <ToggleButton 
+                android:id="@+id/repeat_day_toggle_tue"
+                android:layout_width="40dip"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/repeat_day_toggle_mon"
+                android:background="@drawable/toggle_button_custom"
+                android:textSize="15sp"
+                android:textColor="@color/repeat_day_color"
+                android:textOn="@string/repeat_day_tue"
+                android:textOff="@string/repeat_day_tue" />
+
+            <ToggleButton 
+                android:id="@+id/repeat_day_toggle_wed"
+                android:layout_width="40dip"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/repeat_day_toggle_tue"
+                android:background="@drawable/toggle_button_custom"
+                android:textSize="15sp"
+                android:textColor="@color/repeat_day_color"
+                android:textOn="@string/repeat_day_wed"
+                android:textOff="@string/repeat_day_wed" />
+
+            <ToggleButton 
+                android:id="@+id/repeat_day_toggle_thu"
+                android:layout_width="40dip"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/repeat_day_toggle_wed"
+                android:background="@drawable/toggle_button_custom"
+                android:textSize="15sp"
+                android:textColor="@color/repeat_day_color"
+                android:textOn="@string/repeat_day_thu"
+                android:textOff="@string/repeat_day_thu" />
+
+            <ToggleButton 
+                android:id="@+id/repeat_day_toggle_fri"
+                android:layout_width="40dip"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/repeat_day_toggle_thu"
+                android:background="@drawable/toggle_button_custom"
+                android:textSize="15sp"
+                android:textColor="@color/repeat_day_color"
+                android:textOn="@string/repeat_day_fri"
+                android:textOff="@string/repeat_day_fri" />
+
+            <ToggleButton 
+                android:id="@+id/repeat_day_toggle_sat"
+                android:layout_width="40dip"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/repeat_day_toggle_fri"
+                android:background="@drawable/toggle_button_custom"
+                android:textSize="15sp"
+                android:textColor="@color/repeat_day_color"
+                android:textOn="@string/repeat_day_sat"
+                android:textOff="@string/repeat_day_sat" />
+        </RelativeLayout>
+    </RelativeLayout>
+
 </LinearLayout>
+
+	<View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_alignParentBottom="true"
+        android:background="#CC000000" />
+
+</RelativeLayout>

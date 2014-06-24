@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
 import com.worldalarm.R;
+import com.worldalarm.broadcast.AlarmManagerBroadcastReceiver;
 import com.worldalarm.db.Alarm;
 import com.worldalarm.preferences.AlarmPreferences;
 
@@ -51,6 +52,9 @@ public class DeleteAlarmConfirmDialogFragment extends DialogFragment {
 	}
 
 	private void deleteAlarm(final Alarm alarm) {
+		AlarmManagerBroadcastReceiver alarmManager = new AlarmManagerBroadcastReceiver();
+		alarmManager.cancelAlarm(getActivity(), alarm);
+		
 		AlarmPreferences.deleteAlarm(alarm, getActivity());
 		
 		Intent returnIntent = new Intent();

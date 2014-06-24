@@ -10,7 +10,6 @@ import android.view.MenuItem;
 
 import com.worldalarm.R;
 import com.worldalarm.adapters.SectionsPagerAdapter;
-import com.worldalarm.db.Alarm;
 
 public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 
@@ -65,9 +64,9 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 			this.startActivityForResult(newAlarmIntent, REQUEST_CODE_RESOLVE_ERR_NEW_ALARM);
 			break;
 			
-		case R.id.action_home:
-			mViewPager.setCurrentItem(0);
-			break;
+//		case R.id.action_home:
+//			mViewPager.setCurrentItem(0);
+//			break;
 			
 		case R.id.action_settings_time_zones_conf:
 			Intent timeZonesConf = new Intent(this, TimeZonesActivity.class);
@@ -85,10 +84,10 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 			if (resultCode == RESULT_OK) {
 				mSectionsPagerAdapter.notifyDataSetChanged();
 				
-				Alarm newAlarm = (Alarm) data.getSerializableExtra("newAlarm");
-				
-				String timeZoneSelected = newAlarm.getCity().getTimeZoneName();
-				openTab(timeZoneSelected);
+//				Alarm newAlarm = (Alarm) data.getSerializableExtra("newAlarm");
+//				
+//				String timeZoneSelected = newAlarm.getCity().getTimeZoneName();
+//				openTab(timeZoneSelected);
 			}
 			break;
 			
@@ -96,15 +95,15 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 			if (resultCode == Activity.RESULT_OK) {
 				mSectionsPagerAdapter.notifyDataSetChanged();
 				
-				Alarm alamUpdated = (Alarm) data.getSerializableExtra("alamUpdated");
-				
-				if(alamUpdated != null) {
-					String timeZoneSelected = alamUpdated.getCity().getTimeZoneName();
-					openTab(timeZoneSelected);
-				} else {
-					// Alarm deleted
-//					mViewPager.setCurrentItem(0);
-				}
+//				Alarm alamUpdated = (Alarm) data.getSerializableExtra("alamUpdated");
+//				
+//				if(alamUpdated != null) {
+//					String timeZoneSelected = alamUpdated.getCity().getTimeZoneName();
+//					openTab(timeZoneSelected);
+//				} else {
+//					// Alarm deleted
+////					mViewPager.setCurrentItem(0);
+//				}
 			} 
 			break;
 			
