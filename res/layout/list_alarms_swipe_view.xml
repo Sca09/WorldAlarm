@@ -1,71 +1,40 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".TimeZonesActivity" >
-
-    <!-- 
-    <RelativeLayout
-        android:id="@+id/buttonsPanel"
-        android:layout_width="match_parent"
-        android:layout_height="48dp" >
-		
-        <View
-            android:id="@+id/ViewColorPickerHelper"
-            android:layout_width="1dip"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="4dip"
-            android:layout_marginTop="4dip"
-            android:background="?android:attr/dividerVertical" 
-            android:layout_centerHorizontal="true"/>
-        <Button
-            android:id="@+id/NewAlarmButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@id/ViewColorPickerHelper"
-            android:background="?android:attr/selectableItemBackground"
-            android:text="@string/new_alarm_text" 
-            android:layout_alignParentBottom="true"/>
-        <Button
-            android:id="@+id/NewTimeZoneButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:background="?android:attr/selectableItemBackground"
-            android:text="@string/new_time_zone_text" 
-            android:layout_alignParentBottom="true" 
-            android:layout_toRightOf="@id/ViewColorPickerHelper"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:layout_marginLeft="4dip"
-            android:layout_marginRight="4dip"
-            android:background="?android:attr/dividerVertical"
-            android:layout_alignParentBottom="true" />
-    </RelativeLayout>
- 	-->
  
-	<android.support.v4.view.ViewPager
-	    xmlns:tools="http://schemas.android.com/tools"
-	    android:id="@+id/pager"
-	    android:layout_width="match_parent"
-	    android:layout_gravity="center"
-	    android:layout_height="match_parent" >
+    <android.support.v4.view.ViewPager
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:layout_height="match_parent" >
 
-	    <android.support.v4.view.PagerTitleStrip
-	        android:id="@+id/pager_title_strip"
-	        android:layout_width="match_parent"
-	        android:layout_height="50dip"
-	        android:layout_gravity="top"
-	        android:background="#000"
-	        android:textAppearance="@style/PagerTabStripText" >
-	    </android.support.v4.view.PagerTitleStrip>
-	</android.support.v4.view.ViewPager>
+        <android.support.v4.view.PagerTitleStrip
+            android:id="@+id/pager_title_strip"
+            android:layout_width="match_parent"
+            android:layout_height="50dip"
+            android:layout_gravity="top"
+            android:background="#000"
+            android:textAppearance="@style/PagerTabStripText" >
+        </android.support.v4.view.PagerTitleStrip>
+    </android.support.v4.view.ViewPager>
 
-</LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="#22ffffff" />
+
+    <ImageButton
+        android:id="@+id/addBottomButton"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:src="@android:drawable/ic_menu_add"
+        android:background="@null" />
+</RelativeLayout>

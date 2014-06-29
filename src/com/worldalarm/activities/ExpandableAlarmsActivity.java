@@ -17,10 +17,10 @@ import com.worldalarm.preferences.TimeZonePreferences;
 public class ExpandableAlarmsActivity extends Activity {
 
 	ExpandableListAdapter listAdapter;
-    ExpandableListView expListView;
-    
-    HashMap<String, List<Alarm>> listAlarms;
-    List<String> listTimeZones;
+	ExpandableListView expListView;
+
+	HashMap<String, List<Alarm>> listAlarms;
+	List<String> listTimeZones;
 	
 	
 	@Override

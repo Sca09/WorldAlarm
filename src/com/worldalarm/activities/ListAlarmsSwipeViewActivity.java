@@ -7,6 +7,9 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageButton;
 
 import com.worldalarm.R;
 import com.worldalarm.adapters.SectionsPagerAdapter;
@@ -28,6 +31,8 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 	 */
 	ViewPager mViewPager;
 
+	ImageButton imageButton;
+	
 	private static final int REQUEST_CODE_RESOLVE_ERR_NEW_ALARM = 5000;
 	private static final int REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM = 6000;
 	private static final int REQUEST_CODE_RESOLVE_ERR_TIME_ZONE_CONF = 7000;
@@ -39,6 +44,8 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.list_alarms_swipe_view);
+
+		addListenerOnButton();
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
@@ -126,5 +133,19 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 
 	public void setmSectionsPagerAdapter(SectionsPagerAdapter mSectionsPagerAdapter) {
 		this.mSectionsPagerAdapter = mSectionsPagerAdapter;
+	}
+	
+	public void addListenerOnButton() {
+		 
+		imageButton = (ImageButton) findViewById(R.id.addBottomButton);
+ 
+		imageButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				Intent newAlarmIntent = new Intent(getApplicationContext(), NewAlarmActivity.class);
+				ListAlarmsSwipeViewActivity.this.startActivityForResult(newAlarmIntent, REQUEST_CODE_RESOLVE_ERR_NEW_ALARM);
+			}
+		});
+ 
 	}
 }

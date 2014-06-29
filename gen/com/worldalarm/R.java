@@ -269,26 +269,27 @@ containing a value of this type.
         public static final int toggle_button_custom=0x7f020051;
     }
     public static final class id {
-        public static final int ViewColorPickerHelper=0x7f04001f;
-        public static final int action_add=0x7f040029;
-        public static final int action_settings=0x7f040028;
+        public static final int ViewColorPickerHelper=0x7f040020;
+        public static final int action_add=0x7f04002b;
+        public static final int action_settings=0x7f040029;
         public static final int action_settings_time_zones_conf=0x7f04002a;
+        public static final int addBottomButton=0x7f04001b;
         public static final int alarmCity=0x7f04000f;
         public static final int alarmDate=0x7f04000e;
         public static final int alarmDateLocal=0x7f04000b;
         public static final int alarmHour=0x7f04000d;
         public static final int alarmHourLocal=0x7f04000a;
         public static final int alarmId=0x7f040009;
-        public static final int alarmPicker=0x7f04001d;
+        public static final int alarmPicker=0x7f04001e;
         public static final int alarmSwitchButton=0x7f04000c;
         public static final int background_img=0x7f040008;
-        public static final int buttonsPanel=0x7f04001e;
-        public static final int cancelButton=0x7f040020;
-        public static final int cancelTimeZoneConf=0x7f040023;
-        public static final int cityPickerAutoComplete=0x7f04001c;
+        public static final int buttonsPanel=0x7f04001f;
+        public static final int cancelButton=0x7f040021;
+        public static final int cancelTimeZoneConf=0x7f040024;
+        public static final int cityPickerAutoComplete=0x7f04001d;
         public static final int clickRemove=0x7f040000;
         public static final int click_remove=0x7f040006;
-        public static final int deleteButton=0x7f040025;
+        public static final int deleteButton=0x7f040026;
         public static final int drag_handle=0x7f040005;
         public static final int expandableAlarmsView=0x7f040007;
         public static final int expandableHeader=0x7f040018;
@@ -306,12 +307,12 @@ containing a value of this type.
         public static final int repeat_day_toggle_thu=0x7f040015;
         public static final int repeat_day_toggle_tue=0x7f040013;
         public static final int repeat_day_toggle_wed=0x7f040014;
-        public static final int saveTimeZoneConf=0x7f040027;
-        public static final int setAlarmButton=0x7f040021;
-        public static final int setTimeZoneConf=0x7f040024;
-        public static final int text=0x7f04001b;
-        public static final int timeZoneTitle=0x7f040022;
-        public static final int updateAlarmButton=0x7f040026;
+        public static final int saveTimeZoneConf=0x7f040028;
+        public static final int setAlarmButton=0x7f040022;
+        public static final int setTimeZoneConf=0x7f040025;
+        public static final int text=0x7f04001c;
+        public static final int timeZoneTitle=0x7f040023;
+        public static final int updateAlarmButton=0x7f040027;
     }
     public static final class layout {
         public static final int activity_expandable_alarms=0x7f030000;

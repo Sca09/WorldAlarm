@@ -6,9 +6,9 @@
     tools:context=".ExpandableAlarmsActivity" >
 
     <ExpandableListView
-                android:id="@+id/expandableAlarmsView"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:divider="@android:color/transparent" />
+        android:id="@+id/expandableAlarmsView"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:divider="@android:color/transparent" />
 
 </RelativeLayout>
