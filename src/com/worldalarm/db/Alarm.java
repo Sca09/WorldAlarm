@@ -22,6 +22,7 @@ public class Alarm implements Serializable {
 	private boolean active;
 	private List<Integer> repeat_days = new ArrayList<Integer>();
 	private int pendingIntentId;
+	private String cityImageUrl;
 	
 	public static final Integer REPEAT_DAY_SUN		= 0;
 	public static final Integer REPEAT_DAY_MON		= 1;
@@ -202,5 +203,18 @@ public class Alarm implements Serializable {
 
 	public void setPendingIntentId(int pendingIntentId) {
 		this.pendingIntentId = pendingIntentId;
+	}
+	
+	public Integer[] getRepeatDaysConstants() {
+		Integer[] repeatDaysConstants = {REPEAT_DAY_SUN, REPEAT_DAY_MON, REPEAT_DAY_TUE, REPEAT_DAY_WED, REPEAT_DAY_THU, REPEAT_DAY_FRI, REPEAT_DAY_SAT}; 
+		return repeatDaysConstants;
+	}
+
+	public String getCityImageUrl() {
+		return cityImageUrl;
+	}
+
+	public void setCityImageUrl(String cityImageUrl) {
+		this.cityImageUrl = cityImageUrl;
 	}
 }

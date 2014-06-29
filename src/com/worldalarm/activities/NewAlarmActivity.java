@@ -26,10 +26,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.googlecode.flickrjandroid.Flickr;
-import com.googlecode.flickrjandroid.photos.Photo;
-import com.googlecode.flickrjandroid.photos.PhotoList;
-import com.googlecode.flickrjandroid.photos.SearchParameters;
 import com.worldalarm.R;
 import com.worldalarm.broadcast.AlarmManagerBroadcastReceiver;
 import com.worldalarm.db.Alarm;
@@ -116,53 +112,23 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 	}
 	
 	public void setAlarm(final View view) {
-		final int hourPicked 			= timePicker.getCurrentHour();
-		final int minutePicked 		= timePicker.getCurrentMinute();	
-		String cityPicked 		= cityPickerAutoComplete.getText().toString();
-		final List<Integer> repeatDays = this.getCheckedRepeatDays();
+		int hourPicked = timePicker.getCurrentHour();
+		int minutePicked = timePicker.getCurrentMinute();	
+		String cityPicked = cityPickerAutoComplete.getText().toString();
+		List<Integer> repeatDays = this.getCheckedRepeatDays();
 		if(cityPicked.equals("")) { //User didn't pick a city > Using the current one
 			cityPicked = currentCity.getCityName();
 			
 			City city = cityTimeZonesNames.get(cityPicked);
-
 			if(city == null) { //Current city is not in TZ database > using default TZ and saving new pair city-TZ
 				cityTimeZonesNames = CityPreferences.addCity(currentCity, this);
-				
 				city = cityTimeZonesNames.get(cityPicked);
 			}
 			
-			if(city.getPicUrl() == null) {
-				final City cityForThread = city;
-				new Thread(new Runnable() {
-					
-					@Override
-					public void run() {
-						try {
-							Flickr flickr = new Flickr("ec643177a22bea18f2a9f2e653ea29ed", "9da255f54b63bc56");
-									
-							SearchParameters searchParams = new SearchParameters();
-							searchParams.setText(cityForThread.getCityName() +" downtown");
-							searchParams.setSort(SearchParameters.INTERESTINGNESS_DESC);
-							
-							PhotoList photoList = flickr.getPhotosInterface().search(searchParams, 5, 0);
-							if(photoList.size() > 0) {
-								Photo photo = photoList.get(0);
-								String picUrl = photo.getMedium800Url();
-								cityForThread.setPicUrl(picUrl);
-							}
-							Alarm newAlarm = new Alarm(hourPicked, minutePicked, cityForThread);
-							newAlarm.setRepeatDays(repeatDays);
-							NewAlarmActivity.this.saveAlarm(newAlarm);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}).start();
-			} else{
-				Alarm newAlarm = new Alarm(hourPicked, minutePicked, city);
-				newAlarm.setRepeatDays(repeatDays);
-				this.saveAlarm(newAlarm);
-			}
+			Alarm newAlarm = new Alarm(hourPicked, minutePicked, city);
+			newAlarm.setRepeatDays(repeatDays);
+			this.saveAlarm(newAlarm);
+			
 
 		} else {
 			City city = cityTimeZonesNames.get(cityPicked);
@@ -171,38 +137,9 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 				SearchCityByNameTaskData task = new SearchCityByNameTaskData(this);
 				task.execute(cityPicked);
 			} else {
-				if(city.getPicUrl() == null) {
-					final City cityForThread = city;
-					new Thread(new Runnable() {
-						
-						@Override
-						public void run() {
-							try {
-								Flickr flickr = new Flickr("ec643177a22bea18f2a9f2e653ea29ed", "9da255f54b63bc56");
-										
-								SearchParameters searchParams = new SearchParameters();
-								searchParams.setText(cityForThread.getCityName() +" downtown");
-								searchParams.setSort(SearchParameters.INTERESTINGNESS_DESC);
-								
-								PhotoList photoList = flickr.getPhotosInterface().search(searchParams, 5, 0);
-								if(photoList.size() > 0) {
-									Photo photo = photoList.get(0);
-									String picUrl = photo.getMedium800Url();
-									cityForThread.setPicUrl(picUrl);
-								}
-								Alarm newAlarm = new Alarm(hourPicked, minutePicked, cityForThread);
-								newAlarm.setRepeatDays(repeatDays);
-								NewAlarmActivity.this.saveAlarm(newAlarm);
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-					}).start();
-				} else {
-					Alarm newAlarm = new Alarm(hourPicked, minutePicked, city);
-					newAlarm.setRepeatDays(repeatDays);
-					this.saveAlarm(newAlarm);
-				}
+				Alarm newAlarm = new Alarm(hourPicked, minutePicked, city);
+				newAlarm.setRepeatDays(repeatDays);
+				this.saveAlarm(newAlarm);
 			}
 		}
 	}
@@ -306,7 +243,7 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 		public void onLocationChanged(Location location) {
 			double latitude = location.getLatitude();
 			double longitude = location.getLongitude();
-    
+
 			LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 			Geocoder gcd = new Geocoder(getApplicationContext(), Locale.ENGLISH);
 			
@@ -356,36 +293,8 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 	public void onFoundCityByName(City city) {
 		if(city != null) {
 			CityPreferences.addCity(city, this);
-			if(city.getPicUrl() == null) {
-				final City cityForThread = city;
-				new Thread(new Runnable() {
-					
-					@Override
-					public void run() {
-						try {
-							Flickr flickr = new Flickr("ec643177a22bea18f2a9f2e653ea29ed", "9da255f54b63bc56");
-									
-							SearchParameters searchParams = new SearchParameters();
-							searchParams.setText(cityForThread.getCityName() +" downtown");
-							searchParams.setSort(SearchParameters.INTERESTINGNESS_DESC);
-							
-							PhotoList photoList = flickr.getPhotosInterface().search(searchParams, 5, 0);
-							if(photoList.size() > 0) {
-								Photo photo = photoList.get(0);
-								String picUrl = photo.getMedium800Url();
-								cityForThread.setPicUrl(picUrl);
-							}
-							Alarm newAlarm = new Alarm(timePicker.getCurrentHour(), timePicker.getCurrentMinute(), cityForThread);
-							NewAlarmActivity.this.saveAlarm(newAlarm);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}).start();
-			} else {
-				Alarm newAlarm = new Alarm(timePicker.getCurrentHour(), timePicker.getCurrentMinute(), city);
-				this.saveAlarm(newAlarm);
-			}	
+			Alarm newAlarm = new Alarm(timePicker.getCurrentHour(), timePicker.getCurrentMinute(), city);
+			this.saveAlarm(newAlarm);
 		} else {
 			Toast toastAlert = Toast.makeText(this, "City not found, please try again", Toast.LENGTH_LONG);
 			toastAlert.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 180);
