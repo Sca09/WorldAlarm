@@ -55,15 +55,16 @@
 	    xmlns:tools="http://schemas.android.com/tools"
 	    android:id="@+id/pager"
 	    android:layout_width="match_parent"
+	    android:layout_gravity="center"
 	    android:layout_height="match_parent" >
 
 	    <android.support.v4.view.PagerTitleStrip
 	        android:id="@+id/pager_title_strip"
 	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
+	        android:layout_height="50dip"
 	        android:layout_gravity="top"
-	        android:background="@color/blue_light"
-	        android:textColor="#fff" >
+	        android:background="#000"
+	        android:textAppearance="@style/PagerTabStripText" >
 	    </android.support.v4.view.PagerTitleStrip>
 	</android.support.v4.view.ViewPager>
 

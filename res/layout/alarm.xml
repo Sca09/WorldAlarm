@@ -7,18 +7,19 @@
   <ImageView 
       android:id="@+id/background_img"
       android:layout_width="match_parent" 
-      android:layout_height="400px" />
+      android:layout_height="600px" />
   
   <View 
       android:layout_width="match_parent" 
-      android:layout_height="400px"
-      android:maxHeight="400px" 
+      android:layout_height="600px"
+      android:maxHeight="600px" 
       android:background="#88000000" />
   
     
 <LinearLayout 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="20dip"
     android:orientation="vertical">
 
     <TextView
@@ -56,8 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp" 
+            android:layout_alignParentRight="true" 
             android:checked="true"
             android:thumb="@drawable/apptheme_switch_inner_holo_light"
             android:track="@drawable/apptheme_switch_track_holo_light"/>
@@ -67,7 +67,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:layout_marginRight="10dp"
         android:orientation="horizontal" >
 
         <TextView
@@ -103,95 +102,9 @@
     <RelativeLayout 
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <!-- 
-    <LinearLayout 
-        android:layout_width="fill_parent"
-        android:layout_height="30dp"
-        android:orientation="horizontal" 
-        android:gravity="center_horizontal">
-        
-        <TextView 
-            android:id="@+id/repeat_day_sun"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingRight="3sp"
-            android:paddingLeft="3sp"
-            android:gravity="bottom"
-            android:fontFamily="sans-serif-light"
-            android:textSize="18sp"
-            android:textColor="@android:color/darker_gray"
-            android:text="@string/repeat_day_sun" />
-        <TextView 
-            android:id="@+id/repeat_day_mon"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingRight="3sp"
-            android:paddingLeft="3sp"
-            android:gravity="bottom"
-            android:fontFamily="sans-serif-light"
-            android:textSize="18sp"
-            android:textColor="@android:color/darker_gray"
-            android:text="@string/repeat_day_mon" />
-        <TextView 
-            android:id="@+id/repeat_day_tue"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingRight="3sp"
-            android:paddingLeft="3sp"
-            android:gravity="bottom"
-            android:fontFamily="sans-serif-light"
-            android:textSize="18sp"
-            android:textColor="@android:color/darker_gray"
-            android:text="@string/repeat_day_tue" />
-        <TextView 
-            android:id="@+id/repeat_day_wed"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingRight="3sp"
-            android:paddingLeft="3sp"
-            android:gravity="bottom"
-            android:fontFamily="sans-serif-light"
-            android:textSize="18sp"
-            android:textColor="@android:color/darker_gray"
-            android:text="@string/repeat_day_wed" />
-        <TextView 
-            android:id="@+id/repeat_day_thu"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingRight="3sp"
-            android:paddingLeft="3sp"
-            android:gravity="bottom"
-            android:fontFamily="sans-serif-light"
-            android:textSize="18sp"
-            android:textColor="@android:color/darker_gray"
-            android:text="@string/repeat_day_thu" />
-        <TextView 
-            android:id="@+id/repeat_day_fri"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingRight="3sp"
-            android:paddingLeft="3sp"
-            android:gravity="bottom"
-            android:fontFamily="sans-serif-light"
-            android:textSize="18sp"
-            android:textColor="@android:color/darker_gray"
-            android:text="@string/repeat_day_fri" />
-        <TextView 
-            android:id="@+id/repeat_day_sat"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingRight="3sp"
-            android:paddingLeft="3sp"
-            android:gravity="bottom"
-            android:fontFamily="sans-serif-light"
-            android:textSize="18sp"
-            android:textColor="@android:color/darker_gray"
-            android:text="@string/repeat_day_sat" />
-    </LinearLayout>
-    -->
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/repeat_day_panel"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_centerHorizontal="true">
 
@@ -203,7 +116,8 @@
                 android:textSize="15sp"
                 android:textColor="@color/repeat_day_color"
                 android:textOn="@string/repeat_day_sun"
-                android:textOff="@string/repeat_day_sun" />
+                android:textOff="@string/repeat_day_sun"
+                android:layout_weight="1" />
 
             <ToggleButton 
                 android:id="@+id/repeat_day_toggle_mon"
@@ -214,7 +128,8 @@
                 android:textSize="15sp"
                 android:textColor="@color/repeat_day_color"
                 android:textOn="@string/repeat_day_mon"
-                android:textOff="@string/repeat_day_mon" />
+                android:textOff="@string/repeat_day_mon"
+                android:layout_weight="1" />
 
             <ToggleButton 
                 android:id="@+id/repeat_day_toggle_tue"
@@ -225,7 +140,8 @@
                 android:textSize="15sp"
                 android:textColor="@color/repeat_day_color"
                 android:textOn="@string/repeat_day_tue"
-                android:textOff="@string/repeat_day_tue" />
+                android:textOff="@string/repeat_day_tue"
+                android:layout_weight="1" />
 
             <ToggleButton 
                 android:id="@+id/repeat_day_toggle_wed"
@@ -236,7 +152,8 @@
                 android:textSize="15sp"
                 android:textColor="@color/repeat_day_color"
                 android:textOn="@string/repeat_day_wed"
-                android:textOff="@string/repeat_day_wed" />
+                android:textOff="@string/repeat_day_wed" 
+                android:layout_weight="1"/>
 
             <ToggleButton 
                 android:id="@+id/repeat_day_toggle_thu"
@@ -258,7 +175,8 @@
                 android:textSize="15sp"
                 android:textColor="@color/repeat_day_color"
                 android:textOn="@string/repeat_day_fri"
-                android:textOff="@string/repeat_day_fri" />
+                android:textOff="@string/repeat_day_fri" 
+                android:layout_weight="1"/>
 
             <ToggleButton 
                 android:id="@+id/repeat_day_toggle_sat"
@@ -269,8 +187,9 @@
                 android:textSize="15sp"
                 android:textColor="@color/repeat_day_color"
                 android:textOn="@string/repeat_day_sat"
-                android:textOff="@string/repeat_day_sat" />
-        </RelativeLayout>
+                android:textOff="@string/repeat_day_sat"
+                android:layout_weight="1" />
+        </LinearLayout>
     </RelativeLayout>
 
 </LinearLayout>
