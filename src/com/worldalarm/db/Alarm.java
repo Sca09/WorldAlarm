@@ -22,7 +22,7 @@ public class Alarm implements Serializable {
 	private boolean active;
 	private List<Integer> repeat_days = new ArrayList<Integer>();
 	private int pendingIntentId;
-	private String cityImageUrl;
+	private String cityPicUrl;
 	
 	public static final Integer REPEAT_DAY_SUN		= 0;
 	public static final Integer REPEAT_DAY_MON		= 1;
@@ -210,11 +210,11 @@ public class Alarm implements Serializable {
 		return repeatDaysConstants;
 	}
 
-	public String getCityImageUrl() {
-		return cityImageUrl;
+	public String getCityPicUrl() {
+		return cityPicUrl;
 	}
 
-	public void setCityImageUrl(String cityImageUrl) {
-		this.cityImageUrl = cityImageUrl;
+	public void setCityPicUrl(String cityPicUrl) {
+		this.cityPicUrl = cityPicUrl;
 	}
 }
