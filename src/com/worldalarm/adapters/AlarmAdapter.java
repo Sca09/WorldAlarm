@@ -29,6 +29,8 @@ import com.worldalarm.broadcast.AlarmManagerBroadcastReceiver;
 import com.worldalarm.db.Alarm;
 import com.worldalarm.db.City;
 import com.worldalarm.preferences.AlarmPreferences;
+import com.worldalarm.preferences.CityPreferences;
+import com.worldalarm.utils.Constants;
 
 public class AlarmAdapter extends ArrayAdapter<Alarm> {
 	
@@ -294,17 +296,16 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		
 		public void populateWithAlarm(final Alarm alarm) {
 			this.alarm = alarm;
-			Log.d("WorldAlarm", "Alarm["+ alarm.getCity().getCityName() +"] - cityImageUrl["+ alarm.getCityImageUrl() +"]");
+			Log.d("WorldAlarm", "Alarm["+ alarm.getCity().getCityName() +"] - cityImageUrl["+ alarm.getCityPicUrl() +"]");
 			
 			background_img.setImageDrawable(null);
 			if(alarm.getCity().getListPicUrls() == null) {
 				final City cityForThread = alarm.getCity();
 				new Thread(new Runnable() {
-					
 					@Override
 					public void run() {
 						try {
-							Flickr flickr = new Flickr("ec643177a22bea18f2a9f2e653ea29ed", "9da255f54b63bc56");
+							Flickr flickr = new Flickr(Constants.FLICKR_KEY, Constants.FLICKR_SECRET);
 									
 							SearchParameters searchParams = new SearchParameters();
 							searchParams.setText(cityForThread.getCityName() +" downtown");
@@ -315,26 +316,23 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 								for(Photo photo : photoList) {
 									alarm.getCity().addPicUrl(photo.getMediumUrl());
 								}
-								
-								alarm.setCityImageUrl(alarm.getCity().getRandomPicUrl());
-								AlarmPreferences.updateAlarm(alarm, context);
-								Log.d("WorldAlarm", "Saved Alarm["+ alarm.getCity().getCityName() +"] - cityImageUrl["+ alarm.getCityImageUrl() +"]");
-								Picasso.with(context).load(alarm.getCityImageUrl()).resize(context.getResources().getDisplayMetrics().widthPixels, 600).centerCrop().into(background_img);
+								CityPreferences.addCity(alarm.getCity(), context);
 							}
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}
 				}).start();
-			} else{
-				String imageUrl = alarm.getCityImageUrl();
-				if(imageUrl == null && alarm.getCity().getListPicUrls() != null) {
-					imageUrl = alarm.getCity().getRandomPicUrl();
-					alarm.setCityImageUrl(imageUrl);
-					AlarmPreferences.updateAlarm(alarm, context);
-				}
-				Picasso.with(context).load(imageUrl).resize(context.getResources().getDisplayMetrics().widthPixels, 600).centerCrop().into(background_img);
 			}
+			
+			String picUrl = alarm.getCityPicUrl();
+			if(picUrl == null && alarm.getCity().getListPicUrls() != null) {
+				picUrl = alarm.getCity().getRandomPicUrl();
+				alarm.setCityPicUrl(picUrl);
+				AlarmPreferences.updateAlarm(alarm, context);
+				Log.d("WorldAlarm", "Saved Alarm["+ alarm.getCity().getCityName() +"] - cityImageUrl["+ alarm.getCityPicUrl() +"]");
+			}
+			Picasso.with(context).load(picUrl).resize(context.getResources().getDisplayMetrics().widthPixels, 600).centerCrop().into(background_img);
 			
 			alarmId.setText(String.valueOf(alarm.getId()));
 			alarmHour.setText(alarm.getFormattedHour());
