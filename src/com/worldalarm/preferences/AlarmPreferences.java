@@ -104,6 +104,8 @@ public class AlarmPreferences {
 		
 		savePreferences(context);
 		
+//		context.sendBroadcast(new Intent("alarmChanged").setAction("alarmChanged").putExtra("alarmId", alarm.getId()));
+		
 		return alarmsByTZSingleton;
 	}
 	
@@ -140,8 +142,10 @@ public class AlarmPreferences {
 			
 			List<Alarm> alarms = alarmsByTZSingleton.get(timeZone);
 			
-			for(Alarm alarm : alarms) {
-				alarmManager.cancelAlarm(context, alarm);
+			if(alarms != null) {
+				for(Alarm alarm : alarms) {
+					alarmManager.cancelAlarm(context, alarm);
+				}
 			}
 			
 			alarmsByTZSingleton.remove(timeZone);

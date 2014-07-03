@@ -19,13 +19,13 @@ public class TimeZonePreferences {
 	private static List<String> timeZonesSingleton = null;
 	
 	public static List<String> getAllTimeZones(Context context) {
-    	
-    	if(timeZonesSingleton == null) {
-    		timeZonesSingleton = getTimeZonesFromPreferences(context);
-    	} 
-    	
-    	return timeZonesSingleton;
-    }
+
+		if(timeZonesSingleton == null) {
+			timeZonesSingleton = getTimeZonesFromPreferences(context);
+		}
+		
+		return timeZonesSingleton;
+	}
 	
 	public static List<String> getTimeZonesFromPreferences(Context context) {
 		
