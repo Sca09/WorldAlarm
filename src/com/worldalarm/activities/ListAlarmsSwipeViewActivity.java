@@ -98,7 +98,12 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 		case REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM:
 			if (resultCode == Activity.RESULT_OK) {
 				Alarm alarmUpdated = (Alarm) data.getSerializableExtra("alamUpdated");
-				broadcastChanges(alarmUpdated);
+				if(alarmUpdated != null) {
+					broadcastChanges(alarmUpdated);
+				} else {
+					mSectionsPagerAdapter.notifyDataSetChanged();
+					mSectionsPagerAdapter.getAllTimeZones();
+				}
 			} 
 			break;
 			

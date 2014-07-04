@@ -77,6 +77,19 @@ public class CityPreferences {
 		return citiesSingleton;
 	}
 	
+	public synchronized static HashMap<String, City> updateCity(City city, Context context) {
+		
+		if(citiesSingleton == null) {
+			citiesSingleton = getCitiesFromPreferences(context);
+		}
+		
+		citiesSingleton.put(city.getCityName(), city);
+		
+		savePreferences(city, context);
+		
+		return citiesSingleton;
+	}
+	
 	private static void savePreferences(City city, Context context) {
 		HashMap<String, City> citiesList = new HashMap<String, City>();
 		

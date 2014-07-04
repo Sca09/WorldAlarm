@@ -283,7 +283,6 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 					
 					AlarmPreferences.updateAlarm(alarm, context);
 					broadcastChanges(context);
-					broadcastChanges(context);
 //					((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged(alarm.getCity().getTimeZoneName());
 				}
 			});
@@ -303,8 +302,7 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		
 		public void populateWithAlarm(final Alarm alarm) {
 			this.alarm = alarm;
-			Log.d("WorldAlarm", "Alarm["+ alarm.getCity().getCityName() +"] - cityImageUrl["+ alarm.getCityPicUrl() +"]");
-			
+
 			background_img.setImageDrawable(null);
 			if(alarm.getCity().getListPicUrls() == null) {
 				final City cityForThread = alarm.getCity();
@@ -313,7 +311,7 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 					public void run() {
 						try {
 							Flickr flickr = new Flickr(Constants.FLICKR_KEY, Constants.FLICKR_SECRET);
-									
+							
 							SearchParameters searchParams = new SearchParameters();
 							searchParams.setText(cityForThread.getCityName() +" downtown");
 							searchParams.setSort(SearchParameters.INTERESTINGNESS_DESC);
@@ -323,13 +321,12 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 								for(Photo photo : photoList) {
 									alarm.getCity().addPicUrl(photo.getMediumUrl());
 								}
-								CityPreferences.addCity(alarm.getCity(), context);
+								CityPreferences.updateCity(alarm.getCity(), context);
+							} else {
+								
 							}
 							
-							Intent intent = new Intent(Constants.BROADCAST_FILTER_ALARM_UPDATE);
-							intent.putExtra("alarmId", alarm.getId());
-							context.sendBroadcast(intent);
-							
+							broadcastChanges(alarm, context);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -338,11 +335,10 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 			}
 			
 			String picUrl = alarm.getCityPicUrl();
-			if(picUrl == null && alarm.getCity().getListPicUrls() != null) {
+			if(picUrl == null && alarm.getCity().getListPicUrls() != null){
 				picUrl = alarm.getCity().getRandomPicUrl();
 				alarm.setCityPicUrl(picUrl);
 				AlarmPreferences.updateAlarm(alarm, context);
-				Log.d("WorldAlarm", "Saved Alarm["+ alarm.getCity().getCityName() +"] - cityImageUrl["+ alarm.getCityPicUrl() +"]");
 			}
 			Picasso.with(context).load(picUrl).resize(context.getResources().getDisplayMetrics().widthPixels, 600).centerCrop().into(background_img);
 			
@@ -413,6 +409,10 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		}
 		
 		private void broadcastChanges(Context context) {
+			broadcastChanges(alarm, context);
+		}
+		
+		private void broadcastChanges(Alarm alarm, Context context) {
 			Intent intent = new Intent(Constants.BROADCAST_FILTER_ALARM_UPDATE);
 			intent.putExtra("alarmId", alarm.getId());
 			context.sendBroadcast(intent);
