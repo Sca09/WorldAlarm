@@ -23,13 +23,12 @@
         <item name="android:actionBarItemBackground">@drawable/selectable_background_blue</item>
         <item name="android:popupMenuStyle">@style/PopupMenu.Blue</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Blue</item>
+        <item name="android:actionBarStyle">@style/ActionBar.Solid.Grey</item>
         <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Blue</item>
         <item name="android:actionDropDownStyle">@style/DropDownNav.Blue</item>
-        <item name="android:actionBarStyle">@style/ActionBar.Transparent.Blue</item>
         <item name="android:actionModeBackground">@drawable/cab_background_top_blue</item>
         <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_blue</item>
         <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Blue</item>
-        
         
     </style>
 
@@ -43,6 +42,10 @@
     <style name="ActionBar.Transparent.Blue" parent="@android:style/Widget.Holo.ActionBar">
         <item name="android:background">@drawable/ab_transparent_blue</item>
         <item name="android:progressBarStyle">@style/ProgressBar.Blue</item>
+    </style>
+    
+    <style name="ActionBar.Solid.Grey" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">#383838</item>
     </style>
 
     <style name="PopupMenu.Blue" parent="@android:style/Widget.Holo.ListPopupWindow">

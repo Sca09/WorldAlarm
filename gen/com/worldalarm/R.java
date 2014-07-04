@@ -367,9 +367,10 @@ containing a value of this type.
     }
     public static final class style {
         public static final int ActionBar_Solid_Blue=0x7f080008;
+        public static final int ActionBar_Solid_Grey=0x7f08000a;
         public static final int ActionBar_Transparent_Blue=0x7f080009;
-        public static final int ActionBarTabStyle_Blue=0x7f08000c;
-        public static final int ActionButton_CloseMode_Blue=0x7f08000f;
+        public static final int ActionBarTabStyle_Blue=0x7f08000d;
+        public static final int ActionButton_CloseMode_Blue=0x7f080010;
         /** 
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
@@ -398,18 +399,18 @@ containing a value of this type.
         public static final int AppTheme=0x7f080001;
         public static final int AutoCompleteTextViewAppTheme=0x7f080003;
         public static final int ButtonAppTheme=0x7f080004;
-        public static final int DropDownListView_Blue=0x7f08000b;
-        public static final int DropDownNav_Blue=0x7f08000d;
+        public static final int DropDownListView_Blue=0x7f08000c;
+        public static final int DropDownNav_Blue=0x7f08000e;
         public static final int ImageButtonAppTheme=0x7f080005;
         public static final int PagerTabStripText=0x7f080002;
-        public static final int PopupMenu_Blue=0x7f08000a;
-        public static final int ProgressBar_Blue=0x7f08000e;
+        public static final int PopupMenu_Blue=0x7f08000b;
+        public static final int ProgressBar_Blue=0x7f08000f;
         public static final int Theme_Blue=0x7f080007;
         /**  this style is only referenced in a Light.DarkActionBar based theme 
          */
-        public static final int Theme_Blue_Widget=0x7f080010;
+        public static final int Theme_Blue_Widget=0x7f080011;
         public static final int ToggleAppTheme=0x7f080006;
-        public static final int _AppTheme=0x7f080011;
+        public static final int _AppTheme=0x7f080012;
     }
     public static final class styleable {
         /** Attributes that can be used with a DragSortListView.

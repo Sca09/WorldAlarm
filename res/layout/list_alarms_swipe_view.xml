@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dip"
             android:layout_gravity="top"
-            android:background="#000"
+            android:background="#383838"
             android:textAppearance="@style/PagerTabStripText" >
         </android.support.v4.view.PagerTitleStrip>
     </android.support.v4.view.ViewPager>
