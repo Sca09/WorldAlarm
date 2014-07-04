@@ -33,16 +33,16 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 		wl.acquire();
 
 		//You can do the processing here update the widget/remote views.
-        Bundle extras = intent.getExtras();
-        StringBuilder msgStr = new StringBuilder();
-        
-        if(extras != null && extras.getBoolean(ONE_TIME, Boolean.FALSE)){
-        	msgStr.append("One time Timer : ");
-        }
-        Format formatter = new SimpleDateFormat("hh:mm a");
-        msgStr.append(formatter.format(new Date()));
+		Bundle extras = intent.getExtras();
+		StringBuilder msgStr = new StringBuilder();
 
-        Toast.makeText(context, msgStr, Toast.LENGTH_LONG).show();
+		if(extras != null && extras.getBoolean(ONE_TIME, Boolean.FALSE)){
+			msgStr.append("One time Timer : ");
+		}
+		Format formatter = new SimpleDateFormat("hh:mm a");
+		msgStr.append(formatter.format(new Date()));
+
+		Toast.makeText(context, msgStr, Toast.LENGTH_LONG).show();
 
 		// Release the lock
 		wl.release();

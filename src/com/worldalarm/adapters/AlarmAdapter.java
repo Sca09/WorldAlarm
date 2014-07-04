@@ -23,7 +23,6 @@ import com.googlecode.flickrjandroid.photos.PhotoList;
 import com.googlecode.flickrjandroid.photos.SearchParameters;
 import com.squareup.picasso.Picasso;
 import com.worldalarm.R;
-import com.worldalarm.activities.ListAlarmsSwipeViewActivity;
 import com.worldalarm.activities.UpdateAlarmActivity;
 import com.worldalarm.broadcast.AlarmManagerBroadcastReceiver;
 import com.worldalarm.db.Alarm;
@@ -89,7 +88,6 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		public AlarmHolder(final Context context, final View row) {
 			this.context = context;
 			background_img = (ImageView)row.findViewById(R.id.background_img);
-			//holder.background_img.setScaleType(ScaleType.CENTER_CROP);
 			
 			alarmId = (TextView)row.findViewById(R.id.alarmId);
 			alarmHour = (TextView)row.findViewById(R.id.alarmHour);
@@ -123,7 +121,8 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 					}
 					
 					AlarmPreferences.updateAlarm(alarm, context);
-					((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged(alarm.getCity().getTimeZoneName());
+					broadcastChanges(context);
+//					((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged(alarm.getCity().getTimeZoneName());
 				}
 			});
 
@@ -145,7 +144,8 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 					}
 					
 					AlarmPreferences.updateAlarm(alarm, context);
-					((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged(alarm.getCity().getTimeZoneName());
+					broadcastChanges(context);
+//					((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged(alarm.getCity().getTimeZoneName());
 				}
 			});
 
@@ -167,7 +167,8 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 					}
 					
 					AlarmPreferences.updateAlarm(alarm, context);
-					((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged(alarm.getCity().getTimeZoneName());
+					broadcastChanges(context);
+//					((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged(alarm.getCity().getTimeZoneName());
 				}
 			});
 
@@ -189,7 +190,8 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 					}
 					
 					AlarmPreferences.updateAlarm(alarm, context);
-					((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged(alarm.getCity().getTimeZoneName());
+					broadcastChanges(context);
+//					((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged(alarm.getCity().getTimeZoneName());
 				}
 			});
 
@@ -211,7 +213,8 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 					}
 					
 					AlarmPreferences.updateAlarm(alarm, context);
-					((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged(alarm.getCity().getTimeZoneName());
+					broadcastChanges(context);
+//					((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged(alarm.getCity().getTimeZoneName());
 				}
 			});
 
@@ -233,7 +236,8 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 					}
 					
 					AlarmPreferences.updateAlarm(alarm, context);
-					((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged(alarm.getCity().getTimeZoneName());
+					broadcastChanges(context);
+//					((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged(alarm.getCity().getTimeZoneName());
 				}
 			});
 
@@ -255,7 +259,8 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 					}
 					
 					AlarmPreferences.updateAlarm(alarm, context);
-					((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged(alarm.getCity().getTimeZoneName());
+					broadcastChanges(context);
+//					((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged(alarm.getCity().getTimeZoneName());
 				}
 			});
 			
@@ -277,7 +282,9 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 					}
 					
 					AlarmPreferences.updateAlarm(alarm, context);
-					((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged(alarm.getCity().getTimeZoneName());
+					broadcastChanges(context);
+					broadcastChanges(context);
+//					((ListAlarmsSwipeViewActivity) context).getmSectionsPagerAdapter().notifyDataSetChanged(alarm.getCity().getTimeZoneName());
 				}
 			});
 
@@ -318,6 +325,11 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 								}
 								CityPreferences.addCity(alarm.getCity(), context);
 							}
+							
+							Intent intent = new Intent(Constants.BROADCAST_FILTER_ALARM_UPDATE);
+							intent.putExtra("alarmId", alarm.getId());
+							context.sendBroadcast(intent);
+							
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -398,6 +410,12 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 				repeatDay_Sat.setTypeface(Typeface.DEFAULT);
 				repeatDay_Sat.setChecked(Boolean.FALSE);
 			}
+		}
+		
+		private void broadcastChanges(Context context) {
+			Intent intent = new Intent(Constants.BROADCAST_FILTER_ALARM_UPDATE);
+			intent.putExtra("alarmId", alarm.getId());
+			context.sendBroadcast(intent);
 		}
 	}
 }

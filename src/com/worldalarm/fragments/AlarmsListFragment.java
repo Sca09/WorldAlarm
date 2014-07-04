@@ -5,20 +5,26 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.worldalarm.R;
 import com.worldalarm.adapters.AlarmAdapter;
 import com.worldalarm.db.Alarm;
 import com.worldalarm.preferences.AlarmPreferences;
+import com.worldalarm.utils.Constants;
 
-public class AlarmsListFragment extends Fragment {
+public class AlarmsListFragment extends ListFragment {
 	/**
 	 * The fragment argument representing the section number for this fragment.
 	 */
@@ -29,12 +35,15 @@ public class AlarmsListFragment extends Fragment {
 	private ListView listViewAlarms;
 	private Activity activity;
 	private String timeZone;
-
+	List<Alarm> data;
+	AlarmAdapter adapter;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		getActivity().registerReceiver(updateReceiver, new IntentFilter(Constants.BROADCAST_FILTER_ALARM_UPDATE));
 		
 		rootView = (RelativeLayout)inflater.inflate(R.layout.list_alarms, container, false);
-		
+		listViewAlarms = (ListView) rootView.findViewById(android.R.id.list);
 		if(getArguments() != null) {
 			
 			String tzSelected = getArguments().getString(ARG_SECTION_NAME);
@@ -45,7 +54,7 @@ public class AlarmsListFragment extends Fragment {
 		}
 
 		this.getAllAlarmsByTZName();
-
+		
 		return rootView;
 	}
 
@@ -58,47 +67,57 @@ public class AlarmsListFragment extends Fragment {
 
 	public void getAllAlarmsByTZName() {
 		HashMap<String, List<Alarm>> listAlarms = AlarmPreferences.getAlarmsByTZInstance(getActivity());
-		
-		List<Alarm> timeZoneList = this.getListAlarms(listAlarms);
-		
-		Alarm[] data;
-		
-		if(timeZoneList != null) {
-			data = new Alarm[timeZoneList.size()];
-			
-			int i = 0;
-			for(Alarm alarm : timeZoneList) {
-				data[i] = alarm;
-				
-				i++;
-			}
-		} else {
-			data = new Alarm[0];
-		}
-		
-		AlarmAdapter adapter = new AlarmAdapter(activity, R.layout.alarm, data);
 
-		listViewAlarms = new ListView(activity);
+		data = this.getListAlarms(listAlarms);
+
+		adapter = new AlarmAdapter(activity, data);
 		listViewAlarms.setDivider(null);
-	
 		listViewAlarms.setAdapter(adapter);
-	
-		rootView.addView(listViewAlarms);
 	}
 	
 	private List<Alarm> getListAlarms(HashMap<String, List<Alarm>> listAlarms) {
+		List<Alarm> alarmsForTimeZone = new ArrayList<Alarm>();
 		
 		if(timeZone != null && timeZone.length() > 0) {
-			return listAlarms.get(timeZone);
-		} else {
+			List<Alarm> listAlarmsByZone = listAlarms.get(timeZone);
 			
-			List<Alarm> allAlarms = new ArrayList<Alarm>();
-			
-			for(String timeZone : listAlarms.keySet()) {
-				allAlarms.addAll(listAlarms.get(timeZone));
+			if(listAlarmsByZone != null){
+				alarmsForTimeZone.addAll(listAlarms.get(timeZone));
 			}
-			
-			return allAlarms;
+		} else {
+			for(String timeZone : listAlarms.keySet()) {
+				alarmsForTimeZone.addAll(listAlarms.get(timeZone));
+			}
 		}
-	}	
+		
+		return alarmsForTimeZone;
+	}
+	
+	BroadcastReceiver updateReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String updateId = intent.getStringExtra("alarmId");
+			
+			ListView list = getListView();
+			int start = list.getFirstVisiblePosition();
+			for(int i=start;i<=list.getLastVisiblePosition();i++) {
+				
+				View view = list.getChildAt(i-start);
+				TextView textViewId = (TextView) view.findViewById(R.id.alarmId);
+				String id = textViewId.getText().toString();
+				
+				if(updateId.equalsIgnoreCase(id)){
+					list.getAdapter().getView(i, view, list);
+					break;
+				}
+			}
+		}
+	};
+
+	public void onDestroy() {
+		if (updateReceiver != null) {
+			getActivity().unregisterReceiver(updateReceiver);
+		}
+		super.onDestroy();
+	}
 }
