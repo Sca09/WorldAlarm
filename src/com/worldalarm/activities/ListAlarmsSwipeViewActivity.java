@@ -13,6 +13,8 @@ import android.widget.ImageButton;
 
 import com.worldalarm.R;
 import com.worldalarm.adapters.SectionsPagerAdapter;
+import com.worldalarm.db.Alarm;
+import com.worldalarm.utils.Constants;
 
 public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 
@@ -90,27 +92,13 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 		case REQUEST_CODE_RESOLVE_ERR_NEW_ALARM:
 			if (resultCode == RESULT_OK) {
 				mSectionsPagerAdapter.notifyDataSetChanged();
-				
-//				Alarm newAlarm = (Alarm) data.getSerializableExtra("newAlarm");
-//				
-//				String timeZoneSelected = newAlarm.getCity().getTimeZoneName();
-//				openTab(timeZoneSelected);
 			}
 			break;
 			
 		case REQUEST_CODE_RESOLVE_ERR_UPDATE_ALARM:
 			if (resultCode == Activity.RESULT_OK) {
-				mSectionsPagerAdapter.notifyDataSetChanged();
-				
-//				Alarm alamUpdated = (Alarm) data.getSerializableExtra("alamUpdated");
-//				
-//				if(alamUpdated != null) {
-//					String timeZoneSelected = alamUpdated.getCity().getTimeZoneName();
-//					openTab(timeZoneSelected);
-//				} else {
-//					// Alarm deleted
-////					mViewPager.setCurrentItem(0);
-//				}
+				Alarm alarmUpdated = (Alarm) data.getSerializableExtra("alamUpdated");
+				broadcastChanges(alarmUpdated);
 			} 
 			break;
 			
@@ -146,6 +134,11 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 				ListAlarmsSwipeViewActivity.this.startActivityForResult(newAlarmIntent, REQUEST_CODE_RESOLVE_ERR_NEW_ALARM);
 			}
 		});
- 
+	}
+	
+	private void broadcastChanges(Alarm alarm) {
+		Intent intent = new Intent(Constants.BROADCAST_FILTER_ALARM_UPDATE);
+		intent.putExtra("alarmId", alarm.getId());
+		sendBroadcast(intent);
 	}
 }

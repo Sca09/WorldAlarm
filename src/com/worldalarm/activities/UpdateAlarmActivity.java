@@ -86,7 +86,7 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 	@Override
 	public void onClick(View view) {
 		switch(view.getId()) {
-		case R.id.updateAlarmButton:			
+		case R.id.updateAlarmButton:
 			this.updateAlarm(view);
 			break;
 		
