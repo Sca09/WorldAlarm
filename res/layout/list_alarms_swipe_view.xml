@@ -15,11 +15,21 @@
         <android.support.v4.view.PagerTitleStrip
             android:id="@+id/pager_title_strip"
             android:layout_width="match_parent"
-            android:layout_height="50dip"
+            android:layout_height="35dip"
             android:layout_gravity="top"
             android:background="#383838"
-            android:textAppearance="@style/PagerTabStripText" >
-        </android.support.v4.view.PagerTitleStrip>
+            android:textAppearance="@style/PagerTabStripText" />
+        
+        <!-- 
+        <android.support.v4.view.PagerTabStrip
+            android:id="@+id/pager_tab_strip"
+            android:layout_width="match_parent"
+            android:layout_height="35dip"
+            android:layout_gravity="top"
+            android:background="#383838"
+            android:textAppearance="@style/PagerTabStripText" />
+         -->
+        
     </android.support.v4.view.ViewPager>
 
     <View
@@ -35,6 +45,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:src="@android:drawable/ic_menu_add"
+        android:src="@drawable/add_button"
         android:background="@null" />
 </RelativeLayout>
