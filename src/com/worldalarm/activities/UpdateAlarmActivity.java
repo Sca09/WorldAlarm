@@ -173,7 +173,6 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 	}
 
 	public void updateAlarm(View view) {
-		
 		int hourPicked 			= timePicker.getCurrentHour();
 		int minutePicked 		= timePicker.getCurrentMinute();	
 		String cityPicked 		= cityPickerAutoComplete.getText().toString();
@@ -192,7 +191,10 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 			Alarm alarm = new Alarm(hourPicked, minutePicked, city);
 			this.alarm.setHour(alarm.getHour());
 			this.alarm.setMinute(alarm.getMinute());
-			this.alarm.setCity(alarm.getCity());
+			if(this.alarm.getCity() != alarm.getCity()) {
+				this.alarm.setCity(alarm.getCity());
+				this.alarm.setCityPicUrl(null);
+			}
 			this.alarm.setRepeatDays(repeatDays);
 			this.alarm.setActive(Boolean.TRUE);
 			this.updateAlarm(this.alarm);
@@ -208,7 +210,10 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 				Alarm alarm = new Alarm(hourPicked, minutePicked, city);
 				this.alarm.setHour(alarm.getHour());
 				this.alarm.setMinute(alarm.getMinute());
-				this.alarm.setCity(alarm.getCity());
+				if(this.alarm.getCity() != alarm.getCity()) {
+					this.alarm.setCity(alarm.getCity());
+					this.alarm.setCityPicUrl(null);
+				}
 				this.alarm.setRepeatDays(repeatDays);
 				this.alarm.setActive(Boolean.TRUE);
 				this.updateAlarm(this.alarm);
@@ -257,7 +262,7 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 		return repeatDays;
 	}
 	
-	private void getCurrentCityLocation() {		
+	private void getCurrentCityLocation() {
 		try {
 			String currentTimeZoneID = TimeZone.getDefault().getID();
 			String currentCityNameNotFormatted = currentTimeZoneID.substring(currentTimeZoneID.lastIndexOf("/") + 1);
@@ -371,7 +376,10 @@ public class UpdateAlarmActivity extends FragmentActivity implements View.OnClic
 			Alarm alarm = new Alarm(timePicker.getCurrentHour(), timePicker.getCurrentMinute(), city);
 			this.alarm.setHour(alarm.getHour());
 			this.alarm.setMinute(alarm.getMinute());
-			this.alarm.setCity(alarm.getCity());
+			if(this.alarm.getCity() != alarm.getCity()) {
+				this.alarm.setCity(alarm.getCity());
+				this.alarm.setCityPicUrl(null);
+			}
 			this.alarm.setActive(Boolean.TRUE);
 			this.updateAlarm(this.alarm);
 		} else {

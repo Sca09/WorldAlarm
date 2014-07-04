@@ -7,7 +7,8 @@
   <ImageView 
       android:id="@+id/background_img"
       android:layout_width="match_parent" 
-      android:layout_height="600px" />
+      android:layout_height="600px"
+      android:background="@drawable/default_pic_blur" />
   
   <View 
       android:layout_width="match_parent" 
