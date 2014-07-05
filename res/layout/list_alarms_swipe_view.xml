@@ -32,19 +32,22 @@
         
     </android.support.v4.view.ViewPager>
 
+    <!--
     <View
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:background="#22ffffff" />
+    -->
 
     <ImageButton
         android:id="@+id/addBottomButton"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:paddingBottom="3dp"
         android:src="@drawable/add_button"
         android:background="@null" />
 </RelativeLayout>
