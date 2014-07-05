@@ -1,10 +1,19 @@
 package com.worldalarm.activities;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +23,10 @@ import android.widget.ImageButton;
 import com.worldalarm.R;
 import com.worldalarm.adapters.SectionsPagerAdapter;
 import com.worldalarm.db.Alarm;
+import com.worldalarm.db.City;
+import com.worldalarm.helper.LocationHelper;
+import com.worldalarm.preferences.CityPreferences;
+import com.worldalarm.preferences.UserPreferences;
 import com.worldalarm.utils.Constants;
 
 public class ListAlarmsSwipeViewActivity extends FragmentActivity {
@@ -56,6 +69,8 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
+		
+		getUserLocation();
 	}
 
 	@Override
@@ -68,10 +83,10 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.action_add:			
-			Intent newAlarmIntent = new Intent(this, NewAlarmActivity.class);
-			this.startActivityForResult(newAlarmIntent, REQUEST_CODE_RESOLVE_ERR_NEW_ALARM);
-			break;
+//		case R.id.action_add:			
+//			Intent newAlarmIntent = new Intent(this, NewAlarmActivity.class);
+//			this.startActivityForResult(newAlarmIntent, REQUEST_CODE_RESOLVE_ERR_NEW_ALARM);
+//			break;
 			
 //		case R.id.action_home:
 //			mViewPager.setCurrentItem(0);
@@ -129,7 +144,6 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 	}
 	
 	public void addListenerOnButton() {
-		 
 		imageButton = (ImageButton) findViewById(R.id.addBottomButton);
  
 		imageButton.setOnClickListener(new OnClickListener() {
@@ -145,5 +159,44 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 		Intent intent = new Intent(Constants.BROADCAST_FILTER_ALARM_UPDATE);
 		intent.putExtra("alarmId", alarm.getId());
 		sendBroadcast(intent);
+	}
+	
+	private void getUserLocation() {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					Context context = getApplicationContext();
+					String currentTimeZoneID = TimeZone.getDefault().getID();
+					String currentCityNameNotFormatted = currentTimeZoneID.substring(currentTimeZoneID.lastIndexOf("/") + 1);
+					String currentCityName = currentCityNameNotFormatted.replaceAll("_", " ");
+					
+					Location location = LocationHelper.getBestKnownLocation(context);
+					
+					if(location != null) {
+						Geocoder gcd = new Geocoder(context, Locale.getDefault());
+						double latitude = location.getLatitude();
+						double longitude = location.getLongitude();
+	
+						List<Address> addresses = gcd.getFromLocation(latitude, longitude, 1);
+						if (addresses.size() > 0) { 
+							currentCityName = addresses.get(0).getLocality();
+						}
+					} 
+					
+					TimeZone timeZone = TimeZone.getTimeZone(currentTimeZoneID);
+					String currentTimeZoneName = timeZone.getDisplayName();
+					
+					City currentCity = new City(currentCityName, currentTimeZoneID, currentTimeZoneName);
+					
+					CityPreferences.addCity(currentCity, context);
+					UserPreferences.addCurrentCity(currentCity, context);
+				
+				} catch (Exception e) {
+					Log.d("NewAlarmActivity", "No location obtained from device");
+				}
+			}
+		}).start();
 	}
 }

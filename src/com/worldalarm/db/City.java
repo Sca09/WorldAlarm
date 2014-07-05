@@ -14,7 +14,6 @@ public class City implements Serializable{
 	private String cityName;
 	private String timeZoneID;
 	private String timeZoneName;
-	private String picUrl;
 	private List<String> listPicUrls;
 
 	public City() {
@@ -48,14 +47,6 @@ public class City implements Serializable{
 	}
 	public void setTimeZoneName(String timeZoneName) {
 		this.timeZoneName = timeZoneName;
-	}
-
-	public String getPicUrl() {
-		return picUrl;
-	}
-
-	public void setPicUrl(String picUrl) {
-		this.picUrl = picUrl;
 	}
 
 	public List<String> getListPicUrls() {

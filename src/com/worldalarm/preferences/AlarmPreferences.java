@@ -104,8 +104,6 @@ public class AlarmPreferences {
 		
 		savePreferences(context);
 		
-//		context.sendBroadcast(new Intent("alarmChanged").setAction("alarmChanged").putExtra("alarmId", alarm.getId()));
-		
 		return alarmsByTZSingleton;
 	}
 	
@@ -164,5 +162,4 @@ public class AlarmPreferences {
 		editor.putString(preferences_name, listAlarmsJson);
 		editor.commit();
 	}
-	
 }
