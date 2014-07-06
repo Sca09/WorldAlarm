@@ -31,7 +31,7 @@ public class TimeZonesActivity extends FragmentActivity implements View.OnClickL
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.warp_main);
+		setContentView(R.layout.time_zones);
 		
 		listView = (DragSortListView)findViewById(android.R.id.list);
 		

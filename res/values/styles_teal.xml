@@ -19,57 +19,58 @@
 
 <resources>
 
-    <style name="Theme.Teal" parent="@android:style/Theme.Holo.Light">
+    <style name="Theme.Teal" parent="@android:style/Theme.Holo">
         <item name="android:actionBarItemBackground">@drawable/selectable_background_teal</item>
         <item name="android:popupMenuStyle">@style/PopupMenu.Teal</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Teal</item>
         <item name="android:actionBarStyle">@style/ActionBar.Solid.Grey</item>
         <item name="android:actionDropDownStyle">@style/DropDownNav.Teal</item>
-        <item name="android:actionBarStyle">@style/ActionBar.Solid.Teal</item>
         <item name="android:actionModeBackground">@drawable/cab_background_top_teal</item>
         <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_teal</item>
         <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Teal</item>
+        
+        
     </style>
 
-    <style name="ActionBar.Solid.Teal" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
+    <style name="ActionBar.Solid.Teal" parent="@android:style/Widget.Holo.ActionBar.Solid">
         <item name="android:background">@drawable/ab_solid_teal</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_teal</item>
         <item name="android:backgroundSplit">@drawable/ab_bottom_solid_teal</item>
         <item name="android:progressBarStyle">@style/ProgressBar.Teal</item>
     </style>
 
-    <style name="ActionBar.Transparent.Teal" parent="@android:style/Widget.Holo.Light.ActionBar">
+    <style name="ActionBar.Transparent.Teal" parent="@android:style/Widget.Holo.ActionBar">
         <item name="android:background">@drawable/ab_transparent_teal</item>
         <item name="android:progressBarStyle">@style/ProgressBar.Teal</item>
     </style>
-
+    
     <style name="ActionBar.Solid.Grey" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@color/action_bar_gray</item>
     </style>
 
-    <style name="PopupMenu.Teal" parent="@android:style/Widget.Holo.Light.ListPopupWindow">
+    <style name="PopupMenu.Teal" parent="@android:style/Widget.Holo.ListPopupWindow">
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_teal</item>	
     </style>
 
-    <style name="DropDownListView.Teal" parent="@android:style/Widget.Holo.Light.ListView.DropDown">
+    <style name="DropDownListView.Teal" parent="@android:style/Widget.Holo.ListView.DropDown">
         <item name="android:listSelector">@drawable/selectable_background_teal</item>
     </style>
 
-    <style name="ActionBarTabStyle.Teal" parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
+    <style name="ActionBarTabStyle.Teal" parent="@android:style/Widget.Holo.ActionBar.TabView">
         <item name="android:background">@drawable/tab_indicator_ab_teal</item>
     </style>
 
-    <style name="DropDownNav.Teal" parent="@android:style/Widget.Holo.Light.Spinner">
+    <style name="DropDownNav.Teal" parent="@android:style/Widget.Holo.Spinner">
         <item name="android:background">@drawable/spinner_background_ab_teal</item>
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_teal</item>
         <item name="android:dropDownSelector">@drawable/selectable_background_teal</item>
     </style>
     
-    <style name="ProgressBar.Teal" parent="@android:style/Widget.Holo.Light.ProgressBar.Horizontal">
+    <style name="ProgressBar.Teal" parent="@android:style/Widget.Holo.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_horizontal_teal</item>
     </style>
     
-    <style name="ActionButton.CloseMode.Teal" parent="@android:style/Widget.Holo.Light.ActionButton.CloseMode">
+    <style name="ActionButton.CloseMode.Teal" parent="@android:style/Widget.Holo.ActionButton.CloseMode">
         <item name="android:background">@drawable/btn_cab_done_teal</item>
     </style>
 
@@ -77,7 +78,6 @@
     <style name="Theme.Teal.Widget" parent="@android:style/Theme.Holo">
         <item name="android:popupMenuStyle">@style/PopupMenu.Teal</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Teal</item>
-        <item name="android:actionBarStyle">@style/ActionBar.Solid.Grey</item>
     </style>
 
 </resources>
