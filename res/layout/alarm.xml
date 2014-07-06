@@ -199,6 +199,6 @@
         android:layout_width="fill_parent"
         android:layout_height="2dp"
         android:layout_alignParentBottom="true"
-        android:background="#CC383838" />
+        android:background="@color/action_bar_gray" />
 
 </RelativeLayout>

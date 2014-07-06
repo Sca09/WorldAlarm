@@ -28,7 +28,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:background="@color/blue_light" />
+            android:background="@color/apptheme_color" />
 
         <Button
             android:id="@+id/cancelTimeZoneConf"
@@ -39,6 +39,7 @@
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@id/ViewColorPickerHelper"
             android:background="?android:attr/selectableItemBackground"
+            android:textColor="@color/apptheme_color"
             android:text="@string/cancel_text" />
 
         <Button
@@ -50,6 +51,7 @@
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@id/ViewColorPickerHelper"
             android:background="?android:attr/selectableItemBackground"
+            android:textColor="@color/apptheme_color"
             android:text="@string/set_text" />
 
         <View
@@ -57,7 +59,7 @@
             android:layout_height="1dip"
             android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/ViewColorPickerHelper"
-            android:background="@color/blue_light" />
+            android:background="@color/apptheme_color" />
 
     </RelativeLayout>
 

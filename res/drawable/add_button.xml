@@ -7,7 +7,7 @@
                     <size
                             android:width="@dimen/round_button_diameter"
                             android:height="@dimen/round_button_diameter" />
-                    <solid android:color="@color/action_blue_pressed" />
+                    <solid android:color="@color/action_add_button_pressed" />
                 </shape>
             </item>
             <item>
@@ -22,7 +22,7 @@
                     <size
                             android:width="@dimen/round_button_diameter"
                             android:height="@dimen/round_button_diameter" />
-                    <solid android:color="@color/action_blue" />
+                    <solid android:color="@color/action_add_button" />
                 </shape>
             </item>
             <item>

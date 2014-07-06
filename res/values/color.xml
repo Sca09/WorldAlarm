@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- <color name="blue_light">#ff33b5e5</color> -->
-    <color name="blue_light">#0099cc</color>
+    <!-- <color name="blue_light">#0099cc</color> -->
+    <color name="apptheme_color">#009688</color>
     <color name="appwidget_text">#ffffffff</color>
-    <color name="action_blue">#3185FF</color>
-    <color name="action_blue_pressed">#1155BF</color>
+    <!-- <color name="action_blue">#3185FF</color> -->
+    <color name="action_add_button">#eeff41</color>
+    <color name="action_add_button_pressed">#9e9d24</color>
+    <color name="action_bar_gray">#1e2327</color>
 </resources>

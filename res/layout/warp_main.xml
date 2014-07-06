@@ -4,36 +4,36 @@
     android:layout_height="match_parent"
     tools:context=".TimeZonesActivity" >
     
-	<com.mobeta.android.dslv.DragSortListView
-	    xmlns:android="http://schemas.android.com/apk/res/android"
-	    xmlns:dslv="http://schemas.android.com/apk/res-auto"
-	    android:id="@android:id/list"
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
-	    android:layout_above="@+id/buttonsPanel"
-	    android:paddingTop="0dp"
-	    android:paddingBottom="0dp"
-	    android:paddingLeft="0dp"
-	    android:layout_margin="10dp"
-	    android:dividerHeight="3dp"
-	    android:divider="@color/blue_light"
-	    android:fastScrollEnabled="true"
-	    dslv:drag_enabled="true"
-	    dslv:collapsed_height="2dp"
-	    dslv:drag_scroll_start="0.33"
-	    dslv:max_drag_scroll_speed="0.5"
-	    dslv:float_alpha="0.2"
-	    dslv:slide_shuffle_speed="0.3"
-	    dslv:track_drag_sort="false"
-	    dslv:use_default_controller="true"
-	    dslv:drag_handle_id="@id/drag_handle"
-	    dslv:sort_enabled="true"
-	    dslv:remove_enabled="true"
-	    dslv:drag_start_mode="onDown"
-	    dslv:remove_mode="flingRemove"
-	    dslv:float_background_color="@color/blue_light" />
+    <com.mobeta.android.dslv.DragSortListView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:dslv="http://schemas.android.com/apk/res-auto"
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/buttonsPanel"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:paddingLeft="0dp"
+        android:layout_margin="10dp"
+        android:dividerHeight="3dp"
+        android:divider="@color/apptheme_color"
+        android:fastScrollEnabled="true"
+        dslv:drag_enabled="true"
+        dslv:collapsed_height="2dp"
+        dslv:drag_scroll_start="0.33"
+        dslv:max_drag_scroll_speed="0.5"
+        dslv:float_alpha="0.2"
+        dslv:slide_shuffle_speed="0.3"
+        dslv:track_drag_sort="false"
+        dslv:use_default_controller="true"
+        dslv:drag_handle_id="@id/drag_handle"
+        dslv:sort_enabled="true"
+        dslv:remove_enabled="true"
+        dslv:drag_start_mode="onDown"
+        dslv:remove_mode="flingRemove"
+        dslv:float_background_color="@color/apptheme_color" />
 
-	<RelativeLayout
+    <RelativeLayout
         android:id="@+id/buttonsPanel"
         android:layout_width="match_parent"
         android:layout_height="55dp"
@@ -47,7 +47,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:background="@color/blue_light" />
+            android:background="@color/apptheme_color" />
 
         <Button
             android:id="@+id/cancelTimeZoneConf"
@@ -58,6 +58,7 @@
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@id/ViewColorPickerHelper"
             android:background="?android:attr/selectableItemBackground"
+            android:textColor="@color/apptheme_color"
             android:text="@string/cancel_text" />
 
         <Button
@@ -69,6 +70,7 @@
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@id/ViewColorPickerHelper"
             android:background="?android:attr/selectableItemBackground"
+            android:textColor="@color/apptheme_color"
             android:text="@string/save_text" />
 
         <View
@@ -76,7 +78,7 @@
             android:layout_height="1dip"
             android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/ViewColorPickerHelper"
-            android:background="@color/blue_light" />
+            android:background="@color/apptheme_color" />
 
     </RelativeLayout>
 

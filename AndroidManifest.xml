@@ -16,7 +16,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Blue" >
+        android:theme="@style/Theme.Teal.Widget" >
         <activity
             android:name="com.worldalarm.activities.ListAlarmsSwipeViewActivity"
             android:label="@string/app_name" >
@@ -27,13 +27,13 @@
         </activity>
         <activity
             android:name="com.worldalarm.activities.NewAlarmActivity"
-            android:label="@string/app_name"
-            android:theme="@android:style/Theme.Holo.Dialog" >
+            android:label="@string/set_new_alarm_text"
+            android:theme="@style/AppThemeDialog" >
         </activity>
         <activity
             android:name="com.worldalarm.activities.UpdateAlarmActivity"
-            android:label="@string/app_name"
-            android:theme="@android:style/Theme.Holo.Dialog" >
+            android:label="@string/update_alarm_text"
+            android:theme="@style/AppThemeDialog" >
         </activity>
         <activity
             android:name="com.worldalarm.activities.TimeZonesActivity"

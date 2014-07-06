@@ -5,11 +5,13 @@
 
   <style name="AppTheme" parent="@style/_AppTheme"/>
 
-  <style name="_AppTheme" parent="android:Theme.Holo.Light">
+  <style name="AppThemeDialog" parent="@style/_AppThemeDialog"/>
+
+  <style name="_AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
 
     <item name="android:editTextBackground">@drawable/apptheme_edit_text_holo_light</item>
 
-    <item name="android:textColorHighlight">#990099cc</item>
+    <item name="android:textColorHighlight">#99009688</item>
     <item name="android:textSelectHandleLeft">@drawable/apptheme_text_select_handle_left</item>
     <item name="android:textSelectHandleRight">@drawable/apptheme_text_select_handle_right</item>
     <item name="android:textSelectHandle">@drawable/apptheme_text_select_handle_middle</item>
@@ -20,8 +22,46 @@
 
     <item name="android:imageButtonStyle">@style/ImageButtonAppTheme</item>
 
+    <item name="android:dropDownSpinnerStyle">@style/SpinnerAppTheme</item>
+
+    <item name="android:progressBarStyleHorizontal">@style/ProgressBarAppTheme</item>
+
     <item name="android:buttonStyleToggle">@style/ToggleAppTheme</item>
 
+    <item name="android:listChoiceBackgroundIndicator">@drawable/apptheme_list_selector_holo_light</item>
+
+    <item name="android:activatedBackgroundIndicator">@drawable/apptheme_activated_background_holo_light</item>
+
+    <item name="android:fastScrollThumbDrawable">@drawable/apptheme_fastscroll_thumb_holo</item>
+
   </style>
+  
+  <style name="_AppThemeDialog" parent="android:Theme.Holo.Dialog">
+      
+    <item name="android:editTextBackground">@drawable/apptheme_edit_text_holo_light</item>
+
+    <item name="android:textColorHighlight">#99000e77</item>
+    <item name="android:textSelectHandleLeft">@drawable/apptheme_text_select_handle_left</item>
+    <item name="android:textSelectHandleRight">@drawable/apptheme_text_select_handle_right</item>
+    <item name="android:textSelectHandle">@drawable/apptheme_text_select_handle_middle</item>
+
+    <item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewAppTheme</item>
+
+    <item name="android:buttonStyle">@style/ButtonAppTheme</item>
+
+    <item name="android:imageButtonStyle">@style/ImageButtonAppTheme</item>
+
+    <item name="android:dropDownSpinnerStyle">@style/SpinnerAppTheme</item>
+    
+    <!-- <item name="android:selectableItemBackground">@drawable/apptheme_item_background</item> -->
+      
+    <item name="android:windowTitleStyle">@style/dialog_title_style</item>
+    
+  </style>
+  
+    <style name="dialog_title_style" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/apptheme_color</item>
+        <item name="android:textSize">22sp</item>
+    </style>
 
 </resources>
