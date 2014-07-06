@@ -165,17 +165,13 @@ containing a value of this type.
         public static final int use_default_controller=0x7f010011;
     }
     public static final class color {
-        /**  <color name="action_blue">#3185FF</color> 
-         */
-        public static final int action_add_button=0x7f050002;
-        public static final int action_add_button_pressed=0x7f050003;
-        public static final int action_bar_gray=0x7f050004;
-        /**  <color name="blue_light">#ff33b5e5</color> 
- <color name="blue_light">#0099cc</color> 
-         */
-        public static final int apptheme_color=0x7f050000;
-        public static final int appwidget_text=0x7f050001;
-        public static final int repeat_day_color=0x7f050005;
+        public static final int action_add_button=0x7f050003;
+        public static final int action_add_button_pressed=0x7f050004;
+        public static final int action_bar_gray=0x7f050005;
+        public static final int apptheme_primary_color=0x7f050000;
+        public static final int apptheme_secundary_color=0x7f050001;
+        public static final int appwidget_text=0x7f050002;
+        public static final int repeat_day_color=0x7f050006;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -320,9 +316,9 @@ containing a value of this type.
     }
     public static final class id {
         public static final int ViewColorPickerHelper=0x7f040020;
-        public static final int action_add=0x7f04002a;
-        public static final int action_settings=0x7f040028;
-        public static final int action_settings_time_zones_conf=0x7f040029;
+        public static final int action_add=0x7f04002b;
+        public static final int action_settings=0x7f040029;
+        public static final int action_settings_time_zones_conf=0x7f04002a;
         public static final int addBottomButton=0x7f04001b;
         public static final int alarmCity=0x7f04000f;
         public static final int alarmDate=0x7f04000e;
@@ -348,7 +344,7 @@ containing a value of this type.
         public static final int onLongPress=0x7f040004;
         public static final int onMove=0x7f040003;
         public static final int pager=0x7f040019;
-        public static final int pager_title_strip=0x7f04001a;
+        public static final int pager_tab_strip=0x7f04001a;
         public static final int repeat_day_panel=0x7f040010;
         public static final int repeat_day_toggle_fri=0x7f040016;
         public static final int repeat_day_toggle_mon=0x7f040012;
@@ -357,8 +353,9 @@ containing a value of this type.
         public static final int repeat_day_toggle_thu=0x7f040015;
         public static final int repeat_day_toggle_tue=0x7f040013;
         public static final int repeat_day_toggle_wed=0x7f040014;
-        public static final int saveTimeZoneConf=0x7f040025;
+        public static final int saveTimeZoneConf=0x7f040028;
         public static final int setAlarmButton=0x7f040022;
+        public static final int setTimeZoneConf=0x7f040025;
         public static final int text=0x7f04001c;
         public static final int timeZoneTitle=0x7f040023;
         public static final int updateAlarmButton=0x7f040027;
@@ -377,6 +374,7 @@ containing a value of this type.
         public static final int time_zone_row=0x7f03000a;
         public static final int time_zones=0x7f03000b;
         public static final int update_alarm=0x7f03000c;
+        public static final int warp_main=0x7f03000d;
     }
     public static final class menu {
         public static final int expandable_alarms=0x7f090000;

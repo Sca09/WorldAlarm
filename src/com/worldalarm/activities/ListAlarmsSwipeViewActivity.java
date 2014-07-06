@@ -12,6 +12,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
@@ -59,6 +60,10 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.list_alarms_swipe_view);
+
+		PagerTabStrip pagerTabStrip = (PagerTabStrip) findViewById(R.id.pager_tab_strip);
+		pagerTabStrip.setDrawFullUnderline(false);
+		pagerTabStrip.setTabIndicatorColor(getResources().getColor(R.color.apptheme_secundary_color));
 
 		addListenerOnButton();
 

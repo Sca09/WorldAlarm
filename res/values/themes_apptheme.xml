@@ -60,7 +60,7 @@
   </style>
   
     <style name="dialog_title_style" parent="android:Widget.TextView">
-        <item name="android:textColor">@color/apptheme_color</item>
+        <item name="android:textColor">@color/apptheme_primary_color</item>
         <item name="android:textSize">22sp</item>
     </style>
 
