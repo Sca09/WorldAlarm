@@ -60,8 +60,8 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true" 
             android:checked="true"
-            android:thumb="@drawable/apptheme_switch_inner_holo_light"
-            android:track="@drawable/apptheme_switch_track_holo_light"/>
+            android:thumb="@drawable/apptheme_switch_inner_holo_dark"
+            android:track="@drawable/apptheme_switch_track_holo_dark"/>
         
     </RelativeLayout>
     
