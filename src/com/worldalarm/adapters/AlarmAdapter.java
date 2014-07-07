@@ -303,12 +303,14 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 			this.alarm = alarm;
 
 			background_img.setImageDrawable(null);
-			if(alarm.getCity().getListPicUrls() == null) {
+			if(alarm.getCity().getListPicUrls() == null && alarm.getCity().isNextPicCheckTime()) {
 				final City cityForThread = alarm.getCity();
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
 						try {
+							alarm.getCity().setNextPicCheckTime();
+							
 							Flickr flickr = new Flickr(Constants.FLICKR_KEY, Constants.FLICKR_SECRET);
 							
 							SearchParameters searchParams = new SearchParameters();

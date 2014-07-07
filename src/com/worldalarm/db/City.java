@@ -2,6 +2,7 @@ package com.worldalarm.db;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 import java.util.TimeZone;
@@ -15,6 +16,7 @@ public class City implements Serializable{
 	private String timeZoneID;
 	private String timeZoneName;
 	private List<String> listPicUrls;
+	private Long nextPicCheckTime;
 
 	public City() {
 		this.timeZoneID = TimeZone.getDefault().getID();
@@ -68,5 +70,31 @@ public class City implements Serializable{
 	public String getRandomPicUrl() {
 		int randomPicUrlIndex = new Random().nextInt(this.listPicUrls.size());
 		return this.listPicUrls.get(randomPicUrlIndex);
+	}
+
+	public long getNextPicCheckTime() {
+		return nextPicCheckTime;
+	}
+
+	public void setNextPicCheckTime(Long nextPicCheck) {
+		this.nextPicCheckTime = nextPicCheck;
+	}
+	
+	public void setNextPicCheckTime() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DAY_OF_MONTH, 5);
+		Long currentTimeInMillis = calendar.getTimeInMillis();
+		setNextPicCheckTime(currentTimeInMillis);
+	}
+	
+	public boolean isNextPicCheckTime() {
+		if(nextPicCheckTime != null) {
+			Calendar calendar = Calendar.getInstance();
+			Long currentTimeInMillis = calendar.getTimeInMillis();
+		
+			return (currentTimeInMillis > nextPicCheckTime);
+		} else {
+			return true;
+		}
 	}
 }

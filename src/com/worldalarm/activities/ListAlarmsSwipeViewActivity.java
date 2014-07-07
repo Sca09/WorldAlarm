@@ -185,7 +185,7 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 						double longitude = location.getLongitude();
 	
 						List<Address> addresses = gcd.getFromLocation(latitude, longitude, 1);
-						if (addresses.size() > 0) { 
+						if (addresses.size() > 0 && addresses.get(0).getLocality() !=  null) { 
 							currentCityName = addresses.get(0).getLocality();
 						}
 					} 
