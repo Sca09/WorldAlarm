@@ -121,15 +121,13 @@ public class ListAlarmsSwipeViewActivity extends FragmentActivity {
 				if(alarmUpdated != null) {
 					broadcastChanges(alarmUpdated);
 				} else {
-					mSectionsPagerAdapter.notifyDataSetChanged();
-					mSectionsPagerAdapter.getAllTimeZones();
+					mSectionsPagerAdapter.refresh();
 				}
 			} 
 			break;
 			
 		case REQUEST_CODE_RESOLVE_ERR_TIME_ZONE_CONF:
-			mSectionsPagerAdapter.notifyDataSetChanged();
-			mSectionsPagerAdapter.getAllTimeZones();
+			mSectionsPagerAdapter.refresh();
 			mViewPager.setCurrentItem(0);
 			break;
 		}

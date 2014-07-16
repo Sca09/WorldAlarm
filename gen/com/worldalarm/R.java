@@ -365,17 +365,18 @@ containing a value of this type.
         public static final int activity_expandable_alarms=0x7f030000;
         public static final int alarm=0x7f030001;
         public static final int apptheme_tab_indicator_holo=0x7f030002;
-        public static final int expandable_group_header_alarms=0x7f030003;
-        public static final int list_alarms=0x7f030004;
-        public static final int list_alarms_swipe_view=0x7f030005;
-        public static final int list_item_handle_left=0x7f030006;
-        public static final int list_item_handle_right=0x7f030007;
-        public static final int new_alarm=0x7f030008;
-        public static final int new_time_zones_list=0x7f030009;
-        public static final int time_zone_row=0x7f03000a;
-        public static final int time_zones=0x7f03000b;
-        public static final int update_alarm=0x7f03000c;
-        public static final int warp_main=0x7f03000d;
+        public static final int city_list=0x7f030003;
+        public static final int expandable_group_header_alarms=0x7f030004;
+        public static final int list_alarms=0x7f030005;
+        public static final int list_alarms_swipe_view=0x7f030006;
+        public static final int list_item_handle_left=0x7f030007;
+        public static final int list_item_handle_right=0x7f030008;
+        public static final int new_alarm=0x7f030009;
+        public static final int new_time_zones_list=0x7f03000a;
+        public static final int time_zone_row=0x7f03000b;
+        public static final int time_zones=0x7f03000c;
+        public static final int update_alarm=0x7f03000d;
+        public static final int warp_main=0x7f03000e;
     }
     public static final class menu {
         public static final int expandable_alarms=0x7f090000;

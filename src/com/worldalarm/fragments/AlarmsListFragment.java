@@ -96,6 +96,8 @@ public class AlarmsListFragment extends ListFragment {
 	BroadcastReceiver updateReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			getAllAlarmsByTZName();
+
 			String updateId = intent.getStringExtra("alarmId");
 			
 			ListView list = getListView();

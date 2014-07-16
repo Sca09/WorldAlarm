@@ -86,6 +86,10 @@ public class AlarmPreferences {
 						} else {
 							list.remove(currentAlarm);
 							
+							if(list.size() == 0) {
+								alarmsByTZSingleton.remove(timeZoneName);
+							}
+							
 							List<Alarm> listAlarms = alarmsByTZSingleton.get(alarm.getCity().getTimeZoneName());
 							
 							if(listAlarms == null) {
@@ -112,18 +116,25 @@ public class AlarmPreferences {
 			alarmsByTZSingleton = getAlarmsFromPreferences(context);
 		}
 		
-		List<Alarm> listAlarms = alarmsByTZSingleton.get(alarm.getCity().getTimeZoneName());
+		String timeZoneName = alarm.getCity().getTimeZoneName();
+		List<Alarm> listAlarms = alarmsByTZSingleton.get(timeZoneName);
 		
 		if(listAlarms != null) {
 			for(Alarm currentAlarm : listAlarms) {
 				if(currentAlarm.getId().equals(alarm.getId())) {
 					listAlarms.remove(currentAlarm);
+					
 					break;
 				}
 			}
 		}
 		
-		alarmsByTZSingleton.put(alarm.getCity().getTimeZoneName(), listAlarms);
+		if(listAlarms.size() == 0) {
+			alarmsByTZSingleton.remove(timeZoneName);
+			TimeZonePreferences.deleteTimeZone(timeZoneName, context);
+		} else {
+			alarmsByTZSingleton.put(alarm.getCity().getTimeZoneName(), listAlarms);
+		}
 		
 		savePreferences(context);
 		

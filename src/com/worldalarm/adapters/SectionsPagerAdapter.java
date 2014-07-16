@@ -71,14 +71,19 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 		}
 	}
 	
-	public void notifyDataSetChanged(String currentTimeZone){
-		
-		if(listTimeZones.indexOf(currentTimeZone) == 0) {
-			notifyDataSetChanged();
-		}
-	}
+//	public void notifyDataSetChanged(String currentTimeZone){
+//		
+//		if(listTimeZones.indexOf(currentTimeZone) == 0) {
+//			notifyDataSetChanged();
+//		}
+//	}
 
 	public void getAllTimeZones() {
+		this.listTimeZones = TimeZonePreferences.getAllTimeZones(this.context);
+		notifyDataSetChanged();
+	}
+	
+	public void refresh() {
 		this.listTimeZones = TimeZonePreferences.getAllTimeZones(this.context);
 		notifyDataSetChanged();
 	}
@@ -87,8 +92,8 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 		return listTimeZones;
 	}
 
-	public void setListTimeZones(List<String> listTimeZones) {
-		this.listTimeZones = listTimeZones;
-		notifyDataSetChanged();
-	}
+//	public void setListTimeZones(List<String> listTimeZones) {
+//		this.listTimeZones = listTimeZones;
+//		notifyDataSetChanged();
+//	}
 }

@@ -314,7 +314,11 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 							Flickr flickr = new Flickr(Constants.FLICKR_KEY, Constants.FLICKR_SECRET);
 							
 							SearchParameters searchParams = new SearchParameters();
-							searchParams.setText(cityForThread.getCityName() +" downtown");
+							String cityToSearch = cityForThread.getCityName();
+							if(cityToSearch.contains(",")) {
+								cityToSearch = cityForThread.getCityName().substring(0, cityForThread.getCityName().lastIndexOf(","));
+							}
+							searchParams.setText(cityToSearch +" downtown");
 							searchParams.setSort(SearchParameters.INTERESTINGNESS_DESC);
 							
 							PhotoList photoList = flickr.getPhotosInterface().search(searchParams, 5, 0);

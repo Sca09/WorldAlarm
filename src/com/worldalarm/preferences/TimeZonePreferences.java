@@ -18,6 +18,7 @@ public class TimeZonePreferences {
 	
 	private static List<String> timeZonesSingleton = null;
 	
+	
 	public static List<String> getAllTimeZones(Context context) {
 
 		if(timeZonesSingleton == null) {

@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.worldalarm.R;
 import com.worldalarm.adapters.AlarmAdapter.AlarmHolder;
 import com.worldalarm.db.Alarm;
+import com.worldalarm.preferences.AlarmPreferences;
+import com.worldalarm.preferences.TimeZonePreferences;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
@@ -30,7 +32,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 	
 	@Override
 	public Object getChild(int groupPosition, int childPosition) {
-		return listAlarms.get(listTimeZones.get(groupPosition)).get(childPosition);
+		listTimeZones = TimeZonePreferences.getAllTimeZones(context);
+		listAlarms = AlarmPreferences.getAlarmsByTZInstance(context);
+		
+		List<Alarm> list = listAlarms.get(listTimeZones.get(groupPosition));
+		return list.get(childPosition);
 	}
 
 	@Override

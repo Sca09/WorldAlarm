@@ -41,7 +41,7 @@ public class DeleteAlarmConfirmDialogFragment extends DialogFragment {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				deleteAlarm(alarm);				
+				deleteAlarm(alarm);
 			}
 		});
 		

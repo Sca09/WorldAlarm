@@ -5,16 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.worldalarm.R;
@@ -126,7 +127,7 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 			City city = cityTimeZonesNames.get(cityPicked);
 			
 			if(city == null) { //City chosen is not in TZ database
-				SearchCityByNameTaskData task = new SearchCityByNameTaskData(this);
+				SearchCityByNameTaskData task = new SearchCityByNameTaskData(this, this);
 				task.execute(cityPicked);
 			} else {
 				Alarm newAlarm = new Alarm(hourPicked, minutePicked, city);
@@ -281,15 +282,39 @@ public class NewAlarmActivity extends Activity implements View.OnClickListener, 
 	}
 
 	@Override
-	public void onFoundCityByName(City city) {
-		if(city != null) {
-			CityPreferences.addCity(city, this);
-			Alarm newAlarm = new Alarm(timePicker.getCurrentHour(), timePicker.getCurrentMinute(), city);
+	public void onFoundCityByName(final List<City> cityList) {
+		if(cityList != null && cityList.size() == 1) {
+			Alarm newAlarm = new Alarm(timePicker.getCurrentHour(), timePicker.getCurrentMinute(), cityList.get(0));
 			this.saveAlarm(newAlarm);
 		} else {
-			Toast toastAlert = Toast.makeText(this, "City not found, please try again", Toast.LENGTH_LONG);
-			toastAlert.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 180);
-			toastAlert.show();
+			if(cityList.size() > 0) {
+				
+				final String[] cityKeys = new String[cityList.size()];
+				int i = 0;
+				for(City city : cityList) {
+					cityKeys[i] = city.getCityName();
+					i++;
+				}
+				
+				AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+				alertDialog.setTitle("Choose City");
+				alertDialog.setItems(cityKeys, new OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						String cityName = cityKeys[which];
+						
+						for(City city : cityList) {
+							if(city.getCityName().equals(cityName)) {
+								Alarm newAlarm = new Alarm(timePicker.getCurrentHour(), timePicker.getCurrentMinute(), city);
+								NewAlarmActivity.this.saveAlarm(newAlarm);
+							}
+						}
+					}
+				});
+				
+				alertDialog.show();
+			}
 		}	
 	}
 	
