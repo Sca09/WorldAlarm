@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">WorldAlarm</string>
+    <string name="app_name">Alarm</string>
+    <string name="action_bar_title">Alarms by TimeZone</string>
     <string name="new_alarm_text">New Alarm</string>
     <string name="new_time_zone_text">New Time Zone</string>
     <string name="go_home">To Home</string>
