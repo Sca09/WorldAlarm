@@ -73,7 +73,7 @@ public class UserPreferences {
 		String listAlarmsJson = gson.toJson(userSingleton);
 		
 		SharedPreferences.Editor editor = context.getSharedPreferences(preferences_file_user, Context.MODE_PRIVATE).edit();
-		editor.putString(preferences_file_user, listAlarmsJson);
+		editor.putString(preferences_name, listAlarmsJson);
 		editor.commit();
 	}
 }
