@@ -31,5 +31,6 @@
     <string name="repeat_day_thu">THU</string>
     <string name="repeat_day_fri">FRI</string>
     <string name="repeat_day_sat">SAT</string>
+    <string name="dismiss">Dismiss</string>
 
 </resources>

@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.picasso.Picasso;
 import com.worldalarm.broadcast.AlarmManagerBroadcastReceiver;
 import com.worldalarm.db.Alarm;
 
@@ -47,6 +48,24 @@ public class AlarmPreferences {
 		alarmsByTZSingleton = alarmsList;
 		
 		return alarmsByTZSingleton;
+	}
+	
+	public static Alarm getAlarmById(Context context, String alarmId) {
+		if(alarmsByTZSingleton == null) {
+			alarmsByTZSingleton = getAlarmsFromPreferences(context);
+		}
+		
+		for(String timeZoneName : alarmsByTZSingleton.keySet()) {
+			List<Alarm> list = alarmsByTZSingleton.get(timeZoneName);
+			
+			for(Alarm alarm : list) {
+				if(alarm.getId().equals(alarmId)){
+					return alarm;
+				}
+			}
+		}
+		
+		return null;
 	}
 	
 	public synchronized static HashMap<String, List<Alarm>> addAlarm(Alarm alarm, Context context) {

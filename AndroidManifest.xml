@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name='android.permission.WAKE_LOCK'/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -19,31 +19,37 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.Teal" >
         <activity
-            android:name="com.worldalarm.activities.ListAlarmsSwipeViewActivity"
-            android:label="@string/action_bar_title" 
-            android:icon="@drawable/ic_action_bar">
+            android:name=".activities.ListAlarmsSwipeViewActivity"
+            android:icon="@drawable/ic_action_bar"
+            android:label="@string/action_bar_title" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.worldalarm.activities.NewAlarmActivity"
+            android:name=".activities.NewAlarmActivity"
             android:label="@string/set_new_alarm_text"
             android:theme="@style/AppThemeDialog" >
         </activity>
         <activity
-            android:name="com.worldalarm.activities.UpdateAlarmActivity"
+            android:name=".activities.UpdateAlarmActivity"
             android:label="@string/update_alarm_text"
             android:theme="@style/AppThemeDialog" >
         </activity>
         <activity
-            android:name="com.worldalarm.activities.TimeZonesActivity"
-            android:label="@string/app_name" >
+            android:name=".activities.TimeZonesActivity"
+            android:label="@string/action_bar_title" >
         </activity>
-        
-        <receiver android:name='com.worldalarm.broadcast.AlarmManagerBroadcastReceiver'>
+        <activity
+            android:name=".activities.AlarmRaisedActivity"
+            android:icon="@drawable/ic_action_bar"
+            android:label="@string/action_bar_title" >
+        </activity>
+
+        <receiver android:name=".broadcast.AlarmManagerBroadcastReceiver" >
         </receiver>
-        
     </application>
+
 </manifest>

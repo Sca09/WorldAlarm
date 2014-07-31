@@ -1,14 +1,9 @@
 package com.worldalarm.broadcast;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Random;
 import java.util.TimeZone;
-
-import com.worldalarm.db.Alarm;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -17,7 +12,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.widget.Toast;
+
+import com.worldalarm.activities.AlarmRaisedActivity;
+import com.worldalarm.db.Alarm;
 
 public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 
@@ -34,18 +31,24 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 
 		//You can do the processing here update the widget/remote views.
 		Bundle extras = intent.getExtras();
-		StringBuilder msgStr = new StringBuilder();
+		String alarmId = extras.getString("alarmId");
+//		StringBuilder msgStr = new StringBuilder();
+//
+//		if(extras != null && extras.getBoolean(ONE_TIME, Boolean.FALSE)){
+//			msgStr.append("One time Timer : ");
+//		}
+//		Format formatter = new SimpleDateFormat("hh:mm a");
+//		msgStr.append(formatter.format(new Date()));
 
-		if(extras != null && extras.getBoolean(ONE_TIME, Boolean.FALSE)){
-			msgStr.append("One time Timer : ");
-		}
-		Format formatter = new SimpleDateFormat("hh:mm a");
-		msgStr.append(formatter.format(new Date()));
-
-		Toast.makeText(context, msgStr, Toast.LENGTH_LONG).show();
-
+//		Toast.makeText(context, msgStr, Toast.LENGTH_LONG).show();
+		Intent launchIntent = new Intent(context, AlarmRaisedActivity.class);
+		launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		launchIntent.putExtra("alarmId", alarmId);
+		
 		// Release the lock
 		wl.release();
+
+		context.startActivity(launchIntent);
 	}
 
 	public void setAlarm(Context context) {
@@ -71,6 +74,7 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(context, AlarmManagerBroadcastReceiver.class);
 		intent.putExtra(ONE_TIME, Boolean.TRUE);
+		intent.putExtra("alarmId", alarm.getId());
 		PendingIntent pi = PendingIntent.getBroadcast(context, pendingIntentId, intent, 0);
 		
 		Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone(alarm.getCity().getTimeZoneID()));

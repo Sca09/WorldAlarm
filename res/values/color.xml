@@ -6,4 +6,5 @@
     <color name="action_add_button">#F0eeff41</color>
     <color name="action_add_button_pressed">#F09e9d24</color>
     <color name="action_bar_gray">#1e2327</color>
+    <color name="black_overlay">#66000000</color>
 </resources>
